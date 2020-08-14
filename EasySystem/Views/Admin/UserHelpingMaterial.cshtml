@@ -1,0 +1,255 @@
+﻿@model EasySystem.Models.UserHelpingMaterial
+@{
+    ViewData["Title"] = "UserHelpingMaterial";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-6 column">
+                    <div class="heading-profile">
+                        <h2>User Helping Material</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="Notifocation">
+
+                        @if (TempData["Info"] != null)
+                        {
+                            <div role="alert" class="alert alert-info">
+                                <strong><i class="fa fa-info-circle"></i></strong>
+                                @TempData["Info"].
+                            </div>
+                        }
+                        @if (TempData["Success"] != null)
+                        {
+                            <div role="alert" class="alert alert-success">
+                                <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                @TempData["Success"].
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div role="alert" class="alert alert-danger">
+                                <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                @TempData["Error"].
+                            </div>
+                        }
+
+                    </div>
+                    <div class="row">
+                        <div class="widget white with-padding">
+                            <form asp-action="UserHelpingMaterial" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Title</label>
+                                            <input type="text" asp-for="umsTitle" class="form-control" required>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Type</label>
+                                            @{
+                                                var list = new List<SelectListItem>();
+                                                list.Add(new SelectListItem { Text = "Image", Value = "image" });
+                                                list.Add(new SelectListItem { Text = "Video", Value = "video" });
+                                                list.Add(new SelectListItem { Text = "Document", Value = "pdf" });
+                                            }
+                                            <select asp-for="umsType" class="form-control" id="type" asp-items="@list" required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">UMS For</label>
+                                            @{
+                                                var ufor = new List<SelectListItem>();
+                                                ufor.Add(new SelectListItem { Text = "Male", Value = "Male" });
+                                                ufor.Add(new SelectListItem { Text = "Female", Value = "Female" });
+                                                ufor.Add(new SelectListItem { Text = "Company", Value = "Company" });
+                                                ufor.Add(new SelectListItem { Text = "Personal", Value = "Personal" });
+                                                ufor.Add(new SelectListItem { Text = "All", Value = "All" });
+
+                                            }
+                                            <select asp-for="umsFor" class="form-control" asp-items="@ufor"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Font Name</label>
+                                            <input type="text" asp-for="umsFontName" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Font Color</label>
+                                            <input type="text" asp-for="umsFontColour" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Font Size</label>
+                                            <input type="text" asp-for="umsFontSize" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Font Alignment</label>
+                                            <input type="text" asp-for="umsFontAlignment" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Status</label>
+                                            @{
+                                                var status = new List<SelectListItem>();
+                                                status.Add(new SelectListItem { Text = "Active", Value = "true" });
+                                                status.Add(new SelectListItem { Text = "Deactive", Value = "false" });
+                                            }
+                                            <select asp-for="umsStatus" class="form-control" asp-items="@status" required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <input type="file" name="file" id="file" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" asp-for="umsPath" id="document" class="form-control" placeholder="Document Path" >
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-info" style="background-color:#1b3767">
+                                                Submit
+                                            </button>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @if (TempData["HelpingMaterial"] != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="widget white">
+                                <div class="form-group" hidden>
+                                    &nbsp;
+                                    <div class="col-md-3">
+                                        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                    </div>
+                                </div>
+
+
+                                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>For</th>
+                                            <th>Font Name</th>
+                                            <th>Font Size</th>
+                                            <th>Font Color</th>
+                                            <th>Font Alignment</th>
+                                            <th>Created Date</th>
+                                            <th>Status</th>
+                                            <th>Image</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var i in (List<EasySystem.Models.UserHelpingMaterial>)TempData["HelpingMaterial"])
+                                        {
+                                            <tr>
+                                                <td>@i.umsTitle</td>
+                                                <td>@i.umsType</td>
+                                                <td>@i.umsFor</td>
+                                                <td>@i.umsFontName</td>
+                                                <td>@i.umsFontSize</td>
+                                                <td>@i.umsFontColour</td>
+                                                <td>@i.umsFontAlignment</td>
+                                                <td>@i.umsCreatedDate.ToString("dd-MMM-yyyy")</td>
+                                                <td>@i.umsStatus</td>
+                                                <td>
+                                                    @if (i.umsType == "pdf")
+                                                    {
+                                                        <a target="_blank" href="@Url.Action("DownloadDocument", "Home", new { Docfile = i.umsPath})"><i class="fa fa-download"> @i.umsTitle</i></a>
+                                                    }
+                                                    else if (i.umsType == "video")
+                                                    {
+                                                        
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/images/UserMarketingMaterial/@i.umsFor/@i.umsPath" height="100" width="100" alt="@i.umsTitle">
+                                                    }
+
+                                                </td>
+                                                <td>
+                                                    <a asp-controller="Admin" asp-action="DeleteUserHelpingMaterial" asp-route-id="@i.umsId" title="Delete Record" style="color:red"><i class="fa fa-trash-o"></i></a>
+                                                    &nbsp;
+                                                    <a asp-controller="Admin" asp-action="EditUserHelpingMaterial" asp-route-id="@i.umsId" title="Update Record"><i class="fa fa-edit"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="9">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#document').hide();
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        $("#type").change(function (event) {
+            var value = $(this).val();
+            if (value === 'video') {
+                $("#document").show();
+                $("#file").hide();
+            } else {
+                $("#file").show();
+            }
+        });
+    });
+</script>

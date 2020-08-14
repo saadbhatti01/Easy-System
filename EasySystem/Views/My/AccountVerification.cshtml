@@ -1,0 +1,345 @@
+﻿@{
+    ViewData["Title"] = "Account_Verification";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var Email = @HttpContextAccessor.HttpContext.Session.GetString("Email");
+    string IsValue = null;
+    string IsPending = null;
+    string IsText = null;
+    string IsUpload = null;
+}
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>User Account Verification Documents</h2>
+                        <br />
+                        <div id="Notifocation" style="margin-top: 15px;">
+
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"]
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"]
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"]
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row">
+
+                        @if (TempData["UserVerificationTypes"] != null)
+                        {
+                            foreach (var i in (List<EasySystemAPI.Models.UserVerificationType>
+                                )TempData["UserVerificationTypes"])
+                            {
+                                <div class="widget white with-padding">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+
+                                            <form asp-action="AccountVerification" enctype="multipart/form-data">
+                                                <div class="row">
+                                                    <div class="col-md-6 form-group">
+                                                        @if (i.uvtName == "Email")
+                                                        {
+                                                            @if (TempData["UserVerifications"] != null)
+                                                            {
+                                                                foreach (var u in (List<EasySystemAPI.Models.UserVerification>
+                                                                    )TempData["UserVerifications"])
+                                                                {
+                                                                    @if (i.uvtId == u.uvtId)
+                                                                    {
+                                                                        @if (i.uvtName == "Email" && u.uvStatus == "Verified")
+                                                                        {
+                                                                            IsPending = "filled";
+                                                                            <label><b>@i.uvtName</b></label>
+                                                                            <input type="text" value="@Email" name="Email" readonly class="form-control" />
+                                                                            <input type="hidden" name="uvtId" value="@i.uvtId" class="form-control" />
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            IsPending = "filled";
+                                                                            if (u.uvStatus == "Pending")
+                                                                            {
+                                                                                <label><b>@i.uvtName</b></label>
+                                                                                <input type="text" value="@Email" name="Email" class="form-control" />
+                                                                                <input type="hidden" name="uvtId" value="@i.uvtId" class="form-control" />
+                                                                            }
+                                                                        }
+
+                                                                    }
+
+                                                                }
+                                                            }
+                                                            @if (IsPending == null)
+                                                            {
+                                                                <label><b>@i.uvtName</b></label>
+                                                                <input type="text" value="@Email" name="Email" class="form-control" />
+                                                                <input type="hidden" name="uvtId" value="@i.uvtId" class="form-control" />
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <label><b>@i.uvtName</b></label>
+                                                            <input type="file" name="file" class="form-control" />
+                                                            <input type="hidden" name="uvtId" value="@i.uvtId" class="form-control" />
+                                                        }
+
+                                                    </div>
+                                                    @if (i.uvtName == "Email")
+                                                    {
+                                                        @if (TempData["UserVerifications"] != null)
+                                                        {
+                                                            foreach (var u in (List<EasySystemAPI.Models.UserVerification>
+                                                                )TempData["UserVerifications"])
+                                                            {
+                                                                @if (i.uvtId == u.uvtId)
+                                                                {
+                                                                    @if (i.uvtName == "Email" && u.uvStatus == "Verified")
+                                                                    {
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <div class="col-md-6 form-group">
+                                                                            <div class="row">
+                                                                                <div class="col-md-12">
+                                                                                    <label>Enter Verification Code</label>
+                                                                                    <input type="text" name="uvText" class="form-control" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+
+                                                                    }
+
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+                                                    @if (i.uvtText != null)
+                                                    {
+                                                        @if (TempData["UserVerifications"] != null)
+                                                        {
+                                                            foreach (var u in (List<EasySystemAPI.Models.UserVerification>
+                                                                )TempData["UserVerifications"])
+                                                            {
+                                                                if (i.uvtId == u.uvtId)
+                                                                {
+                                                                    if (u.uvText != null)
+                                                                    {
+                                                                        if (u.uvStatus == "Verified")
+                                                                        {
+                                                                            IsText = "filled";
+                                                                            <div class="col-md-6 form-group">
+                                                                                <label>@i.uvtText</label>
+                                                                                <input type="text" name="uvText" value="@u.uvText" readonly class="form-control" />
+                                                                            </div>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            IsText = "filled";
+                                                                            <div class="col-md-6 form-group">
+                                                                                <label>@i.uvtText</label>
+                                                                                <input type="text" name="uvText" value="@u.uvText" class="form-control" />
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (IsText == null)
+                                                                        {
+                                                                            IsText = "filled";
+                                                                            <div class="col-md-6 form-group">
+                                                                                <label>@i.uvtText</label>
+                                                                                <input type="text" name="uvText" value="" class="form-control" />
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            
+                                                        }
+                                                        if (IsText == null)
+                                                        {
+                                                            <div class="col-md-6 form-group">
+                                                                <label>@i.uvtText</label>
+                                                                <input type="text" name="uvText" value="" class="form-control" />
+                                                            </div>
+                                                        }
+
+                                                    }
+                                                </div>
+
+                                                <div class="col-lg-6 form-group">
+                                                    @if (i.uvtName == "Email")
+                                                    {
+                                                        @if (TempData["UserVerifications"] != null)
+                                                        {
+                                                            foreach (var u in (List<EasySystemAPI.Models.UserVerification>
+                                                                )TempData["UserVerifications"])
+                                                            {
+                                                                @if (i.uvtId == u.uvtId)
+                                                                {
+                                                                    @if (i.uvtName == "Email" && u.uvStatus == "Verified")
+                                                                    {
+                                                                        IsValue = "filled";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        IsValue = "filled";
+                                                                        if (u.uvStatus == "Pending")
+                                                                        {
+                                                                            <button type="submit" class="btn-sm btn btn-info" name="btnName" value="Send" style="background-color:#1b3767">Send Code Again</button>
+                                                                            <button type="submit" class="btn-sm btn btn-info" name="btnName" value="Verify" style="background-color:#1b3767">Verify Code</button>
+                                                                        }
+                                                                    }
+
+                                                                }
+
+                                                            }
+                                                        }
+                                                        @if (IsValue == null)
+                                                        {
+                                                            <button type="submit" class="btn btn-info" style="background-color:#1b3767">Send Code</button>
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (TempData["UserVerifications"] != null)
+                                                        {
+                                                            foreach (var u in (List<EasySystemAPI.Models.UserVerification>
+                                                                )TempData["UserVerifications"])
+                                                            {
+                                                                if (i.uvtId == u.uvtId)
+                                                                {
+                                                                    if (u.uvStatus == "Verified")
+                                                                    {
+                                                                        IsUpload = "filled";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        IsUpload = "filled";
+                                                                        <button type="submit" class="btn btn-info" style="background-color:#1b3767">Upload</button>
+                                                                    }
+
+                                                                }
+                                                            }
+                                                        }
+                                                        if (IsUpload == null)
+                                                        {
+                                                            <button type="submit" class="btn btn-info" style="background-color:#1b3767">Upload</button>
+                                                        }
+                                                    }
+
+                                                </div>
+                                            </form>
+                                        </div>
+
+
+
+
+                                        @if (TempData["UserVerifications"] != null)
+                                        {
+                                            foreach (var u in (List<EasySystemAPI.Models.UserVerification>
+                                                )TempData["UserVerifications"])
+                                            {
+                                                @if (i.uvtId == u.uvtId)
+                                                {
+                                                    <div class="col-md-6">
+                                                        <div class="feild col-md-6 pull-left">
+                                                            @if (i.uvtName == "Email")
+                                                            {
+                                                                <h5>@i.uvtName verification status</h5>
+                                                            }
+                                                            else
+                                                            {
+                                                                if (@u.uvImagePath != null)
+                                                                {
+                                                                    <img src="~/images/@u.uvImagePath" width="170" height="150" />
+                                                                }
+                                                            }
+
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            @if (u.uvStatus == "Verified")
+                                                            {
+                                                                <span class="badge alertoh-green">@u.uvStatus</span>
+                                                            }
+                                                            else if (u.uvStatus == "Under Process")
+                                                            {
+                                                                <span class="badge alertoh-blue">@u.uvStatus</span>
+                                                            }
+                                                            else if (u.uvStatus == "Pending")
+                                                            {
+                                                                <span class="badge alertoh-yellow">@u.uvStatus</span>
+                                                            }
+                                                            else if (u.uvStatus == "Rejected")
+                                                            {
+                                                                <span class="badge alertoh-red">@u.uvStatus</span>
+                                                            }
+
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <p>@u.uvStatusRemarks</p>
+                                                        </div>
+                                                    </div>
+
+                                                }
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+
+                                IsText = null;
+                                IsUpload = null;
+                            }
+
+
+                        }
+
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+

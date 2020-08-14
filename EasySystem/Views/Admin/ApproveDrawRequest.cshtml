@@ -1,0 +1,123 @@
+﻿@model  EasySystem.Models.MoneyDrawVM
+@{
+    ViewData["Title"] = "Approve Draw Request";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-6 column">
+                        <div class="heading-profile">
+                            <h2>Approve User WithDraw Request</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content-area">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+                        </p>
+                        <div class="row">
+                            <div class="widget white with-padding">
+                                <form asp-action="ApproveDrawRequest" method="post" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">User Name</label>
+                                                <input type="text" asp-for="UsrName" readonly class="form-control">
+                                                <input type="hidden" asp-for="udrId" readonly class="form-control">
+                                                <input type="hidden" asp-for="udrId" name="id" readonly class="form-control">
+                                                <input type="hidden" asp-for="usrId" readonly class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">User Code</label>
+                                                <input type="text" asp-for="UsrCode" readonly class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">UDR Code</label>
+                                                <input type="text" asp-for="udrCode" readonly class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Amount</label>
+                                                <input type="text" asp-for="udrAmount" readonly class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Tranferred Bank</label>
+                                                @Html.DropDownList("ubId", (SelectList)ViewData["BankInfo"], new { required = "required", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Action</label>
+                                                @{
+                                                    var list = new List<SelectListItem>();
+                                                    list.Add(new SelectListItem { Text = "All", Value = "All" });
+                                                    list.Add(new SelectListItem { Text = "Pending", Value = "Pending" });
+                                                    list.Add(new SelectListItem { Text = "Rejected", Value = "Rejected" });
+                                                    list.Add(new SelectListItem { Text = "Accepted", Value = "Accepted" });
+                                                    list.Add(new SelectListItem { Text = "Completed", Value = "Completed" });
+
+                                                }
+                                                <select asp-for="udrStatus" class="form-control" asp-items="@list" required></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Choose Profile Image</label>
+                                            <input type="file" asp-for="udrImage" name="file" class="form-control">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Remarks</label>
+                                                <input type="text" asp-for="udrRemarks" class="form-control">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-info" style="background-color:#1b3767">Update</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <!-- Panel Content -->
+    </div>

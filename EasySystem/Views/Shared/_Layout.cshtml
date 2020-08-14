@@ -1,0 +1,362 @@
+﻿@if (TempData["Name"] != null)
+{
+    TempData.Keep("Name");
+}
+
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var RoleId = @HttpContextAccessor.HttpContext.Session.GetInt32("RoleId");
+    var ID = @HttpContextAccessor.HttpContext.Session.GetInt32("ID");
+    var UsrID = @HttpContextAccessor.HttpContext.Session.GetInt32("UsrID");
+    var MentoreId = @HttpContextAccessor.HttpContext.Session.GetInt32("RefId");
+    var UsrName = @HttpContextAccessor.HttpContext.Session.GetString("UsrName");
+    var UsrStatus = @HttpContextAccessor.HttpContext.Session.GetString("Status");
+}
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144425395-5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-144425395-5');
+    </script>
+
+    <!-- Meta-Information -->
+    <title>@ViewData["Title"] | Learn Expert Skills</title>
+    <meta charset="utf-8">
+    <meta charset="utf-8">
+    <meta property="og:title" content="@ViewData[" Title"]" />
+    <meta property="og:image" content="@ViewBag.Image" />
+    <meta property="og:url" content="https://www.universalskill.co" />
+    <meta property="og:site_name" content="Universal Skills" />
+    <meta property="og:description" content="@ViewBag.Title2" />
+    <meta name="twitter:image" content="@ViewBag.Image" />
+    <meta name="twitter:url" content="https://www.universalskill.co" />
+    <meta name="twitter:card" content="" />
+    <meta name="description" content="@ViewBag.Title2">
+    <meta name="keywords" content="Learn Education Skills">
+    <meta name="author" content="Universal Solz">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="~/images/logo.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+
+    <!-- Our Website CSS Styles -->
+    <link rel="stylesheet" href="~/css/icons.css">
+    <link rel="stylesheet" href="~/css/main.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <link href="~/css/datepicker3.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="se-pre-con"></div>
+    <!-- Our Website Content Goes Here -->
+    @if (ID != null)
+    {
+        <header class="simple-normal">
+
+            <div class="top-bar">
+                <div class="logo"> <a asp-controller="My" asp-action="Dashboard" title="">L.E Skills</a> </div>
+                <div class="menu-options"><span class="menu-action"><i></i></span></div>
+
+                <!-- Search Dashboard -->
+                <div class="top-bar-quick-sec">
+                    <div class="name-area">
+                        <a href="#" title=""><strong>@TempData["Name"]</strong></a>
+                        <ul>
+                            <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
+                            <li><a asp-controller="Users" asp-action="ChangePassword" title=""><i class="fa fa-gear"></i> Setting</a></li>
+                            <li><a asp-controller="Users" asp-action="Logout" title=""><i class="ti-power-off"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Top Bar -->
+            <div class="side-menu-sec" id="header-scroll">
+                <div class="side-menus">
+
+                    <nav>
+                        <ul class="parent-menu">
+                            @if (RoleId == 1)
+                            {
+                                <li class="menu-item-has-children">
+                                    <a title=""><i class="ti-user"></i><span>Admin Panel</span></a>
+                                    <ul>
+                                        <li> <a asp-controller="Admin" asp-action="Users" title=""><i class="fa fa-user-o"></i><span> Registered Users</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="SignUpUsers" title=""><i class="fa fa-user-circle"></i><span> SignUp's Users</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="SkillType" title=""><i class="fa fa-skype"></i><span> Skill Type</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="Bank" title=""><i class="fa fa-bank"></i><span> Add Banks</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="UserBankInfo" title=""><i class="fa fa-edit"></i><span> Update User Bank Info</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="ApproveTransaction" title=""><i class="fa fa-check"></i><span> Approve Transaction</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="UserPayment" title=""><i class="fa fa-adn"></i><span> User Draw Request</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="AssignCoupanToUser" title=""><i class="fa fa-codepen"></i><span> Assign Coupon To User</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="UserHelpingMaterial" title=""><i class="fa fa-magnet"></i><span> User Helping Material</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="Country" title=""><i class="fa fa-clone"></i><span> Add Country</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="UserVerificationType" title=""><i class="fa fa-check-square-o"></i><span> Verification Type</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="UserVerificationRequests" title=""><i class="fa fa-check-circle"></i><span> Verification Requests</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="InfoSentData" title=""><i class="fa fa-info"></i><span> Info Sent Data</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="InfoSentDataForCompany" title=""><i class="fa fa-info"></i><span> Info Sent Data Company</span></a></li>
+                                        <li> <a asp-controller="Questions" asp-action="Create" title=""><i class="fa fa-question-circle-o"></i><span> Questions</span></a></li>
+                                    </ul>
+                                </li>
+                                <li> <a asp-controller="My" asp-action="Dashboard" title=""><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                                <li> <a asp-controller="My" asp-action="Skills" title=""><i class="fa fa-cogs"></i><span>My Skills</span></a></li>
+                                <li> <a asp-controller="My" asp-action="WhiteBoard" title=""><i class="fa fa-mortar-board"></i><span>My Whiteboard</span></a></li>
+                                <li> <a asp-controller="My" asp-action="MentorSkills" title=""><i class="fa fa-user-secret"></i><span>My Mentor Skills</span></a></li>
+                                <li> <a asp-controller="My" asp-action="MentorWhiteBoard" title=""><i class="fa fa-user-secret"></i><span>My Mentor Whiteboard</span></a></li>
+                                <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
+                                <li> <a asp-controller="Users" asp-action="Profile" asp-route-id="@MentoreId" title=""><i class="fa fa-user"></i><span>My Mentor Profile</span></a></li>
+                                <li> <a asp-controller="My" asp-action="Team" title=""><i class="fa fa-telegram"></i><span>My Team</span></a></li>
+                                <li> <a asp-controller="My" asp-action="MyLostTrainee" title=""><i class="fa fa-user-times"></i><span>My Lost Trainee</span></a></li>
+                                <li> <a asp-controller="My" asp-action="Coupans" title=""><i class="fa fa-credit-card-alt"></i><span>My Coupons</span></a></li>
+                                <li> <a asp-controller="My" asp-action="URL" title=""><i class="fa fa-link"></i><span>My URL</span></a></li>
+                                <li> <a asp-controller="MyHelpingMaterial" asp-action="Index" title=""><i class="fa fa-credit-card-alt"></i><span>My Helping Material</span></a></li>
+                                <li> <a asp-controller="MyTransaction" asp-action="PayMyFee" title=""><i class="fa fa-dollar"></i><span>Pay My Fee</span></a></li>
+                                <li> <a asp-controller="MyTransaction" asp-action="MyWallet" title=""><i class="fa fa-google-wallet"></i><span>My Wallet</span></a></li>
+                                <li> <a asp-controller="My" asp-action="BankInfo" title=""><i class="fa fa-credit-card"></i><span>My Bank Info</span></a></li>
+                                <li> <a asp-controller="MyTransaction" asp-action="MyMoneyDrawRequest" title=""><i class="fa fa-send-o"></i><span>Draw Amount Request</span></a></li>
+                                <li> <a asp-controller="MyTransaction" asp-action="GetMoneyDrawRequest" title=""><i class="fa fa-bandcamp"></i><span>Draw Amount Request Status</span></a></li>
+                                <li> <a asp-controller="My" asp-action="AccountVerification" title=""><i class="fa fa-check-square"></i><span>Account Verification</span></a></li>
+                                <li> <a asp-controller="My" asp-action="Certification" title="" style="background-color: #edf0fc !important"><i class="fa fa-certificate"></i><span>My Certification</span></a></li>
+                                <li> <a asp-controller="My" asp-action="GetCertificate" title=""><i class="fa fa-certificate"></i><span>Get Certificate</span></a></li>
+                                <li> <a asp-controller="Blogs" asp-action="Index" title=""><i class="fa fa-address-book-o"></i><span>My Blogs</span></a></li>
+                                <li class="menu-item-has-children">
+                                    <a title=""><i class="ti-settings"></i><span>Setting</span></a>
+                                    <ul>
+                                        <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
+                                        <li><a asp-controller="Users" asp-action="ChangePassword" title=""><i class="fa fa-gear"></i> Change Password</a></li>
+                                        <li><a asp-controller="Users" asp-action="PersonalInfo" title=""><i class="fa fa-info-circle"></i>  Change Info</a></li>
+
+                                    </ul>
+                                </li>
+
+
+                                <li><a asp-controller="Users" asp-action="Logout" title=""><i class="ti-power-off"></i> Logout</a></li>
+                            }
+                            else
+                            {
+                                if (UsrStatus == "Learning")
+                                {
+                                    <li> <a asp-controller="My" asp-action="Dashboard" title=""><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                                    <li> <a asp-controller="My" asp-action="Skills" title=""><i class="fa fa-cogs"></i><span>My Skills</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="WhiteBoard" title=""><i class="fa fa-mortar-board"></i><span>My Whiteboard</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="MentorSkills" title=""><i class="fa fa-user-secret"></i><span>My Mentor Skills</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="MentorWhiteBoard" title=""><i class="fa fa-user-secret"></i><span>My Mentor Whiteboard</span></a></li>
+                                    <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
+                                    <li> <a asp-controller="Users" asp-action="Profile" asp-route-id="@MentoreId" title=""><i class="fa fa-user"></i><span>My Mentor Profile</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="Team" title=""><i class="fa fa-telegram"></i><span>My Team</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="URL" title=""><i class="fa fa-link"></i><span>My URL</span></a></li>
+                                    <li> <a asp-controller="MyHelpingMaterial" asp-action="Index" title=""><i class="fa fa-credit-card-alt"></i><span>My Helping Material</span></a></li>
+                                    <li> <a asp-controller="MyTransaction" asp-action="PayMyFee" title=""><i class="fa fa-dollar"></i><span>Pay My Fee</span></a></li>
+                                    <li> <a asp-controller="Blogs" asp-action="Index" title=""><i class="fa fa-address-book-o"></i><span>My Blogs</span></a></li>
+
+                                    <li class="menu-item-has-children">
+                                        <a title=""><i class="ti-settings"></i><span>Setting</span></a>
+                                        <ul>
+                                            <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
+                                            <li><a asp-controller="Users" asp-action="ChangePassword" title=""><i class="fa fa-gear"></i> Change Password</a></li>
+                                            <li><a asp-controller="Users" asp-action="PersonalInfo" title=""><i class="fa fa-info-circle"></i>  Change Info</a></li>
+
+                                        </ul>
+                                    </li>
+
+
+                                    <li><a asp-controller="Users" asp-action="Logout" title=""><i class="ti-power-off"></i> Logout</a></li>
+
+                                }
+                                else
+                                {
+                                    <li> <a asp-controller="My" asp-action="Dashboard" title=""><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                                    <li> <a asp-controller="My" asp-action="Skills" title=""><i class="fa fa-cogs"></i><span>My Skills</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="WhiteBoard" title=""><i class="fa fa-mortar-board"></i><span>My Whiteboard</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="MentorSkills" title=""><i class="fa fa-user-secret"></i><span>My Mentor Skills</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="MentorWhiteBoard" title=""><i class="fa fa-user-secret"></i><span>My Mentor Whiteboard</span></a></li>
+                                    <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
+                                    <li> <a asp-controller="Users" asp-action="Profile" asp-route-id="@MentoreId" title=""><i class="fa fa-user"></i><span>My Mentor Profile</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="Team" title=""><i class="fa fa-telegram"></i><span>My Team</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="URL" title=""><i class="fa fa-link"></i><span>My URL</span></a></li>
+                                    <li> <a asp-controller="MyHelpingMaterial" asp-action="Index" title=""><i class="fa fa-credit-card-alt"></i><span>My Helping Material</span></a></li>
+                                    <li> <a asp-controller="MyTransaction" asp-action="PayMyFee" title=""><i class="fa fa-dollar"></i><span>Pay My Fee</span></a></li>
+                                    <li> <a asp-controller="Blogs" asp-action="Index" title=""><i class="fa fa-address-book-o"></i><span>My Blogs</span></a></li>
+                                    <li class="menu-item-has-children">
+                                        <a title=""><i class="ti-settings"></i><span>Setting</span></a>
+                                        <ul>
+                                            <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
+                                            <li><a asp-controller="Users" asp-action="ChangePassword" title=""><i class="fa fa-gear"></i> Change Password</a></li>
+                                            <li><a asp-controller="Users" asp-action="PersonalInfo" title=""><i class="fa fa-info-circle"></i>  Change Info</a></li>
+
+                                        </ul>
+                                    </li>
+                                    <li> <a asp-controller="My" asp-action="MyLostTrainee" style="background-color: #edf0fc !important" title=""><i class="fa fa-user-times"></i><span>My Lost Trainee</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="Coupans" style="background-color: #edf0fc !important" title=""><i class="fa fa-credit-card-alt"></i><span>My Coupons</span></a></li>
+                                    <li> <a asp-controller="MyTransaction" style="background-color: #edf0fc !important" asp-action="MyWallet" title=""><i class="fa fa-google-wallet"></i><span>My Wallet</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="BankInfo" style="background-color: #edf0fc !important" title=""><i class="fa fa-credit-card"></i><span>My Bank Info</span></a></li>
+                                    <li> <a asp-controller="MyTransaction" asp-action="MyMoneyDrawRequest" style="background-color: #edf0fc !important" title=""><i class="fa fa-send-o"></i><span>Draw Amount Request</span></a></li>
+                                    <li> <a asp-controller="MyTransaction" asp-action="GetMoneyDrawRequest" style="background-color: #edf0fc !important" title=""><i class="fa fa-bandcamp"></i><span>Draw Amount Request Status</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="AccountVerification" title="" style="background-color: #edf0fc !important"><i class="fa fa-check-square"></i><span>Account Verification</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="Certification" title="" style="background-color: #edf0fc !important"><i class="fa fa-certificate"></i><span>My Certification</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="GetCertificate" title=""><i class="fa fa-certificate"></i><span>Get Certificate</span></a></li>
+                                    <li><a asp-controller="Users" asp-action="Logout" title=""><i class="ti-power-off"></i> Logout</a></li>
+                                }
+                            }
+                        </ul>
+                        <span class="footer-line">@DateTime.Now.Year &copy; </span>
+                    </nav>
+                </div>
+
+            </div>
+        </header>
+    }
+    else
+    {
+        <header class="simple-normal">
+
+            <div class="top-bar">
+                <div class="logo"> <a asp-controller="Users" asp-action="Login" title="">L.E. Skills </a> </div>
+                @if (TempData["BlogWithOutLogin"] != null)
+                {
+                    <div class="menu-options"><span class="menu-action"><i></i></span></div>
+                }
+                else
+                {
+                    <div class="menu-options"><span class="menu-action"><i></i></span></div>
+                }
+
+
+                <!-- Search Dashboard -->
+                <div class="top-bar-quick-sec">
+                    <div class="name-area">
+                        <a asp-controller="Users" asp-action="Login" title=""><strong>Login <i class="fa fa-sign-in"></i> </strong></a>
+                    </div>
+                </div>
+            </div>
+            @if (TempData["BlogWithOutLogin"] != null)
+            {
+                if (TempData["OtherBlogs"] != null)
+                {
+                    <div class="side-menu-sec" id="header-scroll">
+                        <div class="side-menus">
+
+
+                            <div class="col-md-12">
+                                <nav>
+                                    <ul class="parent-menu">
+                                        <li> <a asp-controller="Users" asp-action="SignUp" title="" target="_blank"><i class="fa fa-signing"></i> Join for Free</a></li>
+                                        <li> <a asp-controller="Users" asp-action="Login" title="" target="_blank"><i class="fa fa-sign-in"></i><span> Login</span></a></li>
+                                        <li> <a asp-controller="Home" asp-action="Index" title="" target="_blank"><i class="fa fa-weibo"></i><span> Universal Skills</span></a></li>
+                                        <li> <a asp-controller="Blogs" asp-action="Index" title=""><i class="fa fa-weibo"></i><span> Blogs</span></a></li>
+                                    </ul>
+                                </nav>
+
+                                <br />
+                                @if (@TempData["UserName"] != null)
+                                {
+                                    <h6> @TempData["UserName"]'s Blogs</h6>
+                                }
+
+                                @if (TempData["OtherBlogs"] != null)
+                                {
+
+
+                                    @foreach (var i in (List<EasySystem.Models.Blog>
+                                     )TempData["OtherBlogs"])
+                                    {
+                                        <div class="blog-post">
+                                            @if (i.blogTitleImage != null)
+                                            {
+                                                <div class="blog-post-thumb"> <img src="~/images/@i.blogTitleImage" width="150" height="150" alt="" /> </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="blog-post-thumb"> <img src="~/images/admin.jpg" width="150" height="150" alt="" /> </div>
+                                            }
+                                            <p>
+                                                <a href="/Blogs/BlogDetail/@i.blogId/@EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.blogTitle)">@i.blogTitle</a>
+                                                <a href="/Blogs/BlogDetail/@i.blogId/@EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.blogTitle)" title="Blog Detail" class="date-post"><i class="fa fa-calendar-o"></i> @i.createdDate.ToLongDateString() </a>
+                                            </p>
+                                        </div>
+
+                                    }
+
+                                }
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="side-menu-sec" id="header-scroll">
+                        <div class="side-menus">
+                            <div class="col-md-12">
+                                <nav>
+                                    <ul class="parent-menu">
+                                        <li> <a asp-controller="Home" asp-action="Index" title="" target="_blank"><i class="fa fa-weibo"></i><span> Universal Skills</span></a></li>
+                                        <li> <a asp-controller="Users" asp-action="SignUp" title="" target="_blank"><i class="fa fa-signing"></i> Join for Free</a></li>
+                                        <li> <a asp-controller="Users" asp-action="Login" title="" target="_blank"><i class="fa fa-sign-in"></i><span> Login</span></a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            }
+            else
+            {
+                <div class="side-menu-sec" id="header-scroll">
+                    <div class="side-menus">
+
+                        <nav>
+                            <ul class="parent-menu">
+                                @if (UsrID != null)
+                                {
+
+                                    var usr = TempData["Profile"] as EasySystem.Models.Users;
+                                    <li> <a asp-controller="Users" asp-action="Skills" asp-route-id="@UsrID" title=""><i class="fa fa-adjust"></i><span>@UsrName's Skills</span></a></li>
+                                    <li> <a asp-controller="Users" asp-action="Whiteboard" asp-route-id="@UsrID" title=""><i class="fa fa-asl-interpreting"></i><span>@UsrName's Whiteboard</span></a></li>
+                                    <li> <a asp-controller="Users" asp-action="Blogs" asp-route-id="@UsrID" title=""><i class="fa fa-anchor"></i><span>@UsrName's Blogs</span></a></li>
+                                }
+                                <li> <a asp-controller="Users" asp-action="SignUp" title="" target="_blank"><i class="fa fa-signing"></i> Join for Free</a></li>
+                                <li> <a asp-controller="Users" asp-action="Login" title="" target="_blank"><i class="fa fa-sign-in"></i><span> Login</span></a></li>
+                                <li> <a asp-controller="Home" asp-action="Index" title="" target="_blank"><i class="fa fa-weibo"></i><span> Universal Skills</span></a></li>
+                                <li> <a asp-controller="Blogs" asp-action="Index" title=""><i class="fa fa-weibo"></i><span> Blogs</span></a></li>
+                                <li> <a asp-controller="Home" asp-action="Privacy_Policy" title=""><i class="fa fa-credit-card"></i><span>Privacy Policy</span></a></li>
+                                <li> <a asp-controller="Home" asp-action="TermsAndConditions" title=""><i class="fa fa-cogs"></i><span>Terms And Conditions</span></a></li>
+                                <li> <a asp-controller="Home" asp-action="FAQs" title=""><i class="fa fa-telegram"></i><span>FAQs</span></a></li>
+
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+            }
+            <!-- Top Bar -->
+
+        </header>
+    }
+
+    <!-- Slide Panel -->
+    @RenderBody()
+
+
+    <!-- Vendor: Javascripts -->
+    <script src="~/js/jquery-2.1.3.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/footable.all.min.js"></script>
+    <!-- Our Website Javascripts -->
+    <script src="~/js/app.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/bootstrap-datepicker.js"></script>
+    <script src="~/js/inbox.js"></script>
+
+</body>
+</html>

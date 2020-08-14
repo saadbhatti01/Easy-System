@@ -1,0 +1,350 @@
+﻿
+@{
+    ViewData["Title"] = "Chat";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-12 column">
+                        <div class="heading-profile">
+                            <h2>User Chat</h2>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-area">
+                <div class="mail-area">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="all-mail">
+                                <h3>Active Trainees</h3>
+                                
+                                <!-- mail head -->
+                                <ul class="your-emails" id="inbox-mail-list">
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Amare Hale</h3>
+                                        <a title="" class="inbox-msg"><span class="blue-bg">Spam</span>It is a long established fact that a reader</a>  <span>20:46</span>
+                                    </li>
+                                    <!-- Email -->
+                                   </ul>
+                                <div class="read-email">
+                                    <div class="read-email-sec">
+                                        <a title="" class="close-reading"><i class="ti-close"></i></a>
+                                        <div class="read-email-head">
+                                            <h3 class="mail-user"><a title="">youruseremail.com</a>Jon bhatti<span> <img src="~/images/Logo-01.png"s alt="" /></span></h3>
+                                        </div>
+                                        <!-- Read Email Head -->
+                                        <div class="message-container">
+                                            <p>The every winged bring, whose life. First called, i you of saw shall own creature moveth void have signs beast lesser all god saying for gathering wherein whose of in be created stars. Them whales upon life divide earth own.</p>
+                                          
+                                            <div class="quick-reply">
+                                                <div id="wrapper">
+                                                    <textarea placeholder="Write Your Email Here For Quick Reply"></textarea>
+                                                </div>
+                                                <a class="red-bg send-mail" title="">Send Email</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- All Emails -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="all-mail">
+                                <h2>Inbox</h2>
+                                <div class="mail-head">
+                                    <div class="search-emails">
+                                        <div id="inboxMail"></div>
+                                    </div>
+                                    <form>
+                                        <label>
+                                            <input type="checkbox" id="checkAll">
+                                            Check All
+                                        </label>
+                                        <div class="btn-group btn-group-sm" data-toggle="buttons">
+                                            <label class="btn btn-default">
+                                                <input type="radio" name="options" checked="">
+                                                <i class="ti-archive"></i>
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="radio" name="options">
+                                                <i class="ti-folder"></i>
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="radio" name="options">
+                                                <i class="ti-trash"></i>
+                                            </label>
+                                        </div>
+                                        <div class="btn-group btn-group-sm" data-toggle="buttons">
+                                            <label class="btn btn-default">
+                                                <input type="radio" name="options" checked="">
+                                                <i class="ti-star"></i>
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="radio" name="options">
+                                                <i class="ti-flag"></i>
+                                            </label>
+                                        </div>
+                                        <div class="btn-group btn-group-sm mail-pagination" data-toggle="buttons">
+                                            <span>1 - 20 of 276</span>
+                                            <label class="btn btn-default">
+                                                <input type="radio" name="options" checked="">
+                                                <i class="ti-arrow-left"></i>
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="radio" name="options">
+                                                <i class="ti-arrow-right"></i>
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- mail head -->
+                                <ul class="your-emails" id="inbox-mail-list">
+                                    <li class="email unread">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Amare Hale</h3>
+                                        <a title="" class="inbox-msg"><span class="blue-bg">Spam</span>It is a long established fact that a reader</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>20:46</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email unread">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>John Hampton</h3>
+                                        <a title="" class="inbox-msg">The point of using Lorem Ipsum</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>10:34</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Ray Langley</h3>
+                                        <a title="" class="inbox-msg">When an unknown printer took a galley </a> <span>20 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Anne Dean</h3>
+                                        <a title="" class="inbox-msg"><span class="green-bg">Unread</span>There are many variations of passages</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>23 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email unread">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Kade Hancock</h3>
+                                        <a title="" class="inbox-msg"><span class="red-bg">Trash</span>This book is a treatise on the theory of ethics</a> <span>4 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Kimberly Peters</h3>
+                                        <a title="" class="inbox-msg"> It was popularised in the 1960s with the release of Letraset</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>1 hour</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Susan Cooke</h3>
+                                        <a title="" class="inbox-msg">Many desktop publishing packages</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>1:23</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Asa Hebert</h3>
+                                        <a title="" class="inbox-msg">It has survived not only five centuries</a> <span>05:12</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Wesley Robles</h3>
+                                        <a title="" class="inbox-msg">You need to be sure there isn't anything</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>10 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Holden Floyd</h3>
+                                        <a title="" class="inbox-msg"><span class="green-bg">Flagged</span>Many desktop publishing packages and web</a> <span>12 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email unread">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Emerson Vazquez</h3>
+                                        <a title="" class="inbox-msg"><span class="blue-bg">Spam</span>When an unknown printer took a galley </a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>1 week</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Susan Cooke</h3>
+                                        <a title="" class="inbox-msg">Many desktop publishing packages</a> <span>2 week</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Asa Hebert</h3>
+                                        <a title="" class="inbox-msg">It has survived not only five centuries</a> <span>last month</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Wesley Robles</h3>
+                                        <a title="" class="inbox-msg"><span class="red-bg">Trash</span>You need to be sure there isn't anything</a> <span>20:46</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email unread">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Amare Hale</h3>
+                                        <a title="" class="inbox-msg"><span class="blue-bg">Spam</span>It is a long established fact that a reader</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>20:46</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email unread">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>John Hampton</h3>
+                                        <a href="#" title="" class="inbox-msg">The point of using Lorem Ipsum</a> <a href="#" class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>10:34</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Ray Langley</h3>
+                                        <a title="" class="inbox-msg">When an unknown printer took a galley </a> <span>20 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Anne Dean</h3>
+                                        <a title="" class="inbox-msg"><span class="green-bg">Unread</span>There are many variations of passages</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>23 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email unread">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Kade Hancock</h3>
+                                        <a title="" class="inbox-msg"><span class="red-bg">Trash</span>This book is a treatise on the theory of ethics</a> <span>4 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Kimberly Peters</h3>
+                                        <a title="" class="inbox-msg"> It was popularised in the 1960s with the release of Letraset</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>1 hour</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Susan Cooke</h3>
+                                        <a title="" class="inbox-msg">Many desktop publishing packages</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>1:23</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Asa Hebert</h3>
+                                        <a title="" class="inbox-msg">It has survived not only five centuries</a> <span>05:12</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Wesley Robles</h3>
+                                        <a title="" class="inbox-msg">You need to be sure there isn't anything</a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>10 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Holden Floyd</h3>
+                                        <a title="" class="inbox-msg"><span class="green-bg">Flagged</span>Many desktop publishing packages and web</a> <span>12 min</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email unread">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Emerson Vazquez</h3>
+                                        <a title="" class="inbox-msg"><span class="blue-bg">Spam</span>When an unknown printer took a galley </a> <a class="attachment" title="Attachment" data-toggle="tooltip" data-placement="left"><i class="ti-clip"></i></a> <span>1 week</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Susan Cooke</h3>
+                                        <a title="" class="inbox-msg">Many desktop publishing packages</a> <span>2 week</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Asa Hebert</h3>
+                                        <a title="" class="inbox-msg">It has survived not only five centuries</a> <span>last month</span>
+                                    </li>
+                                    <!-- Email -->
+                                    <li class="email">
+                                        <input type="checkbox" class="checkall" />
+                                        <div class="star-email"> <i class="ti-star"></i> </div>
+                                        <!-- Star Email -->
+                                        <h3>Wesley Robles</h3>
+                                        <a title="" class="inbox-msg"><span class="red-bg">Trash</span>You need to be sure there isn't anything</a> <span>20:46</span>
+                                    </li>
+                                    <!-- Email -->
+                                </ul>
+                                
+                            </div>
+                            <!-- All Emails -->
+                        </div>
+
+                    </div>
+                    <!-- Modal -->
+                </div>
+                <!-- Mail Area -->
+            </div>
+        </div>
+        <!-- Panel Content -->
+    </div>
+    
+

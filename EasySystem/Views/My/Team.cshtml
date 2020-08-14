@@ -1,0 +1,209 @@
+﻿@{
+    ViewData["Title"] = "Team";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-3 column">
+                    <div class="heading-profile">
+                        <h2>My Team</h2>
+                        <div id="Notifocation">
+
+                            @if (TempData["Info"] != null)
+                            {
+                            <div role="alert" class="alert alert-info">
+                                <strong><i class="fa fa-info-circle"></i></strong>
+                                @TempData["Info"].
+                            </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                            <div role="alert" class="alert alert-success">
+                                <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                @TempData["Success"].
+                            </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                            <div role="alert" class="alert alert-danger">
+                                <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                @TempData["Error"].
+                            </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        @if (TempData["MyTeam"] != null)
+                        {
+                        <div class="col-md-6">
+                            <div class="widget white">
+                                <div class="panel panel-default work-progress-table">
+                                    <div class="panel-heading">Active</div>
+                                    <div class="form-group" hidden>
+                                        &nbsp;
+                                        <div class="col-md-3">
+                                            <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                        </div>
+                                    </div>
+                                    <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Phone</th>
+                                                <th>Gender</th>
+                                                <th>Joining Date</th>
+                                                <th>Valid Till</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var i in (List
+                                            <EasySystem.Models.Users>
+                                                )TempData["MyTeam"])
+                                                {
+                                                if (i.usrStatus == "Active")
+                                                {
+                                                <tr>
+                                                    <td>
+                                                        @*@if (TempData["ID"] != null)
+                                                        {
+                                                        foreach (var d in (List<EasySystem.Models.EncryptID>
+                                                            )TempData["ID"])
+                                                            {
+                                                            if (d.usrId == i.usrId)
+                                                            {
+                                                            <a asp-controller="My" asp-action="Profile" asp-route-id="@d.ID"><i class="fa fa-user-secret"></i> @i.usrName</a>
+                                                            }
+                                                            }
+
+                                                            }
+                                                            else
+                                                            {
+                                                            @i.usrName
+                                                            }*@
+                                                            <a asp-controller="My" asp-action="Profile" asp-route-id="@i.usrId"><i class="fa fa-user"></i> @i.usrName</a>
+
+                                                    </td>
+
+                                                    <td>@i.usrPhone</td>
+                                                    <td>@i.usrGender</td>
+                                                    <td>@i.usrCreated.ToString("dd-MMM-yyyy")</td>
+                                                    <td>@i.ExpiryDate.ToString("dd-MMM-yyyy")</td>
+
+                                                </tr>
+                                                }
+                                                }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="9">
+                                                    <ul class="pagination pull-right"></ul>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget white">
+                                <div class="panel panel-default work-progress-table">
+                                    <div class="panel-heading">Learner</div>
+                                    <div class="form-group" hidden>
+                                        &nbsp;
+                                        <div class="col-md-3">
+                                            <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                        </div>
+                                    </div>
+                                    <table id="List1" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Phone</th>
+                                                <th>Gender</th>
+                                                <th>Joining Date</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var i in (List
+                                            <EasySystem.Models.Users>
+                                                )TempData["MyTeam"])
+                                                {
+                                                if (i.usrStatus == "Learning")
+                                                {
+                                                <tr>
+                                                    <td>
+                                                        @*@if (TempData["ID"] != null)
+                                                        {
+                                                        foreach (var d in (List<EasySystem.Models.EncryptID>
+                                                            )TempData["ID"])
+                                                            {
+                                                            if (d.usrId == i.usrId)
+                                                            {
+                                                            <a asp-controller="My" asp-action="Profile" asp-route-id="@d.ID"><i class="fa fa-user-secret"></i> @i.usrName</a>
+                                                            }
+                                                            }
+
+                                                            }
+                                                            else
+                                                            {
+                                                            @i.usrName
+                                                            }*@
+                                                            <a asp-controller="My" asp-action="Profile" asp-route-id="@i.usrId"><i class="fa fa-user"></i> @i.usrName</a>
+                                                    </td>
+
+                                                    <td>@i.usrPhone</td>
+                                                    <td>@i.usrGender</td>
+                                                    <td>@i.usrCreated.ToString("dd-MMM-yyyy")</td>
+                                                </tr>
+                                                }
+                                                }
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="9">
+                                                    <ul class="pagination pull-right"></ul>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                        }
+
+                    </div>
+                    @if (TempData["Page"] != null)
+                    {
+                    <span><a asp-controller="Home" asp-action="@TempData[" Page"]"><i class="fa fa-mail-reply"></i> Go Back</a></span>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+

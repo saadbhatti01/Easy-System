@@ -1,0 +1,219 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Data = TempData["Dashboard"] as EasySystemAPI.Models.Dashboard;
+    var UsrStatus = @HttpContextAccessor.HttpContext.Session.GetString("Status");
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>
+                            Dashboard
+                            @if (TempData["EmailNotVerified"] != null)
+                            {
+                                <div role="alert" class="alert alert-warning" style="float:right;">
+                                    <h6>
+                                        <strong><i class="fa fa-warning"></i></strong>
+                                        @TempData["EmailNotVerified"] <a class="alert-link" href="~/My/AccountVerification">Go to Verify Email</a>
+                                    </h6>
+                                </div>
+
+                            }
+                        </h2>
+                        <br />
+                        <br />
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            @if (TempData["SignUp"] != null)
+            {
+                <div role="alert" class="alert alertoh-blue">
+                    <strong><i class="fa fa-info-circle"></i></strong>
+                    @TempData["SignUp"]
+                </div>
+            }
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <div class="widget">
+                        <div class="quick-report-widget">
+                            <span>Active</span>
+
+                            @if (Data != null)
+                            {
+                                <h4 id="Active" style="display:none">@Data.Active</h4>
+                                <h4 id="btnActive"><button type="button" class="c-btn mini green-bg radius-m">Show</button></h4>
+                            }
+                            else
+                            {
+                                <h4>0</h4>
+                            }
+
+                            <i class="fa fa-user-circle-o green-bg"></i>
+                            <h5 class="green-bg"> <a asp-controller="My" asp-action="Team" asp-route-Page="Index" title="" style="color: white">Active Trainees</a></h5>
+                        </div>
+                    </div>
+                    <!-- Widget -->
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="widget">
+                        <div class="quick-report-widget">
+                            <span>Learner</span>
+                            @if (Data != null)
+                            {
+                                <h4 id="Learner" style="display:none">@Data.Learner</h4>
+                                <h4 id="btnLearner"><button type="button" class="c-btn mini skyblue-bg radius-m">Show</button></h4>
+                            }
+                            else
+                            {
+                                <h4>0</h4>
+                            }
+                            <i class="fa fa-user skyblue-bg"></i>
+                            <h5 class="skyblue-bg"><a asp-controller="My" asp-action="Team" asp-route-Page="Index" title="" style="color: white">Learners</a></h5>
+                        </div>
+                    </div>
+                    <!-- Widget -->
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="widget">
+                        <div class="quick-report-widget">
+                            <span>Lost</span>
+                            @if (Data != null)
+                            {
+                                <h4 id="Lost" style="display:none">@Data.Lost</h4>
+                                <h4 id="btnLost"><button type="button" class="c-btn mini red-bg radius-m">Show</button></h4>
+                            }
+                            else
+                            {
+                                <h4>0</h4>
+                            }
+                            <i class="fa fa-user-times red-bg"></i>
+                            <h5 class="red-bg"><a asp-controller="My" asp-action="MyLostTrainee" asp-route-Page="Index" title="" style="color: white">Lost Trainees</a></h5>
+                        </div>
+                    </div>
+                    <!-- Widget -->
+                </div>
+                @if (UsrStatus != "Learning")
+                {
+                    <div class="col-md-4 col-sm-6">
+                        <div class="widget">
+                            <div class="quick-report-widget">
+                                <span>Current (pkr)</span>
+                                @if (Data != null)
+                                {
+                                    <h4 id="Current" style="display:none">@Data.Current</h4>
+                                    <h4 id="btnCurrent"><button type="button" class="c-btn mini skyblue-bg radius-m">Show</button></h4>
+                                }
+                                else
+                                {
+                                    <h4>0</h4>
+                                }
+                                <i class="fa fa-usd skyblue-bg"></i>
+                                <h5 class="skyblue-bg"><a asp-controller="MyTransaction" asp-action="MyWallet" asp-route-Page="Index" title="" style="color: white">Current Balance </a></h5>
+                            </div>
+                        </div>
+                        <!-- Widget -->
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="widget">
+                            <div class="quick-report-widget">
+                                <span>Withdraw (pkr)</span>
+                                @if (Data != null)
+                                {
+                                    <h4 id="Withdraw" style="display:none">@Data.Withdraw</h4>
+                                    <h4 id="btnWithdraw"><button type="button" class="c-btn mini green-bg radius-m">Show</button></h4>
+                                }
+                                else
+                                {
+                                    <h4>0</h4>
+                                }
+                                <i class="fa fa-apple green-bg"></i>
+                                <h5 class="green-bg"><a asp-controller="MyTransaction" asp-action="MyWallet" asp-route-Page="Index" title="" style="color: white">Withdrawal Balance </a></h5>
+                            </div>
+                        </div>
+                        <!-- Widget -->
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="widget">
+                            <div class="quick-report-widget">
+                                <span>Total Earning (pkr)</span>
+                                @if (Data != null)
+                                {
+                                    <h4 id="Total" style="display:none">@Data.Total</h4>
+                                    <h4 id="btnTotal"><button type="button" class="c-btn mini blue-bg radius-m">Show</button></h4>
+                                }
+                                else
+                                {
+                                    <h4>0</h4>
+                                }
+                                <i class="fa fa-money blue-bg"></i>
+                                <h5 class="blue-bg"><a asp-controller="MyTransaction" asp-action="MyWallet" asp-route-Page="Index" title="" style="color: white">Total Earning</a></h5>
+                            </div>
+                        </div>
+                        <!-- Widget -->
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+<footer>
+    <div class="container">
+        <span class="footer-line" style="color:#1b3767; margin-left:300px">
+            @DateTime.Now.Year &copy; A Project of <a href="~/Home/index" target="_blank">Universal Skills</a> | <a href="~/Home/Privacy_Policy" target="_blank">Privacy Policy</a> | <a href="~/Home/TermsAndConditions" target="_blank">Terms &amp; Conditions </a>
+            | <a href="~/Home/EarningDisclaimer" target="_blank">Earning Disclaimer</a> | <a href="~/Home/FAQs" target="_blank">FAQs</a>
+        </span>
+    </div>
+
+</footer>
+<script src="~/js/jquery-2.1.3.js"></script>
+<script>
+    $(function () {
+        $("#btnActive").click(function (event) {
+            $("#Active").show();
+            $("#btnActive").hide();
+        });
+
+        $("#btnLearner").click(function (event) {
+            $("#Learner").show();
+            $("#btnLearner").hide();
+        });
+
+        $("#btnLost").click(function (event) {
+            $("#Lost").show();
+            $("#btnLost").hide();
+        });
+
+        $("#btnCurrent").click(function (event) {
+            $("#Current").show();
+            $("#btnCurrent").hide();
+        });
+
+        $("#btnWithdraw").click(function (event) {
+            $("#Withdraw").show();
+            $("#btnWithdraw").hide();
+        });
+
+        $("#btnTotal").click(function (event) {
+            $("#Total").show();
+            $("#btnTotal").hide();
+        });
+    });
+</script>

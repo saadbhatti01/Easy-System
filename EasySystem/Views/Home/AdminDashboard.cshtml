@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_PublicAdminLayout.cshtml";
+}
+<div class="container" style="background-color:lavender; margin-bottom:20px">
+    <div class="row">
+
+        <div class="col-md-11 col-md-offset-1">
+            <h2>DASHBOARD</h2>
+
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <p> Training Category </p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-weight:bold"> @TempData["Type"]  </p>  @*TrainingType k table se total active trainigType le lena*@
+                </div>
+                <div class="col-md-3">
+                    <p> Total Training </p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-weight:bold"> @TempData["Info"] </p> @*Training k table se total active trainig le lena*@
+                </div>
+
+            </div>
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <p> Ongoing Training </p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-weight:bold"> @TempData["Ongoing"]  </p>  @*FeeList k table mei flStatus Started hai woh total number of rows count kr lena*@
+                </div>
+                <div class="col-md-3">
+                    <p> Completed Training </p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-weight:bold"> @TempData["Completed"]  </p>  @*FeeList k table mei flStatus Ended hai woh total number of rows count kr lena*@
+                </div>
+
+            </div>
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <p> New Fee Amount (pkr) </p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-weight:bold"> @TempData["New"]  </p>  @*FeeList k table mei flStatus Pending hai woh total amount le ana*@
+                </div>
+                <div class="col-md-3">
+                    <p> Accepted Fee Amount (pkr) </p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-weight:bold"> @TempData["Accepted"]  </p>  @*FeeList k table mei flStatus Accepted hai woh total amount le ana*@
+                </div>
+
+            </div>
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <p> Refunded Fee Amount (pkr) </p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-weight:bold"> @TempData["Refunded"]  </p>  @*FeeList k table mei flStatus Refunded hai woh total amount le ana*@
+                </div>
+                <div class="col-md-3">
+                    <p> Completed Fee Amount (pkr) </p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-weight:bold">  @TempData["Ended"] </p>  @*FeeList k table mei flStatus Ended hai woh total amount le ana*@
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+

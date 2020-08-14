@@ -1,0 +1,9 @@
+﻿@if (TempData["Skills"] != null)
+{
+    <div class="button-sec">
+        @foreach (var i in (List<EasySystemAPI.Models.SkillType>)TempData["Skills"])
+        {
+            <a href="#" class="button pulse-grow" onclick="createModal('@Url.Action("_TestSkillData", "My", new { id = i.StId})')">@i.StName</a>
+        }
+    </div>
+}

@@ -1,0 +1,97 @@
+﻿@model EasySystem.Models.Users
+@{
+    ViewData["Title"] = "Login";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_InitialLayout.cshtml";
+}
+<div class="acount-sec">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-7">
+                <div id="Notifocation">
+                    @if (TempData["Info"] != null)
+                    {
+                        <div role="alert" class="alert alert-info">
+                            <strong><i class="fa fa-info-circle"></i></strong>
+                            @TempData["Info"].
+                        </div>
+                    }
+                    @if (TempData["Success"] != null)
+                    {
+                        <div role="alert" class="alert alert-success">
+                            <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                            @TempData["Success"].
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div role="alert" class="alert alert-danger">
+                            <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                            @TempData["Error"].
+                        </div>
+                    }
+                </div>
+                <div class="contact-sec">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="widget-title">
+                                <h3>Login</h3>
+                                <span>Fill your detail to get in</span>
+                            </div>
+                            <!-- Widget title -->
+                            <div class="account-form">
+                                <form asp-action="Login">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="input-group">
+                                                <select asp-items="(SelectList)@ViewData["Country"]" name="cCode" style="width:100px !important; margin-right:5px !important; color:gray; border-color:darkgray;" required></select>
+                                                <input type="number" asp-for="usrPhone" class="feild form-control" placeholder="Phone Number" required />
+                                                @*<input type="text" asp-for="usrEmail" placeholder="Enter Email" required />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="feild col-md-12">
+                                            <input type="password" asp-for="usrPassword"  placeholder="Password" required />
+                                        </div>
+                                        <div class="feild col-md-12">
+                                            <a asp-action="Forget_Password" asp-controller="Users" style="font-size:12px">Forget Password ?</a>
+                                        </div>
+                                        <div class="feild col-md-12">
+                                            <input type="submit" value="Login" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="more-option"> <span>OR</span> </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="creat-an-account">
+                                <span>Don't have an account?</span> <a asp-controller="Users" asp-action="SignUp" title="Go to Sign Up Page">Create Account</a>
+                            </div>
+                            <!-- Create an account -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+

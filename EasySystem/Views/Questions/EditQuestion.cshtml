@@ -1,0 +1,135 @@
+﻿@model EasySystemAPI.Models.Question_Story
+@{
+    ViewData["Title"] = "EditQuestion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>Update Question</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="Notifocation">
+                        @if (TempData["Info"] != null)
+                        {
+                            <div role="alert" class="alert alert-info">
+                                <strong><i class="fa fa-info-circle"></i></strong>
+                                @TempData["Info"].
+                            </div>
+                        }
+                        @if (TempData["Success"] != null)
+                        {
+                            <div role="alert" class="alert alert-success">
+                                <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                @TempData["Success"].
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div role="alert" class="alert alert-danger">
+                                <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                @TempData["Error"].
+                            </div>
+                        }
+                    </div>
+
+                    <div class="row">
+                        <div class="widget white with-padding">
+                            <form asp-action="EditQuestion" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Select Skill Type</label>
+                                            @*@Html.DropDownList("usrCode", (SelectList)ViewData["Codes"], "All", new { @Name = "Code", @class = "form-control" })*@
+                                            <select asp-for="StId" class="form-control" asp-items="(SelectList)@ViewData["Skills"]" required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Question</label>
+                                            <input type="text" class="form-control" asp-for="qQuestion" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Option 1</label>
+                                            <input type="text" class="form-control" asp-for="qOpt1" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Option 2</label>
+                                            <input type="text" class="form-control" asp-for="qOpt2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Option 3</label>
+                                            <input type="text" class="form-control" asp-for="qOpt3" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Option 4</label>
+                                            <input type="text" class="form-control" asp-for="qOpt4" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Answer</label>
+                                            @{
+                                                var Ans = new List<SelectListItem>();
+                                                Ans.Add(new SelectListItem { Text = "qOpt1", Value = "qOpt1" });
+                                                Ans.Add(new SelectListItem { Text = "qOpt2", Value = "qOpt2" });
+                                                Ans.Add(new SelectListItem { Text = "qOpt3", Value = "qOpt3" });
+                                                Ans.Add(new SelectListItem { Text = "qOpt4", Value = "qOpt4" });
+                                            }
+                                            <select asp-for="qAnswer" class="form-control" asp-items="@Ans" required></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Category</label>
+                                            @{
+                                                var list = new List<SelectListItem>();
+                                                list.Add(new SelectListItem { Text = "1", Value = "1" });
+                                                list.Add(new SelectListItem { Text = "2", Value = "2" });
+                                                list.Add(new SelectListItem { Text = "3", Value = "3" });
+                                                list.Add(new SelectListItem { Text = "4", Value = "4" });
+                                                list.Add(new SelectListItem { Text = "5", Value = "5" });
+                                            }
+                                            <select asp-for="qCategory" class="form-control" asp-items="@list" required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            @{
+                                                var list1 = new List<SelectListItem>();
+                                                list1.Add(new SelectListItem { Text = "Approved", Value = "true" });
+                                                list1.Add(new SelectListItem { Text = "Disapproved", Value = "false" });
+                                            }
+                                            <select asp-for="qStatus" class="form-control" asp-items="@list1" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-info" style="background-color:#1b3767">Update</button>
+                                <a asp-controller="Questions" asp-action="Create" class="btn btn-info" style="background-color:#1b3767">Cancel</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>

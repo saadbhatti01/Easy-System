@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144425395-5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-144425395-5');
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title - Universal Skills</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Enhance skills in you and make your life better. Join for Free." />
+    <meta name="keywords" content="LE SKILLS ONLINE LEARNING" />
+    <meta name="author" content="Sajawal Javaid" />
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content="Universal Skills" />
+    <meta property="og:image" content="../../images/logo.png" />
+    <meta property="og:url" content="www.universalSkills.co" />
+    <meta property="og:site_name" content="Universal Skills" />
+    <meta property="og:description" content="Enhance skills in you and make your life better. Join for Free." />
+    <meta name="twitter:title" content="Universal Skills." />
+    <meta name="twitter:image" content="" />
+    <meta name="twitter:url" content="https://www.universalskill.co" />
+    <meta name="twitter:card" content="" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700" rel="stylesheet">
+
+    <link rel="shortcut icon" href="~/images/logo.png" type="image/x-icon">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="~/Public/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="~/Public/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="~/Public/css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="~/Public/css/magnific-popup.css">
+
+    <!-- Flexslider  -->
+    <link rel="stylesheet" href="~/Public/css/flexslider.css">
+
+    <!-- Owl Carousel -->
+    <link rel="stylesheet" href="~/Public/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/Public/css/owl.theme.default.min.css">
+
+    <!-- Flaticons  -->
+    <link rel="stylesheet" href="~/Public/css/flaticon.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="~/Public/css/style.css">
+
+    <!-- Modernizr JS -->
+    <script src="~/Public/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+    <div class="colorlib-loader"></div>
+
+    <div id="page">
+
+        <nav class="colorlib-nav" role="navigation">
+            <div class="upper-menu">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <p>Welcome to Admin Portal</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="top-menu">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div id="colorlib-logo">@Html.ActionLink("Universal Skills", "Index", "Home") </div>
+                        </div>
+                        <div class="col-md-8 text-right menu-1">
+                            <ul>
+                                <li>@Html.ActionLink("Dashboard", "AdminDashboard", "Admin")</li>
+                                <li>@Html.ActionLink("Fee List", "AdminFeeList", "Home")</li>
+                                <li>@Html.ActionLink("Tarining", "AdminTraining", "Home")</li>
+                                <li class="btn-cta"><a href="~/Home/Logout"><span>Logout</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        @RenderBody()
+
+
+    </div>
+
+    <div class="gototop js-top">
+        <a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
+    </div>
+    <footer id="colorlib-footer">
+        <div class="container">
+            <div class="row row-pb-md">
+                <div class="col-md-3 colorlib-widget">
+                    <h4>About Universal Skills</h4>
+                    <p>Build skills with trainings online from world-class trainers. It's time to transform your talent. We’ve got the solution: world-class training and development programs developed by top trainers. All on Universal Skills. </p>
+
+                </div>
+                <div class="col-md-3 colorlib-widget">
+                    <h4>Quick Links</h4>
+                    <p>
+                        <ul class="colorlib-footer-links">
+
+                            <li><a href="~/Home/Index"><i class="icon-check"></i> Home</a></li>
+                            <li><a href="~/Home/About"><i class="icon-check"></i> About</a></li>
+                            <li><a href="~/Home/Trainings"><i class="icon-check"></i> Trainings</a></li>
+                            <li><a href="~/Home/PayFee"><i class="icon-check"></i> Pay Fee</a></li>
+                            <li><a href="~/Home/Helping_Material"><i class="icon-check"></i> Helping Material</a></li>
+                            
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="col-md-3 colorlib-widget">
+                    <h4>Useful Links</h4>
+                    <p>
+                        <ul class="colorlib-footer-links">
+                            <li>@Html.ActionLink("Blogs", "Index", "Blogs")</li>
+                            <li><a href="~/Home/Terms">Terms </a></li>
+                            <li><a href="~/Home/RefundPolicy">Refund Policy</a></li>
+                            <li><a href="~/Home/PrivacyPolicy">Privacy Policy</a></li>
+                        </ul>
+                    </p>
+                    @*<h4>Socials</h4>
+                        <p>
+                            <ul class="colorlib-footer-links">
+                                <li><a href="https://www.facebook.com/LESkillsOfficial/"><i class="icon-facebook"></i> Facebook </a></li>
+                                <li><a href="https://www.youtube.com/channel/UCfbH8aW1Q_X8GMZKTuG1biA"><i class="icon-youtube"> </i> YouTube</a></li>
+                                <li><a href="https://www.instagram.com/LESkillsOfficial/"><i class="icon-instagram"></i> Instagram</a></li>
+                            </ul>
+                        </p>*@
+                </div>
+
+                <div class="col-md-3 colorlib-widget">
+                    <h4>Contact Info</h4>
+                    <ul class="colorlib-footer-links">
+                        <li><a href="mailto:info@universalSkills.co"><i class="icon-envelop"></i> info@universalSkills.co</a></li>
+                        <li><a href="http://universalSkills.co"><i class="icon-location4"></i> universalSkills.co</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="copy">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <p>
+                            <small class="block">
+                                &copy;
+                                Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved | Powered by: UNIVERSAL SKILLS
+                            </small>
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    @*</div>*@
+
+    <!-- jQuery -->
+    <script src="~/Public/js/jquery.min.js"></script>
+    <!-- jQuery Easing -->
+    <script src="~/Public/js/jquery.easing.1.3.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/Public/js/bootstrap.min.js"></script>
+    <!-- Waypoints -->
+    <script src="~/Public/js/jquery.waypoints.min.js"></script>
+    <!-- Stellar Parallax -->
+    <script src="~/Public/js/jquery.stellar.min.js"></script>
+    <!-- Flexslider -->
+    <script src="~/Public/js/jquery.flexslider-min.js"></script>
+    <!-- Owl carousel -->
+    <script src="~/Public/js/owl.carousel.min.js"></script>
+    <!-- Magnific Popup -->
+    <script src="~/Public/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/Public/js/magnific-popup-options.js"></script>
+    <!-- Counters -->
+    <script src="~/Public/js/jquery.countTo.js"></script>
+    <!-- Main -->
+    <script src="~/Public/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewData["Title"] = "User Verification Requests";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int SrNo = 1;
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>Verify User Documents</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="Notifocation">
+
+                        @if (TempData["Success"] != null)
+                        {
+                            <div role="alert" class="alert alert-success">
+                                <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                @TempData["Success"].
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div role="alert" class="alert alert-danger">
+                                <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                @TempData["Error"].
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                @if (TempData["List"] != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="widget white">
+                                <div class="form-group" hidden>
+                                    &nbsp;
+                                    <div class="col-md-3">
+                                        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                    </div>
+                                </div>
+                                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+                                            <th>Sr No</th>
+                                            <th>User Name</th>
+                                            <th>Type</th>
+                                            <th>Text</th>
+                                            <th>Created Date</th>
+                                            
+                                            <th>Status</th>
+                                            <th>Status Date</th>
+                                            <th>Remarks</th>
+                                            <th>Document</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var i in (List
+                                 <EasySystemAPI.Models.AccountVerifyVM>
+                                     )TempData["List"])
+                                        {
+                                            <tr>
+                                                <td>@SrNo</td>
+                                                <td>@i.usrName</td>
+                                                <td>@i.uvtName</td>
+                                                <td>@i.uvText</td>
+                                                <td>@i.uvCreatedDate.ToString("dd-MMM-yyyy")</td>
+                                                
+                                                <td>@i.uvStatus</td>
+                                                <td>
+                                                    @if (i.uvStatusDate.Year > 2000)
+                                                    {
+                                                        i.uvStatusDate.ToString("dd-MMM-yyyy");
+                                                    }
+                                                </td>
+                                                <td>@i.uvStatusRemarks</td>
+                                                <td>
+                                                    @if (i.uvtName == "Email")
+                                                    {
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/images/@i.uvImagePath" width="170" height="150" />
+                                                    }
+
+                                                </td>
+                                                <td>
+                                                    <a asp-controller="Admin" asp-action="VerifyUserDocument" asp-route-id="@i.uvId" title="Verify Document"><i class="fa fa-check-square-o"></i></a>
+                                                </td>
+                                            </tr>
+                                            SrNo = SrNo + 1;
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="9">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+

@@ -1,0 +1,129 @@
+﻿@if (TempData["TestQuestion"] != null)
+{
+    int QNo = 1;
+    @foreach (var i in (List<EasySystemAPI.Models.Question_Story>)TempData["TestQuestion"])
+    {
+        <form class="formData">
+
+            <div class="TestData">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>@QNo: @i.qQuestion</p>
+                        <input type="hidden" value="@i.qId" id="qId" name="optionsRadios">
+                        <input type="hidden" value="@i.qCategory" id="qCatId" name="optionsRadios">
+                    </div>
+                    <div class="col-md-3">
+                        <div class="checkbox pull-left">
+                            <label>
+                                A:
+                                <input type="radio" value="qOpt1" id="Op1" name="optionsRadios">
+                                @i.qOpt1
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="checkbox pull-left">
+                            <label>
+                                B:
+                                <input type="radio" value="qOpt2" id="Op2" name="optionsRadios">
+                                @i.qOpt2
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="checkbox pull-left">
+                            <label>
+                                C:
+                                <input type="radio" value="qOpt3" id="Op3" name="optionsRadios">
+                                @i.qOpt3
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="checkbox pull-left">
+                            <label>
+                                D:
+                                <input type="radio" value="qOpt4" id="Op4" name="optionsRadios">
+                                @i.qOpt4
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        QNo = QNo + 1;
+        <br />
+    }
+
+}
+else
+{
+    @if (TempData["Info"] != null)
+    {
+        <div role="alert" class="alert alert-info">
+            <strong><i class="fa fa-info-circle"></i></strong>
+            @TempData["Info"].
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div role="alert" class="alert alert-danger">
+            <strong><i class="fa fa-thumbs-o-down"></i></strong>
+            @TempData["Error"].
+        </div>
+    }
+}
+<div class="row">
+    <button type="button" id="btnSubmit" class="btn btn-info" style="background-color:#1b3767">Submit</button>
+</div>
+
+<script type="text/javascript">
+
+    function getAllDetails() {
+        var data = [];
+
+        $('.TestData').each(function () {
+            var Id = $(this).find("#qId").val();
+            var CId = $(this).find("#qCatId").val();
+            var Opt1 = $(this).find("#Op1:checked").val();
+            var Opt2 = $(this).find("#Op2:checked").val();
+            var Opt3 = $(this).find("#Op3:checked").val();
+            var Opt4 = $(this).find("#Op4:checked").val();
+            var alldata = {
+                'qId': Id,
+                'CatId': CId,
+                'Opt1': Opt1,
+                'Opt2': Opt2,
+                'Opt3': Opt3,
+                'Opt4': Opt4,
+                }
+            data.push(alldata);
+
+        });
+        return data;
+    }
+    $("#btnSubmit").click(function (e) {
+        var stId = $("#StId").val();
+        var caId = $("#qCatId").val();
+        var data = JSON.stringify(getAllDetails());
+        $.ajax({
+            url: "@Url.Action("AddTestResult", "My")",
+            type: "Post",
+            datatype: 'json',
+            //contentType: 'application/json; charset=utf-8',
+            data: { StId: stId, cId: caId, AccDetails: data },
+
+            success: function (response) {
+                {
+                    alert(response.responseText);
+                    //location.reload(true);
+                }
+            },
+            error: function (e) {
+                alert("Error " + e + "");
+
+            }
+        });
+    });
+</script>

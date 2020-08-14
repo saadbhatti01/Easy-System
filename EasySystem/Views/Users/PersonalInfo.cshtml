@@ -1,0 +1,131 @@
+﻿@model EasySystem.Models.Users
+@{
+    ViewData["Title"] = "Personal_Info";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var image = Html.DisplayFor(model => model.usrImage);
+}
+
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-3 column">
+                        <div class="heading-profile">
+                            <h2>Change Personal Info</h2>
+                           
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="main-content-area">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="widget white with-padding">
+                            @if (TempData["Verified"] != null)
+                            {
+                                <div role="alert" class="alert alertoh-blue">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                   You cannot update the 'User Name' and 'Gender' because it is verified. But you can change the Image any time.
+                                </div>
+                            }
+                            <div id="Notifocation">
+
+                                @if (TempData["Info"] != null)
+                                {
+                                    <div role="alert" class="alert alert-info">
+                                        <strong><i class="fa fa-info-circle"></i></strong>
+                                        @TempData["Info"].
+                                    </div>
+                                }
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div role="alert" class="alert alert-success">
+                                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                        @TempData["Success"].
+                                    </div>
+                                }
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div role="alert" class="alert alert-danger">
+                                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                        @TempData["Error"].
+                                    </div>
+                                }
+
+                            </div>
+                            <form asp-action="PersonalInfo" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    @if (TempData["Verified"] != null)
+                                    {
+                                        <div class="col-md-3 form-group">
+                                            <label for="">User Name</label>
+                                            <input type="text" asp-for="usrName" readonly class="form-control" required>
+
+                                        </div><!-- /.form-group -->
+                                <div class="col-md-3 form-group">
+                                    <label for="exampleInputPassword2">Gender</label>
+                                    @{
+                                        var list = new List<SelectListItem>();
+                                        list.Add(new SelectListItem { Text = "Male", Value = "Male" });
+                                        list.Add(new SelectListItem { Text = "Female", Value = "Female" });
+
+                                    }
+                                    <select asp-for="usrGender" class="form-control" disabled="@(true)" asp-items="@list" required></select>
+                                    <select asp-for="usrGender" hidden class="form-control" name="status" asp-items="@list" required></select>
+
+                                    @*@Html.DropDownList("usrGender", @list,  new { required = "required", @class = "form-control", @disabled="disabled" })*@
+
+                                </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-3 form-group">
+                                            <label for="">User Name</label>
+                                            <input type="text" asp-for="usrName" class="form-control" required>
+
+                                        </div><!-- /.form-group -->
+                                <div class="col-md-3 form-group">
+                                    <label for="exampleInputPassword2">Gender</label>
+                                    @{
+                                        var list = new List<SelectListItem>();
+                                        list.Add(new SelectListItem { Text = "Male", Value = "Male" });
+                                        list.Add(new SelectListItem { Text = "Female", Value = "Female" });
+
+                                    }
+                                    <select asp-for="usrGender" class="form-control" asp-items="@list" required></select>
+                                    <select asp-for="usrGender" hidden class="form-control" name="status" asp-items="@list" required></select>
+
+                                </div>
+                                    }
+
+                                    <div class="col-md-3 form-group">
+                                        <label for="">Change Image</label>
+                                        <input type="file" name="perImage" class="form-control" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label for="">Current Image</label>
+                                        <span><img src="~/images/@image" width="95" height="95" alt="" /></span>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-4 form-group ">
+                                    <button type="submit" class="btn btn-info" style="background-color:#1b3767">Change Info</button>
+                                </div><!-- /.form-group-btn -->
+
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Panel Content -->
+    </div>
+

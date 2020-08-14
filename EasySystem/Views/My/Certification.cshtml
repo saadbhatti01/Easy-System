@@ -1,0 +1,227 @@
+﻿
+@{
+    ViewData["Title"] = "Certification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-3 column">
+                    <div class="heading-profile">
+                        <h2>My Certificates</h2>
+                        <div id="Notifocation">
+
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+
+                        </div>
+
+                        <input type="hidden" id="Val" value="0" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="widget white with-padding">
+
+                        <div class="row">
+                            @if (TempData["Certificates"] != null)
+                            {
+                                <div class="col-md-6">
+                                    <div class="widget white">
+                                        <div class="panel panel-default work-progress-table">
+                                            <div class="panel-heading">Passed</div>
+                                            <div class="form-group" hidden>
+                                                &nbsp;
+                                                <div class="col-md-3">
+                                                    <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                                </div>
+                                            </div>
+                                            <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                                <theader>
+                                                    @foreach (var i in (List<EasySystem.Models.CertificateVM>)TempData["Certificates"])
+                                                    {
+                                                        if (i.uqrStatus == "Passed")
+                                                        {
+                                                            <tr>
+                                                                <th>@i.StName</th>
+                                                                <th>@i.ucNumber</th>
+                                                                <th>@i.uqrDate.ToString("dd-MMM-yyyy")</th>
+                                                                <th>
+
+                                                                    <a asp-controller="" asp-action="" asp-route-id="@i.ucId" class="btn btn-default"><i class="fa fa-eye"></i> View</a>
+
+                                                                </th>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </theader>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="9">
+                                                            <ul class="pagination pull-right"></ul>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="widget white">
+                                        <div class="panel panel-default work-progress-table">
+                                            <div class="panel-heading">Failed</div>
+                                            <div class="form-group" hidden>
+                                                &nbsp;
+                                                <div class="col-md-3">
+                                                    <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                                </div>
+                                            </div>
+                                            <table id="List1" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                                <theader>
+                                                    @foreach (var i in (List<EasySystem.Models.CertificateVM>)TempData["Certificates"])
+                                                    {
+                                                        if (i.uqrStatus == "Failed")
+                                                        {
+                                                            <tr>
+                                                                <th>@i.StName</th>
+                                                                <th>@i.ucNumber</th>
+                                                                <th>@i.uqrDate.ToString("dd-MMM-yyyy")</th>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </theader>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="9">
+                                                            <ul class="pagination pull-right"></ul>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                        <br />
+                        <h4>if you want to get ceritificate then select anyone category from below</h4>
+                        <div class="row">
+                            <div id="SkillsData">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+<div class="modal fade" id="TestModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Select Skill</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modelContent">
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        GetData();
+    });
+</script>
+
+
+
+
+<script>
+ function GetData() {
+            var count = $("#Val").val();
+             //$("#more").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+             //$('#more').attr('disabled', true);
+            $.ajax(
+                {
+                    url: "@Url.Action("_SkillData", "My")",
+                    data: { Value: count },
+                    type: "Get",
+                    dataType: "html",
+                    async: "true",
+                    cache: "false",
+                    success: function (data) {
+                        //Whatever result you have got from your controller with html partial view replace with a specific html.
+                        // HTML DOM replace
+                        if (data !== "") {
+                            var newC = 9;
+                            var newCount = parseInt(newC) + parseInt(count);
+                            $("#Val").val(newCount);
+                            $("#SkillsData").append(data);
+                            //$("#more").html('Load More');
+                            //$('#more').attr('disabled', false);
+                        } else {
+                            //$("#more").html('<i class="fa fa-flag-checkered"></i>  No more blogs');
+                            //$('#more').attr('disabled', true);
+                        }
+                    },
+
+                    Error: function () {
+                        alert("Some error");
+                    }
+                });
+        }
+</script>
+
+
+
+<script>
+    function createModal(url) {
+        $('#modelContent').load(url);
+        $('#TestModal').modal('show');
+    }
+</script>

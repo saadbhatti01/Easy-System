@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Fee List";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_PublicAdminLayout.cshtml";
+    int SrNo = 1;
+
+}
+<style>
+    tr td {
+        font-size: 13px;
+    }
+</style>
+<div class="container" style="background-color:lavender; margin-bottom:20px">
+    <div class="row">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Oh snap! @TempData["Error"].
+            </div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Success! @TempData["Success"].
+            </div>
+        }
+        <div class="col-md-12">
+            <h2>Fee List </h2>
+
+            <div class="row form-group">
+                <table style="border: 1px solid cornflowerblue; width:98%; margin:10px">
+                    <tr style="border: 1px solid cornflowerblue;">
+                        <th>Sr. No.</th>
+                        <th>Candidate Name</th>
+                        <th>Sur Name</th>
+                        <th>Email </th>
+                        <th>Contact </th>
+                        <th>Comment </th>
+
+                        <th>Training Name </th>
+                        <th> Training Fee(pkr)</th>
+                        <th> Paid Date</th>
+                        <th>Training Status </th>
+                        <th> Completed Date </th>
+                        <th>Action </th>
+                    </tr>
+                    @if (TempData["List"] != null)
+                    {
+                        foreach (var i in (List<EasySystemAPI.Models.FeeList>)TempData["List"])
+                        {
+                            <tr style="border: 1px solid cornflowerblue;">
+                                <td>@SrNo</td>
+                                <td>@i.flTraineeName</td>
+                                <td>@i.flTraineeSurName</td>
+                                <td>@i.flTraineeEmail </td>
+                                <td> @i.flTraineeContact</td>
+                                <td>@i.flTraineeComment</td>
+
+                                @*<td> @i.GetTrainingInfo.tiName</td>
+                                <td>@i.GetTrainingInfo.tiPrice</td>*@
+                                <td> @i.flCreatedDate.ToShortDateString()</td>
+                                <td> @i.flStatus</td>
+                                <td>
+                                    @if (i.trainingCompletedDate.Year != 1)
+                                    {
+                                        @i.trainingCompletedDate.ToShortDateString()
+                                    }
+                                </td>
+                                <td> <a href="@Url.Action("FeeListDetail", "Admin",  new { id = i.fLId})"> Edit</a></td>
+                            </tr>
+                            SrNo = SrNo + 1;
+                        }
+                    }
+
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>

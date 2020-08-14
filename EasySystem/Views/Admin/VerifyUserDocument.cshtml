@@ -1,0 +1,113 @@
+﻿@model EasySystemAPI.Models.AccountVerifyVM
+@{
+    ViewData["Title"] = "Verify User Document";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Path = Html.DisplayFor(model => model.uvImagePath);
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-6 column">
+                    <div class="heading-profile">
+                        <h2>Approve User WithDraw Request</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                        @if (TempData["Info"] != null)
+                        {
+                            <div role="alert" class="alert alert-info">
+                                <strong><i class="fa fa-info-circle"></i></strong>
+                                @TempData["Info"].
+                            </div>
+                        }
+                        @if (TempData["Success"] != null)
+                        {
+                            <div role="alert" class="alert alert-success">
+                                <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                @TempData["Success"].
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div role="alert" class="alert alert-danger">
+                                <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                @TempData["Error"].
+                            </div>
+                        }
+                    </p>
+                    <div class="row">
+                        <div class="widget white with-padding">
+                            <form asp-action="VerifyUserDocument" method="post">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">User Name</label>
+                                            <input type="text" asp-for="usrName" readonly class="form-control">
+                                            <input type="hidden" asp-for="uvId" readonly class="form-control">
+                                            <input type="hidden" asp-for="uvtId" name="id" readonly class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Document</label>
+                                            <input type="text" asp-for="uvtName" readonly class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Text</label>
+                                            <input type="text" asp-for="uvText" readonly class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <img src="~/images/@Path" width="170" height="150" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Status</label>
+                                            @{
+                                                var list = new List<SelectListItem>();
+                                                list.Add(new SelectListItem { Text = "Pending", Value = "Pending" });
+                                                list.Add(new SelectListItem { Text = "Verified", Value = "Verified" });
+                                                list.Add(new SelectListItem { Text = "Under Process", Value = "Under Process" });
+                                                list.Add(new SelectListItem { Text = "Rejected", Value = "Rejected" });
+                                            }
+                                            <select asp-for="uvStatus" class="form-control" asp-items="@list" required></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Remarks</label>
+                                            <input type="text" asp-for="uvStatusRemarks" class="form-control">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <button type="submit" class="btn btn-info" style="background-color:#1b3767">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+

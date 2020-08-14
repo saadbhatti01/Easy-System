@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewData["Title"] = "Whiteboard_Detail";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var detail = TempData["WhiteboardDetail"] as EasySystem.Models.UserWhiteBoardVM;
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>
+                            White Board Detail
+                            @if (TempData["Page"].ToString() == "Whiteboard")
+                            {
+                                <span><a asp-controller="Users" asp-action="@TempData["Page"]" asp-route-id="@detail.usrId" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
+
+                            }
+                            else
+                            {
+                                <span><a asp-controller="My" asp-action="@TempData["Page"]" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
+                            }
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="widget white">
+                        <table class="table table-info table-responsive-md">
+                            <tr>
+                                <th>SKill Name</th>
+                                <td>@detail.usName</td>
+                            </tr>
+                            <tr>
+                                <th>Title</th>
+                                <td>@detail.uwbName</td>
+                            </tr>
+                            <tr>
+                                <th>Day</th>
+                                <td>@detail.uwbDay</td>
+                            </tr>
+                            <tr>
+                                <th>Time</th>
+                                <td>@detail.uwbTime</td>
+                            </tr>
+                            <tr>
+                                <th>Detail</th>
+                                <td>@Html.Raw(detail.uwbDetail)</td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+

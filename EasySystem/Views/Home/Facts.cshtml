@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewData["Title"] = "Facts";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-12 column">
+                        <div class="heading-profile">
+                            <h2>Facts</h2>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-area">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+                        </p>
+                        <br />
+
+                        IN-TIME PROJECT COMPLETION
+                        Once you have posted a project and it is accepted by a selected freelancer to work out, It becomes Hiresine's job to get it done within specified time-frame. This time frame may vary depending upon the length and size of the Project.
+
+                        VERIFIED FREELANCERS
+                        Hiresine recruits freelancers only after multi-level checks. Thus we have a large pool of physically verified freelancers. Before selecting a freelancer you can browse freelancer profiles, chat in real-time, compare proposals and select the best one, award your project and your freelancer goes to work.
+
+                        YOUR MONEY REMAINS SAFE
+                        With Hiresine you pay safely using our Verified Payment System - release payments according to a schedule of goals you set, or pay only upon completion. You are in control, so you get to make the decisions. Your remains safe in our hands until quality project completion.
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Panel Content -->
+    </div>
+

@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = null;
+    var cName = @HttpContextAccessor.HttpContext.Session.GetString("Name");
+    var cuCode = @HttpContextAccessor.HttpContext.Session.GetInt32("Code");
+    var Gender = @HttpContextAccessor.HttpContext.Session.GetString("Gender");
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .content-holder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        /* On Mobiles (screen width <= 767px) */
+        @@media screen and (max-width: 767px) {
+            .content-holder {
+                flex-direction: row;
+            }
+
+            .text-div {
+                margin-left: 10px;
+            }
+        }
+
+        .text-block {
+            position: absolute;
+            bottom: 3%;
+            color: black;
+            padding-left: 5%;
+            max-height: 45px;
+            font-size: 12px;
+        }
+    </style>
+
+    <link href="~/css/HelplingStuff.min.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="container BSC_Angel">
+        <h2>My Helping Material</h2> <br />
+        <a asp-controller="My" asp-action="Dashboard">  <h4>Go Back</h4></a>
+
+        <div role="alert" class="alert white">
+            <span><i class="ti-info-alt blue-bg"></i></span>
+            We always help our mentors, we have designed some impressive images with your Name and URL, you can take screenshot of these images and can share in your social media, whoever will see your images and opens your URL they will become your trainee after signing up with your URL. So keep sharing these images in your circle.
+        </div>
+
+        @if (TempData["HelpingMaterial"] != null)
+        {
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <!--LOOP STARTS HERE-->
+                    @foreach (var i in (List<EasySystem.Models.UserHelpingMaterial>)TempData["HelpingMaterial"])
+                    {
+                        if (i.umsFor == Gender)
+                        {
+                            <div class="col-sm-4 text-center">
+                                <div class="content-holder">
+                                    <a asp-controller="MyHelpingMaterial" asp-action="Single" asp-route-Path="@i.umsPath">
+
+                                        <div class="img-div">
+                                            <img src="~/images/UserMarketingMaterial/@i.umsFor/@i.umsPath" height="300" width="300" alt="@i.umsTitle">
+
+                                            <div class="text-block">
+                                                <h4>@cName </h4>
+                                                <p style="font-size: 10px">Join for free: Universalskills.co/Signup/M?C=@cuCode</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                    <!--LOOP ENDS HERE-->
+                </div>
+            </div>
+        }
+    </div>
+
+</body>
+</html>

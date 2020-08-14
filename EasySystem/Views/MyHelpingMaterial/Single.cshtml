@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = null;
+    var cName = @HttpContextAccessor.HttpContext.Session.GetString("Name");
+    var cuCode = @HttpContextAccessor.HttpContext.Session.GetInt32("Code");
+    var Gender = @HttpContextAccessor.HttpContext.Session.GetString("Gender");
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="HelplingStuff.min.css" rel="stylesheet" />
+    <meta name="description" content="@cName will help you to make your life better.">
+    <meta property="og:title" content="@cName" /> <!--DB se Mentor ka name yahan pe rakhna Sajawal Javaid-->
+    <meta property="og:image" content="1.jpeg"> <!--DB se UserMarketingStuff se Path ki filed se data yahan rakh dena-->
+    <meta property="og:type" content="image" />
+    <style>
+        .content-holder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 5px 10px 10px 10px;
+        }
+
+        /* On Mobiles (screen width <= 767px) */
+        @@media screen and (max-width: 767px) {
+            .content-holder {
+                flex-direction: row;
+            }
+
+            .text-block {
+                margin-left: 10px;
+            }
+        }
+
+        .text-block {
+            position: absolute;
+            bottom: 10%;
+            color: black;
+            padding-left: 3%;
+            max-height: 45px;
+            font-size: 16px;
+        }
+        .text-block h3  {
+            margin-left: 20px;
+        }
+        .text-block p {
+            margin-left: 20px;
+        }
+
+    </style>
+    <link href="~/css/HelplingStuff.min.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="container BSC_Angel">
+        <a asp-controller="MyHelpingMaterial" asp-action="Index"><h2>Go Back</h2></a>
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+
+                <div class="col-sm-12 text-center">
+                    <div class="content-holder">
+                        <div class="img-div">
+                            @if (Gender == "Male")
+                            {
+                                <img src="~/images/UserMarketingMaterial/male/@TempData["Path"]" height="450" width="450" alt="Image">
+                            }
+                            else if (Gender == "Female")
+                            {
+                                <img src="~/images/UserMarketingMaterial/female/@TempData["Path"]" height="450" width="450" alt="Image">
+                            }
+                            else
+                            {
+                                <img src="~/images/UserMarketingMaterial/company/@TempData["Path"]" height="450" width="450" alt="Image">
+                            }
+                            <div class="text-block">
+                                <h3>@cName </h3>
+                                <p>Join for free: Universalskills.co/Signup/M?C=@cuCode</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+

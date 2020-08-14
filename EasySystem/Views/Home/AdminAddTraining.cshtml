@@ -1,0 +1,121 @@
+﻿@model EasySystemAPI.Models.TrainingInfo
+@{
+    ViewData["Title"] = "Admin Add Training";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_PublicAdminLayout.cshtml";
+}
+
+<div class="container" style="background-color:lavender; margin-bottom:20px">
+    <div class="row">
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Oh snap! @TempData["Error"].
+            </div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Success! @TempData["Success"].
+            </div>
+        }
+
+        <div class="col-md-11 col-md-offset-1">
+            <h2>Training Detail</h2>
+
+            <form action="~/Home/AdminAddTraining" method="post">
+                <div class="row form-group">
+
+                    <div class="col-md-3">
+                        <label>Category</label>
+                        @Html.DropDownList("ttId", (SelectList)ViewData["TrainingType"], new { required = "required", @class = "form-control" })
+
+                    </div>
+                    <div class="col-md-3">
+                        <label>Name</label>
+                        <input type="text" name="tiName" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Duration</label>
+                        <input type="text" name="tiDuration" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Price</label>
+                        <input type="number" name="tiPrice" class="form-control" />
+                    </div>
+
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-3">
+                        <label>Price Duration</label>
+                        <input type="text" name="tiPriceDuration" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Status</label>
+                        @{
+                            var list = new List<SelectListItem>();
+                            list.Add(new SelectListItem { Text = "Active", Value = "Active" });
+                            list.Add(new SelectListItem { Text = "Deactive", Value = "Deactive" });
+                        }
+                        @Html.DropDownList("tiStatus", @list, new { required = "required", @class = "form-control" })
+                    </div>
+
+                </div>
+
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label for="exampleInputPassword2">Skill Detail</label>
+                        <textarea asp-for="tiDetail" placeholder="Enter Skill Detail" class="form-control" rows="9"></textarea>
+                        @*<label>Detail</label>
+                        <textarea style="width:100%" name="tiDetail" placeholder="Text here . . . "></textarea>*@
+                    </div>
+
+                </div>
+
+
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        <input type="submit" value="Submit" class="btn btn-primary">
+                    </div>
+                    <div class="col-md-2">
+                        <a href="~/Home/AdminTraining"> <p class="btn btn-primary">CANCEL</p></a>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- Script to wire up your TinyMCE editor -->
+<script src="~/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+    // Initialize your tinyMCE Editor with your preferred options
+    // code for rich text box for
+    tinyMCE.init({
+        // General options
+        mode: "textareas",
+        theme: "modern",
+        // Theme options
+        theme_advanced_buttons1: "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+        theme_advanced_buttons2: "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+        theme_advanced_buttons3: "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+        theme_advanced_buttons4: "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,blockquote,pagebreak,|,insertfile,insertimage",
+        theme_advanced_toolbar_location: "top",
+        theme_advanced_toolbar_align: "left",
+        theme_advanced_statusbar_location: "bottom",
+        theme_advanced_resizing: true,
+
+        // Example content CSS (should be your site CSS)
+        //content_css: "~/css/main.css",
+    });
+</script>
+
+

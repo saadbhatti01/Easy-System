@@ -1,0 +1,67 @@
+﻿
+
+@{
+    ViewData["Title"] = "Skill_Detail";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var detail = TempData["SkillDetail"] as EasySystem.Models.UserSkillVM;
+}
+
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>
+                            Skill Detail
+                            @if (TempData["Page"].ToString() == "UserSkills")
+                            {
+                                <span><a asp-controller="Users" asp-action="Skills" asp-route-id="@detail.usrId" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
+                            }
+                            else if (TempData["Page"].ToString() == "MentorSkills")
+                            {
+                                <span><a asp-controller="My" asp-action="MentorSkills" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
+                            }
+                            else
+                            {
+                                <span><a asp-controller="My" asp-action="Skills" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
+                            }
+                        </h2>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="widget white">
+                        <table class="table table-bordered table-responsive-md">
+                            <tr>
+                                <th>SKill Name</th>
+                                <td>@detail.StName</td>
+                            </tr>
+                            <tr>
+                                <th>Level</th>
+                                <td>@detail.usLevel</td>
+                            </tr>
+                            <tr>
+                                <th>Detail</th>
+                                <td>@Html.Raw(detail.usDetail)</td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>

@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Training";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_PublicAdminLayout.cshtml";
+    int SrNo = 1;
+}
+<div class="container" style="background-color:lavender; margin-bottom:20px">
+    <div class="row" style="margin:15px">
+        <a href="~/Home/AdminAddTraining"><p class="btn btn-primary"> Add New Record</p></a>
+    </div>
+    <div class="row">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Oh snap! @TempData["Error"].
+            </div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Success! @TempData["Success"].
+            </div>
+        }
+        <div class="col-md-12">
+            <h2>Training Information</h2>
+
+            <div class="row form-group">
+                <table style="border: 1px solid cornflowerblue; width:98%; margin:10px">
+                    <tr style="border: 1px solid cornflowerblue;">
+                        <th>Sr. No.</th>
+                        <th>Category</th>
+                        <th>Name</th>
+                        <th>Training Duration</th>
+                        <th>Price (pkr)</th>
+                        <th>Price Duration</th>
+                        <th>Status </th>
+                        <th>Action </th>
+                    </tr>
+                    @if (TempData["Detail"] != null)
+                    {
+                        foreach (var i in (List<EasySystemAPI.Models.TrainingInfoVM>)TempData["Detail"])
+                        {
+                            <tr style="border: 1px solid cornflowerblue;">
+                                <td>@SrNo</td>
+                                <td>@i.ttName</td>
+                                <td>@i.tiName</td>
+                                <td>@i.tiDuration </td>
+                                <td> @i.tiPrice</td>
+                                <td>@i.tiPriceDuration</td>
+                                <td> @i.tiStatus</td>
+
+                                <td>
+                                    <a href="@Url.Action("AdminEditTraining", "Home",  new { id = i.tiId})"> Edit</a>
+                                    <a href="@Url.Action("DeleteTraining", "Home",  new { id = i.tiId})"> Delete</a>
+                                </td>
+                            </tr>
+                            SrNo = SrNo + 1;
+                        }
+                    }
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>

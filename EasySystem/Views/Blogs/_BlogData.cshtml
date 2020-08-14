@@ -1,0 +1,35 @@
+﻿@if (TempData["List"] != null)
+{
+    <div class="col-md-12">
+        <div class="blog-sec">
+            <div class="row">
+                @foreach (var i in (List<EasySystem.Models.Blog>)TempData["List"])
+                {
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="blog-post">
+                            @if (i.blogTitleImage != null)
+                            {
+                                <div class="blog-post-thumb">
+                                    <img src="~/images/@i.blogTitleImage" width="200" height="200" alt="" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="blog-post-thumb"> <img src="~/images/admin.jpg" width="200" height="200" alt="" /> </div>
+                            }
+                            <div class="blog-post-info">
+                                @*<h3><a asp-controller="Blogs" asp-action="BlogDetail" asp-route-id="@i.blogId" title="Blog Detail">@i.blogTitle</a></h3>*@
+                                <h3><a href="/Blogs/BlogDetail/@i.blogId/@EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.blogTitle)">@i.blogTitle</a></h3>
+                                <a href="/Blogs/BlogDetail/@i.blogId/@EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.blogTitle)" title="Blog Detail" class="date-post"><i class="fa fa-calendar-o"></i> @i.createdDate.ToLongDateString() </a> Author: <a asp-action="Blogs" asp-controller="Users" asp-route-id="@i.UsrId" title="@i.usrName's Blogs" style="color:dimgray;"> @i.usrName</a>
+                                <p></p>
+                            </div>
+                        </div>
+                        <!-- Blog Post -->
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+}

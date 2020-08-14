@@ -1,0 +1,409 @@
+﻿@{
+    ViewData["Title"] = "URL";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>My URL</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row">
+                        <div class="widget white with-padding">
+
+                            <div id="Notifocation">
+
+                                @if (TempData["Info"] != null)
+                                {
+                                    <div role="alert" class="alert alert-info">
+                                        <strong><i class="fa fa-info-circle"></i></strong>
+                                        @TempData["Info"].
+                                    </div>
+                                }
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div role="alert" class="alert alert-success">
+                                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                        @TempData["Success"].
+                                    </div>
+                                }
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div role="alert" class="alert alert-danger">
+                                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                        @TempData["Error"].
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div role="alert" class="alert white">
+                                <span><i class="ti-info-alt blue-bg"></i></span>
+                                We always help to our mentors, we have generated some content with your sign up URL, you can copy these contents and share in your social media, whoever will read your content and clicks on your URL they will become your trainee after signing up with your URL. So keep sharing these contents in your circle.
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="CreatedLink" value="@TempData["Code"]" readonly />
+                                    <br />
+
+                                    <button type="button" id="btnCopyToClipboard" class="btn btn-info" style="background-color:#1b3767">
+                                        <i class="fa fa-copy"></i> Copy to Clipboard
+                                    </button>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <textarea rows="5" id="CreatedLink1" class="form-control" readonly>Are you Fresh Graduate? Worried about job? Do not worry, I am here for you: @TempData["Name"]
+Join for free: @TempData["Code"]
+                            </textarea>
+                                    <br />
+
+                                    <button type="button" id="btnCopyToClipboard1" class="btn btn-info" style="background-color:#1b3767">
+                                        <i class="fa fa-copy"></i> Copy to Clipboard
+                                    </button>
+
+                                </div>
+
+
+                            </div>
+                            <br />
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <textarea rows="5" id="CreatedLink2" class="form-control" readonly>You do not like your job? Fed up with this job? Do not worry, I am (@TempData["Name"]) here for you.
+Join for free: @TempData["Code"]
+                            </textarea>
+                                    <br />
+
+                                    <button type="button" id="btnCopyToClipboard2" class="btn btn-info" style="background-color:#1b3767">
+                                        <i class="fa fa-copy"></i> Copy to Clipboard
+                                    </button>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <textarea rows="5" id="CreatedLink3" class="form-control" readonly>Are you failure in your life? Do not worry, I am (@TempData["Name"]) here for you. Change your failure into success.
+Join for free: @TempData["Code"]
+                            
+                            </textarea>
+                                    <br />
+
+                                    <button type="button" id="btnCopyToClipboard3" class="btn btn-info" style="background-color:#1b3767">
+                                        <i class="fa fa-copy"></i> Copy to Clipboard
+                                    </button>
+
+                                </div>
+                            </div>
+
+                            <br />
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <textarea rows="5" id="CreatedLink4" class="form-control" readonly>You do not have any skills? I am (@TempData["Name"]) here for you 😊 I will develop skills in you.
+Join for free: @TempData["Code"]
+                            
+                            </textarea>
+                                    <br />
+
+                                    <button type="button" id="btnCopyToClipboard4" class="btn btn-info" style="background-color:#1b3767">
+                                        <i class="fa fa-copy"></i> Copy to Clipboard
+                                    </button>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <textarea rows="5" id="CreatedLink5" class="form-control" readonly>Do you want to do something big? Not getting right direction?I am (@TempData["Name"]) here for you 😊 Let's find a direction together.
+Join for free: @TempData["Code"]
+                            
+                            </textarea>
+                                    <br />
+
+                                    <button type="button" id="btnCopyToClipboard5" class="btn btn-info" style="background-color:#1b3767">
+                                        <i class="fa fa-copy"></i> Copy to Clipboard
+                                    </button>
+
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+
+
+                                <div class="col-md-6">
+                                    <textarea rows="5" id="CreatedLink6" class="form-control" readonly>Want to be a Trainer? Yes you can be a Trainer.I will help you to make you a Trainer.
+Join for free: @TempData["Code"]
+                            
+                            </textarea>
+                                    <br />
+
+                                    <button type="button" id="btnCopyToClipboard6" class="btn btn-info" style="background-color:#1b3767">
+                                        <i class="fa fa-copy"></i> Copy to Clipboard
+                                    </button>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <textarea rows="5" id="CreatedLink7" class="form-control" placeholder="Custom message (you can type message in here)"></textarea>
+
+                                    <br />
+                                    <button type="button" id="btnCopyToClipboard7" class="btn btn-info" style="background-color:#1b3767">
+                                        <i class="fa fa-copy"></i> Copy to Clipboard
+                                    </button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                  
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+<script src="~/js/jquery-2.1.3.js"></script>
+
+<script>
+    $('#btnCopyToClipboard').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#CreatedLink').val();
+
+        copyTextToClipboard(clipboardText);
+        alert("Your URL copy to clipboard Please make sure that this " + clipboardText + " is the URL when you paste it in browser");
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>
+<script>
+    $('#btnCopyToClipboard1').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#CreatedLink1').val();
+
+        copyTextToClipboard(clipboardText);
+        alert("Text copied to clipboard successfully. Copied text is: " + clipboardText + ".");
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>
+<script>
+    $('#btnCopyToClipboard2').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#CreatedLink2').val();
+
+        copyTextToClipboard(clipboardText);
+        alert("Text copied to clipboard successfully. Copied text is: " + clipboardText + ".");
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>
+<script>
+    $('#btnCopyToClipboard3').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#CreatedLink3').val();
+
+        copyTextToClipboard(clipboardText);
+        alert("Text copied to clipboard successfully. Copied text is: " + clipboardText + ".");
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>
+<script>
+    $('#btnCopyToClipboard4').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#CreatedLink4').val();
+
+        copyTextToClipboard(clipboardText);
+        alert("Text copied to clipboard successfully. Copied text is: " + clipboardText + ".");
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>
+<script>
+    $('#btnCopyToClipboard5').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#CreatedLink5').val();
+
+        copyTextToClipboard(clipboardText);
+        alert("Text copied to clipboard successfully. Copied text is: " + clipboardText + ".");
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>
+<script>
+    $('#btnCopyToClipboard6').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#CreatedLink6').val();
+
+        copyTextToClipboard(clipboardText);
+        alert("Text copied to clipboard successfully. Copied text is: " + clipboardText + ".");
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>
+<script>
+    $('#btnCopyToClipboard7').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#CreatedLink7').val();
+
+        copyTextToClipboard(clipboardText);
+        alert("Text copied to clipboard successfully. Copied text is: " + clipboardText + ".");
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>

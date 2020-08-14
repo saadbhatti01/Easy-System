@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewData["Title"] = "HowThingsWork";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-12 column">
+                        <div class="heading-profile">
+                            <h2>How Things Work</h2>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-area">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+                        </p>
+                        <br />
+
+                        A Personal Computer
+                        You must have your own computer equipment -- either a Windows or Mac system is acceptable, as long as it has a current operating system (one that is still supported by the operating system provider -- Microsoft, Apple, etc.)
+
+                        Be A Good Human Being
+                        In order to address the security requirements of our clients, each applicant must sign a release permitting us to perform a background investigation. You will not be asked to sign a release until we contact you directly.
+
+                        An Internet Connection
+                        Because much of our work will require freelancers to perform data entry over the Internet, all freelancers are required to have a high-speed broadband connection provided by a major cable or satellite provider.
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Panel Content -->
+    </div>
+

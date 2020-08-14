@@ -1,0 +1,220 @@
+﻿@model EasySystem.Models.UserSkills
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var UsrId = @HttpContextAccessor.HttpContext.Session.GetInt32("ID");
+}
+@{
+    ViewData["Title"] = "Skills";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int SrNo = 1;
+}
+<style>
+    .chosen-single {
+        height: 35px !important;
+    }
+</style>
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-3 column">
+                    <div class="heading-profile">
+                        <h2>My Skills Info</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row">
+
+                        <div class="widget white with-padding">
+                            <div id="Notifocation">
+
+                                @if (TempData["Info"] != null)
+                                {
+                                    <div role="alert" class="alert alert-info">
+                                        <strong><i class="fa fa-info-circle"></i></strong>
+                                        @TempData["Info"].
+                                    </div>
+                                }
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div role="alert" class="alert alert-success">
+                                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                        @TempData["Success"].
+                                    </div>
+                                }
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div role="alert" class="alert alert-danger">
+                                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                        @TempData["Error"].
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div role="alert" class="alert white">
+                                <span><i class="ti-info-alt blue-bg"></i></span>
+                                Create your skills turn by turn (these are actually
+                                those skills which you will give to your trainees.
+                            </div>
+                            <br />
+                            <form asp-action="Skills" method="post">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Skill Name</label>
+                                            @Html.DropDownList("StId", (SelectList)ViewData["Skills"], "...Select Skill...",
+                                            new { @id = "StId", required = "required", @class = "form-control chosen-select", style = "width: 100% !important;", @onchange = "GetDetail(this.value)" })
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="exampleInputEmail2">Skill Level (Out of Ten)</label>
+
+                                            <select class="form-control" asp-for="usLevel">
+                                                @for (var i = 10; i >= 1; i--)
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword2">Skill Detail</label>
+
+                                                <textarea asp-for="usDetail" id="skillDetail" placeholder="Enter Skill Detail" class="form-control" rows="9"></textarea>
+                                                <input type="hidden" asp-for="usrId" value="@UsrId" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-info" style="background-color:#1b3767">Submit</button>
+                                <a asp-controller="My" asp-action="CopyMentorSkills" class="btn btn-outline-dark btn-embossed"> Copy Mentor Skills <i class="fa fa-send-o"></i></a>
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                @if (TempData["UserSkills"] != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="widget white">
+                                <div class="form-group" hidden>
+                                    &nbsp;
+                                    <div class="col-md-3">
+                                        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                    </div>
+                                </div>
+                                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+                                            <th>SrNo</th>
+                                            <th>Skill Name</th>
+                                            <th>Level</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var i in (List<EasySystem.Models.UserSkillVM>)TempData["UserSkills"])
+                                        {
+                                            <tr>
+                                                <td>@SrNo</td>
+                                                <td>
+                                                    <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="Skills" title="Record Detail" style="color:black"> @i.StName</a>
+                                                </td>
+                                                <td>@i.usLevel</td>
+
+                                                <td>
+                                                    <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="Skills" title="Record Detail"><i class="fa fa-info-circle"></i></a>
+                                                    &nbsp;
+                                                    <a asp-controller="My" asp-action="DelSkills" asp-route-id="@i.usId" title="Delete Record" style="color:red"><i class="fa fa-trash-o"></i></a>
+                                                    &nbsp;
+                                                    <a asp-controller="My" asp-action="EditSkills" asp-route-id="@i.usId" title="Update Record"><i class="fa fa-edit"></i></a>
+                                                </td>
+                                            </tr>
+                                            SrNo = SrNo + 1;
+                                        }
+
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="9">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+
+
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+<link href="~/css/chosen.css" rel="stylesheet" />
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/chosen.jquery.js"></script>
+
+
+
+<script>
+    $('.chosen-select').chosen();
+</script>
+
+<script type="text/javascript">
+    function GetDetail(val) {
+        var dropdownValue = val; //Ye DropDown ki iD get kry ga
+        if (dropdownValue !== "") {
+            $.ajax({
+                type: 'GET',
+                //url: 'https://api.leskills.com/api/My/GeSkillDetail?val=' + dropdownValue,
+                url: 'http://localhost:54383/api/My/GeSkillDetail?val=' + dropdownValue,
+
+                dataType: 'json',
+                success: function (data) {
+                    if (data.Success === "true") {
+                        $("#skillDetail").val(data.Data.GenName);   // Jo Vlaue ye Controller se lay ga us ko StudentName textbox me insert krwaa k StudentName Textboxko readonly kr de ga
+                    } else {
+                        $("#skillDetail").val('');
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    $("#skillDetail").val('');
+                }
+
+            });
+        } else {
+            $("#skillDetail").val('');
+        }
+    };
+
+</script>
+
+
+
+

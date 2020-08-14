@@ -1,0 +1,110 @@
+﻿@model EasySystem.Models.UserBankInfo
+
+@{
+    ViewData["Title"] = "Edit Bank Info";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-12 column">
+                        <div class="heading-profile">
+                            <h2>Update Bank Info</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content-area">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+                        </p>
+                        <div class="row">
+                            <div class="widget white with-padding">
+                                <form asp-controller="Admin" asp-action="EditBankInfo" method="post">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Bank</label>
+                                                @Html.DropDownList("BankId", (SelectList)ViewData["Bank"], "Select Bank", new { required = "required", @class = "form-control", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Account Title</label>
+                                                <input type="text" asp-for="ubTitle" class="form-control" required readonly>
+                                                <input asp-for="ubId" hidden class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Account Number</label>
+                                                <input type="text" asp-for="ubNumber" class="form-control" required readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword2">Account Detail (if Any)</label>
+                                                <input type="text" asp-for="ubDetail" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword2">Select Status</label>
+                                                @{
+                                                    var list = new List<SelectListItem>();
+                                                    list.Add(new SelectListItem { Text = "Verified", Value = "Verified" });
+                                                    list.Add(new SelectListItem { Text = "Used", Value = "Used" });
+
+                                                }
+                                                <select asp-for="Status" class="form-control" asp-items="@list" required></select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    <button type="submit" class="btn btn-info" style="background-color:#1b3767">Update</button>
+                                    <a asp-controller="Admin" asp-action="UserBankInfo"  class="btn btn-info" style="background-color:#1b3767">Cancel</a>
+                                   
+                                </form>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Panel Content -->
+    </div>
+
+

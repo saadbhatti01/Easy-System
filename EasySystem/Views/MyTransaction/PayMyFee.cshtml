@@ -1,0 +1,341 @@
+﻿@model EasySystemAPI.Models.Coupan
+
+@{
+    ViewData["Title"] = "Pay_My_Fee";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var jazz = TempData["JazzCash"] as EasySystemAPI.Models.JazzCash;
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>Pay My Fee</h2>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row">
+                        <div class="widget white with-padding">
+                            <div id="Notifocation">
+
+                                @if (TempData["Info"] != null)
+                                {
+                                    <div role="alert" class="alert alert-info">
+                                        <strong><i class="fa fa-info-circle"></i></strong>
+                                        @TempData["Info"].
+                                    </div>
+                                }
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div role="alert" class="alert alert-success">
+                                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                        @TempData["Success"].
+                                    </div>
+                                }
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div role="alert" class="alert alert-danger">
+                                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                        @TempData["Error"].
+                                    </div>
+                                }
+
+                            </div>
+                            <input type="hidden" value="@TempData["Total"]" id="amount" />
+                            @if (TempData["Transaction"] != null)
+                            {
+                                <div role="alert" class="alert alertoh-green">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Transaction"]
+                                </div>
+                            }
+
+                            @if (TempData["Validity"] != null)
+                            {
+                                <div role="alert" class="alert alertoh-blue">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Validity"]
+                                </div>
+                            }
+                            @if (TempData["Expired"] != null)
+                            {
+                                <div role="alert" class="alert alertoh-red">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Expired"]
+                                </div>
+                            }
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>
+                                        My mentor is <b>@TempData["MentorName"]</b>. I am agreeing to pay my Monthly fee <b>@TempData["Total"]/- pkr</b>.
+                                    </h6>
+                                    <br />
+
+                                    @if (TempData["IsPak"] != null)
+                                    {
+                                        @*<form method="post" action="PayNow">
+                                                <button type="submit" id="btnAmount" class="btn btn-info" style="background-color:#1b3767">Pay Now</button>
+                                            </form>*@
+
+                                        <form name="jsform" method="post" action="https://payments.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform">
+                                            <input type="hidden" name="pp_Version" value="@jazz.pp_Version">
+                                            <input type="hidden" name="pp_TxnType" id="pType" value="">
+                                            <input type="hidden" name="pp_Language" value="@jazz.pp_Language">
+                                            <input type="hidden" name="pp_MerchantID" value="@jazz.pp_MerchantID">
+                                            <input type="hidden" name="pp_SubMerchantID" value="">
+                                            <input type="hidden" name="pp_Password" value="@jazz.pp_Password">
+                                            <input type="hidden" name="pp_BankID" value="@jazz.pp_BankID">
+                                            <input type="hidden" name="pp_ProductID" value="@jazz.pp_ProductID">
+                                            <input type="hidden" name="pp_TxnRefNo" id="pp_TxnRefNo" value="@jazz.pp_TxnRefNo">
+                                            <input type="hidden" name="pp_Amount" id="pp_Amount" value="@jazz.pp_Amount">
+                                            <input type="hidden" name="pp_TxnCurrency" value="@jazz.pp_TxnCurrency">
+                                            <input type="hidden" name="pp_TxnDateTime" value="@jazz.pp_TxnDateTime">
+                                            <input type="hidden" name="pp_BillReference" value="@jazz.pp_BillReference">
+                                            <input type="hidden" name="pp_Description" value="@jazz.pp_Description">
+                                            <input type="hidden" name="pp_TxnExpiryDateTime" value="@jazz.pp_TxnExpiryDateTime">
+                                            <input type="hidden" name="pp_ReturnURL" value="@jazz.pp_ReturnURL">
+                                            <input type="hidden" name="pp_SecureHash" value="">
+                                            <input type="hidden" name="ppmpf_1" value="@jazz.ppmpf_1">
+                                            <input type="hidden" name="ppmpf_2" value="@jazz.ppmpf_2">
+                                            <input type="hidden" name="ppmpf_3" value="@jazz.ppmpf_3">
+                                            <input type="hidden" name="ppmpf_4" value="@jazz.ppmpf_4">
+                                            <input type="hidden" name="ppmpf_5" value="@jazz.ppmpf_5">
+                                            <label id="salt" style="display:none;">@jazz.salt</label>
+                                            <div class="formFielWrapper" hidden>
+                                                <label class="">Hash values string: </label>
+                                                <input type="text" id="hashValuesString" value="">
+                                            </div>
+                                            <button type="button" id="btnAmount" class="btn btn-info" onclick="submitForm()" style="background-color:#1b3767">Pay Now</button>
+                                        </form>
+
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-8">
+                                            <div id="PayWithPaypal">
+                                                <div id="paypal-button-container"></div>
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                    <br />
+
+                                    <br />
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-info" id="btnCoupon" onclick="return DisplayCoupon();" style="background-color:#1b3767">Use Coupon</button>
+                                    <br />
+                                    <br />
+                                    <div id="ShowCoupon" style="display:none;">
+                                        <h6>
+                                            If you have a coupon then enter coupon value in below box and click on submit.
+                                        </h6>
+                                        <form asp-controller="MyTransaction" asp-action="Coupan">
+                                            <input type="number" required asp-for="cCode" maxlength="8" class="col-md-4 form-control" placeholder="Coupon Value" />
+                                            <br />
+                                            <button type="submit" class="btn btn-info" style="background-color:#1b3767">SUBMIT</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+<script src="~/js/jquery-2.1.3.js"></script>
+
+@if (TempData["IsPak"] != null)
+{
+    <script src="https://sandbox.jazzcash.com.pk/Sandbox/Scripts/hmac-sha256.js"></script>
+}
+
+
+
+<script>
+    function DisplayCoupon() {
+        document.getElementById('ShowCoupon').style.display = 'block';
+        return false;
+    }
+
+
+    setTimeout(location.reload.bind(location), 180000);
+</script>
+
+
+<script>
+    function submitForm() {
+
+        var procemessage = "Please wait...";
+        $("#btnAmount").html(procemessage);
+
+        CalculateHash();
+        var IntegritySalt = document.getElementById("salt").innerText;
+        var hash = CryptoJS.HmacSHA256(document.getElementById("hashValuesString").value, IntegritySalt);
+        document.getElementsByName("pp_SecureHash")[0].value = hash + '';
+
+        console.log('string: ' + hashString);
+        console.log('hash: ' + document.getElementsByName("pp_SecureHash")[0].value);
+
+        document.jsform.submit();
+    }
+
+</script>
+
+<script>
+    function CalculateHash() {
+        var IntegritySalt = document.getElementById("salt").innerText;
+        hashString = '';
+
+        hashString += IntegritySalt + '&';
+
+        if (document.getElementsByName("pp_Amount")[0].value != '') {
+            hashString += document.getElementsByName("pp_Amount")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_BankID")[0].value != '') {
+            hashString += document.getElementsByName("pp_BankID")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_BillReference")[0].value != '') {
+            hashString += document.getElementsByName("pp_BillReference")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_Description")[0].value != '') {
+            hashString += document.getElementsByName("pp_Description")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_Language")[0].value != '') {
+            hashString += document.getElementsByName("pp_Language")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_MerchantID")[0].value != '') {
+            hashString += document.getElementsByName("pp_MerchantID")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_Password")[0].value != '') {
+            hashString += document.getElementsByName("pp_Password")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_ProductID")[0].value != '') {
+            hashString += document.getElementsByName("pp_ProductID")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_ReturnURL")[0].value != '') {
+            hashString += document.getElementsByName("pp_ReturnURL")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_SubMerchantID")[0].value != '') {
+            hashString += document.getElementsByName("pp_SubMerchantID")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnCurrency")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnCurrency")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnDateTime")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnDateTime")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnExpiryDateTime")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnExpiryDateTime")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnRefNo")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnRefNo")[0].value + '&';
+        }
+
+        if (document.getElementsByName("pp_TxnType")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnType")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_Version")[0].value != '') {
+            hashString += document.getElementsByName("pp_Version")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_1")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_1")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_2")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_2")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_3")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_3")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_4")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_4")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_5")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_5")[0].value + '&';
+        }
+
+        hashString = hashString.slice(0, -1);
+        document.getElementById("hashValuesString").value = hashString;
+    }
+
+</script>
+
+
+@if (TempData["IsPak"] == null)
+{
+    <script src="https://www.paypal.com/sdk/js?client-id=AX-_2IOw08vJUrhkqlIY388465hiSs3tJYrpBc-6WbUMt7YtEzzGtxS_6EkjEdN7CP6-zZkrdKXOhHrt&currency=USD"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var amount = $("#amount").val();
+
+            if (amount != "" && amount != null) {
+
+                $("#PayWithPaypal").show();
+
+                //Payment Method
+                // Render the PayPal button into #paypal-button-container
+                paypal.Buttons({
+
+                    // Set up the transaction
+                    createOrder: function (data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount:
+                                {
+                                    value: amount
+                                }
+                            }]
+                        });
+                    },
+
+                    // Finalize the transaction
+                    onApprove: function (data, actions) {
+                        return actions.order.capture().then(function (details) {
+                            // Show a success message to the buyer
+
+                            $.ajax({
+                                type: 'Post',
+                                url: '/MyTransaction/PayNow',
+                                success: function () {
+                                    //console.log(data);
+                                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                                    window.reload();
+                                },
+                                error: function (error) {
+                                    //console.log(error);
+                                    ////$("#RefName").val('');
+                                    //alert('No record found against this Mentor Code');
+                                }
+
+                            });
+                        });
+                    }
+
+
+                }).render('#paypal-button-container');
+
+
+            } else {
+                alert("Please Enter Amount to proceed");
+            }
+        });
+    </script>
+}

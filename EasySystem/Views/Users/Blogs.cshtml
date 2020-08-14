@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewData["Title"] = "Blogs";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-3 column">
+                    <div class="heading-profile">
+                        <h2>Blogs</h2>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row">
+
+                        <div class="widget">
+                            <div id="Notifocation">
+
+                                @if (TempData["Info"] != null)
+                                {
+                                    <div role="alert" class="alert alert-info">
+                                        <strong><i class="fa fa-info-circle"></i></strong>
+                                        @TempData["Info"].
+                                    </div>
+                                }
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div role="alert" class="alert alert-success">
+                                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                        @TempData["Success"].
+                                    </div>
+                                }
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div role="alert" class="alert alert-danger">
+                                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                        @TempData["Error"].
+                                    </div>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <input type="hidden" id="Val" value="0" />
+                <input type="hidden" id="UsrId" value="@TempData["UsrId"]" />
+                <div id="BlogData">
+
+                </div>
+                <div id="load" class="col-md-12 col-sm-6 col-lg-12">
+                    <div class="cell">
+                        <div class="card">
+                            <button type="button" id="more" class="btn btn-info" style="background-color:#1b3767">Load More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        GetData();
+    });
+</script>
+
+
+<script>
+    $("#more").click(function () {
+        GetData();
+    });
+</script>
+
+
+<script>
+ function GetData() {
+            var count = $("#Val").val();
+            var UserId = $("#UsrId").val();
+            $("#more").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+            $('#more').attr('disabled', true);
+            $.ajax(
+                {
+                    url: "@Url.Action("_ProfileBlogData", "Blogs")",
+                    data: { Value: count, usId: UserId },
+                    type: "Get",
+                    dataType: "html",
+                    async: "true",
+                    cache: "false",
+                    success: function (data) {
+                        //Whatever result you have got from your controller with html partial view replace with a specific html.
+                        // HTML DOM replace
+                        if (data !== "") {
+                            var newC = 9;
+                            var newCount = parseInt(newC) + parseInt(count);
+                            $("#Val").val(newCount);
+                            $("#BlogData").append(data);
+                            $("#more").html('Load More');
+                            $('#more').attr('disabled', false);
+                        } else {
+                            if (count == 0) {
+                                $("#more").html('No blogs found');
+                                $('#more').attr('disabled', true);
+                            } else {
+                                $("#more").html('<i class="fa fa-flag-checkered"></i>  No more blogs');
+                                $('#more').attr('disabled', true);
+                            }
+                            
+                        }
+                    },
+
+                    Error: function () {
+                        alert("Some error");
+                    }
+                });
+        }
+</script>

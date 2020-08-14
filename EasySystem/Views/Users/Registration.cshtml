@@ -1,0 +1,264 @@
+﻿@model EasySystem.Models.Users
+
+@if (TempData["Number"] != null)
+{
+    TempData.Keep("Number");
+}
+@{
+    ViewData["Title"] = "Registration";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_InitialLayout.cshtml";
+    if (TempData["MentorCode"] != null)
+    {
+        TempData.Keep("MentorCode");
+    }
+    if (TempData["cCode"] != null)
+    {
+        TempData.Keep("cCode");
+    }
+}
+
+
+<div class="acount-sec">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div id="Notifocation">
+                    @if (TempData["Info"] != null)
+                    {
+                    <div role="alert" class="alert alert-info">
+                        <strong><i class="fa fa-info-circle"></i></strong>
+                        @TempData["Info"]
+                    </div>
+                    }
+                    @if (TempData["Success"] != null)
+                    {
+                    <div role="alert" class="alert alert-success">
+                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                        @TempData["Success"]
+                    </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                    <div role="alert" class="alert alert-danger">
+                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                        @TempData["Error"]
+                    </div>
+                    }
+                </div>
+
+                <div class="contact-sec">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="widget-title">
+                                <h3>Registration</h3>
+                                <span>Fill your detail to get in</span>
+                            </div>
+                            <!-- Widget title -->
+                            <div class="account-form">
+                                <form asp-action="Registration" enctype="multipart/form-data" id="form">
+                                    <div class="row">
+                                        <div class="col-md-4 form-group">
+                                            <input type="text" placeholder="Name" asp-for="usrName" class="form-control" required />
+                                        </div>
+                                        <div class="feild col-md-4 form-group">
+                                            <input type="email" placeholder="Email" asp-for="usrEmail" id="exampleInputEmail2" class="form-control" required />
+                                        </div>
+
+
+                                        <div class="col-md-4 form-group">
+                                            <input type="text" asp-for="usrPhone" placeholder="Phone Number" value="@TempData["Number"]" class="form-control" readonly />
+                                        </div>
+                                        <div class="feild col-md-4 form-group">
+                                            <select asp-for="usrGender" class="form-control">
+                                                <option value="Male">Male</option>
+                                                <option value="female">Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <input type="password" asp-for="usrPassword" placeholder="Password" class="form-control" required>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <input type="password" name="rePass" placeholder="ReType Password" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+
+                                            <label>Mentor Code</label>
+                                            @if (TempData["MentorCode"] != null)
+                                            {
+                                            <input type="number" asp-for="usrCode" placeholder="Mentor Code" value="@TempData["MentorCode"]" id="ref" class="form-control">
+                                            }
+                                            else
+                                            {
+                                            <input type="text" asp-for="usrCode" placeholder="Mentor Code" id="ref" class="form-control" onkeyup="javascript: MentorName(this.value);">
+                                            }
+                                            <input type="hidden" name="cCode" value="@TempData["cCode"]" class="form-control">
+
+
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label>Mentor Name </label>
+                                            <span id="loader" style="display:none;" class="three-quarters">Loading&#8230;</span>
+                                            <input type="text" placeholder="Mentor Name" id="RefName" class="form-control" readonly>
+                                        </div>
+                                        @*<div class="col-md-4">
+                                            <label>Choose Profile Image (If available)</label>
+                                            <input type="file" asp-for="usrImage" name="perImage" class="form-control">
+                                        </div>*@
+                                        <div class="feild col-md-12">
+                                            <button type="submit" value="Register Now" id="btnSubmit">Register Now</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script src="~/js/jquery-2.1.3.js"></script>
+
+<script>
+    $(function () {
+        //$("#ref").change(function () {
+        //    var code = $(this).val();
+
+
+        //    if (code !== null && code !== "") {
+        //        //var procemessage = "Please wait...";
+        //        //$("#RefName").val(procemessage);
+        //        $("#RefName").hide();
+        //        $("#loader").show();
+        //        $.ajax({
+        //            type: 'GET',
+        //            url: 'https://api.leskills.com/api/Users/GetCode?Code=' + code,
+        //            //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
+
+        //            dataType: 'json',
+        //            success: function (data) {
+        //                console.log(data);
+        //                if (data !== "") {
+
+        //                    $("#RefName").show();
+        //                    $("#loader").hide();
+        //                    $("#RefName").val(data.usrName);
+        //                } else {
+        //                    alert('No record found against this Mentor Code');
+        //                }
+        //            },
+        //            error: function (error) {
+        //                console.log(error);
+        //                $("#RefName").show();
+        //                $("#loader").hide();
+        //                $("#RefName").val('');
+        //                alert('No record found.');
+        //            }
+
+        //        });
+        //    }
+        //});
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#ref").attr('maxlength', '6');
+        var code = $("#ref").val();
+        if (code !== null && code !== "") {
+            var procemessage = "Please wait...";
+            $("#RefName").val(procemessage);
+            //$("#RefName").hide();
+            //$("#loader").show();
+            $.ajax({
+                type: 'GET',
+                url: 'https://api.leskills.com/api/Users/GetCode?Code=' + code,
+                //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    if (data !== "") {
+                        $("#RefName").val(data.usrName);
+                    } else {
+                        alert('No record found against this Mentor Code');
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    $("#RefName").val('');
+                    alert('No record found.');
+
+                }
+
+            });
+        }
+    });
+
+</script>
+
+<script>
+    $("#ref").attr('maxlength', '6');
+
+    function MentorName() {
+       
+        if ($("#ref").val().length >= 6) {
+            var code = $("#ref").val();
+            if (code !== null && code !== "") {
+                var procemessage = "Please wait...";
+                $("#RefName").val(procemessage);
+                //$("#RefName").hide();
+                //$("#loader").show();
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://api.leskills.com/api/Users/GetCode?Code=' + code,
+                    //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
+
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                        if (data !== "") {
+                            //$("#RefName").show();
+                            //$("#loader").hide();
+                            $("#RefName").val(data.usrName);
+                        } else {
+                            alert('No record found against this Mentor Code');
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        $("#RefName").show();
+                        $("#loader").hide();
+                        $("#RefName").val('');
+                        alert('No record found.');
+                    }
+
+                });
+            }
+
+        }
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('form').submit(function () {
+            var formId = this.id;
+            if (formId != '') {
+                //$("#btnSubmit").val("Please Wait...")
+                $("#btnSubmit").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+                $('#btnSubmit').attr('disabled', true);
+                this.submit();
+            }
+        });
+    });
+</script>
+
+

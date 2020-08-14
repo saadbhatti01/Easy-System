@@ -1,0 +1,164 @@
+﻿@model  EasySystem.Models.Transections
+@{
+    ViewData["Title"] = "My_Wallet";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{ 
+    int SrNo = 1;
+    double Amount = 0;
+}
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>My Wallet</h2>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="widget white with-padding">
+                            <div id="Notifocation">
+
+                                @if (TempData["Info"] != null)
+                                {
+                                    <div role="alert" class="alert alert-info">
+                                        <strong><i class="fa fa-info-circle"></i></strong>
+                                        @TempData["Info"].
+                                    </div>
+                                }
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div role="alert" class="alert alert-success">
+                                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                        @TempData["Success"].
+                                    </div>
+                                }
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div role="alert" class="alert alert-danger">
+                                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                        @TempData["Error"].
+                                    </div>
+                                }
+
+                            </div>
+                            <form asp-action="MyWallet" method="post">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">From Date</label>
+                                            <input type="text" class="form-control date-picker" name="fromDate" id="fromDate" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">To Date</label>
+                                            <input type="text" class="form-control date-picker" name="toDate" id="toDate" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Amount Status</label>
+                                            @{
+                                                var list = new List<SelectListItem>();
+                                                list.Add(new SelectListItem { Text = "Paid Fee", Value = "Paid Fee" });
+                                                list.Add(new SelectListItem { Text = "Pending Received Fee", Value = "Pending Received Fee" });
+                                                list.Add(new SelectListItem { Text = "Received Fee", Value = "Received Fee" });
+                                                list.Add(new SelectListItem { Text = "Transferred Amount", Value = "Transferred Amount" });
+                                            }
+                                            <select name="status" class="form-control" asp-items="@list" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-info" style="background-color:#1b3767">Show</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                @if (TempData["List"] != null)
+                {
+                    <div class="col-md-12">
+
+                        <div class="row">
+
+                            <div class="widget white">
+                                <h5 style="margin-top:10px; margin-left:10px">@TempData["Status"] Transactions Detail</h5>
+                                <div class="form-group" hidden>
+                                    &nbsp;
+                                    <div class="col-md-3">
+                                        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                    </div>
+                                </div>
+                                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+                                            <th>Sr.No</th>
+                                            <th>Transaction#</th>
+                                            <th>Narration</th>
+                                            <th>Date</th>
+                                            <th>Amount (PKR)</th>
+                                            <th>Deduction (PKR)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var i in (List<EasySystem.Models.Transections>)TempData["List"])
+                                        {
+                                            if (i.tStatus == "Verified")
+                                            {
+                                                Amount = (i.TuitionAmount);
+                                            }
+                                            else
+                                            {
+                                                Amount = (i.SoftServiceCharges + i.TuitionAmount + i.ThirdPartyCharges);
+                                            }
+
+                                            <tr>
+                                                <td>@SrNo</td>
+                                                <td>@i.tNumber</td>
+                                                <td>@i.tNarration</td>
+                                                <td>@i.tDate.ToString("dd-MMM-yyyy")</td>
+                                                <td>@i.TuitionAmount</td>
+                                                <td>@(i.SoftServiceCharges + i.ThirdPartyCharges)</td>
+                                                <td>@i.tStatus</td>
+                                            </tr>
+                                            SrNo = SrNo + 1;
+                                        }
+
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="9">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+
+                @if (TempData["Page"] != null)
+                {
+                    <span><a asp-controller="Home" asp-action="@TempData["Page"]"><i class="fa fa-mail-reply"></i> Go Back</a></span>
+
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>

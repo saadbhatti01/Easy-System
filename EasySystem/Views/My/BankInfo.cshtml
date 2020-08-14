@@ -1,0 +1,168 @@
+﻿@model EasySystem.Models.UserBankInfo
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var UsrId = @HttpContextAccessor.HttpContext.Session.GetInt32("ID");
+}
+@{
+    ViewData["Title"] = "Bank_Info";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>My Bank Info</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    
+                    <div class="row">
+
+                        <div class="widget white with-padding">
+                            <div id="Notifocation">
+
+                                @if (TempData["Info"] != null)
+                                {
+                                    <div role="alert" class="alert alert-info">
+                                        <strong><i class="fa fa-info-circle"></i></strong>
+                                        @TempData["Info"].
+                                    </div>
+                                }
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div role="alert" class="alert alert-success">
+                                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                        @TempData["Success"].
+                                    </div>
+                                }
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div role="alert" class="alert alert-danger">
+                                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                        @TempData["Error"].
+                                    </div>
+                                }
+
+                            </div>
+                            <form asp-action="BankInfo" method="post">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Select Bank</label>
+
+                                            @Html.DropDownList("BankId", (SelectList)ViewData["Bank"], "Select Bank", new { required = "required", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Account Title</label>
+                                            <input type="text" asp-for="ubTitle" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Account Number</label>
+                                            <input type="text" asp-for="ubNumber" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword2">Account Detail (if Any)</label>
+                                            <input type="text" asp-for="ubDetail" class="form-control">
+                                            <input type="hidden" asp-for="usrId" value="@UsrId" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword2">Select Status</label>
+                                            @{
+                                                var list = new List<SelectListItem>();
+                                                //list.Add(new SelectListItem { Text = "Select Status", Value = "s" });
+                                                list.Add(new SelectListItem { Text = "Active", Value = "Active" });
+                                                list.Add(new SelectListItem { Text = "DeActive", Value = "DeActive" });
+
+                                            }
+                                            <select asp-for="Status" class="form-control" asp-items="@list" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <button type="submit" class="btn btn-info" style="background-color:#1b3767">Submit</button>
+                            </form>
+                        </div>
+
+                    </div>
+
+
+                </div>
+                @if (TempData["BankInfo"] != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="widget white">
+                                <table class="table table-striped table-responsive-md">
+                                    <thead>
+                                        <tr>
+                                            <th>Bank Name</th>
+                                            <th>Account Title</th>
+                                            <th>Account #</th>
+                                            <th>Detail</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var i in (List<EasySystem.Models.UserBankVM>)TempData["BankInfo"])
+                                        {
+                                        <tr>
+                                            <td>@i.BankName</td>
+                                            <td>@i.ubTitle</td>
+                                            <td>@i.ubNumber</td>
+                                            <td>@i.ubDetail</td>
+                                            <td>@i.Status</td>
+                                            @if (i.Status == "Verified" || i.Status == "Used")
+                                            {
+                                                <td></td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                      <a asp-controller="My" asp-action="DeleteBankInfo" asp-route-id="@i.ubId" title="Delete Record" style="color:red"><i class="fa fa-trash-o"></i></a>
+                                                    &nbsp;
+                                                    <a asp-controller="My" asp-action="EditBankInfo" asp-route-id="@i.ubId" title="Update Record"><i class="fa fa-edit"></i></a>
+                                                </td>
+                                            }
+
+                                        </tr>
+                                        }
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+

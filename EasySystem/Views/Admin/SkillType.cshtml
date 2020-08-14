@@ -1,0 +1,190 @@
+﻿@model EasySystemAPI.Models.SkillType
+@{
+    ViewData["Title"] = "SkillType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int SrNo = 1;
+}
+
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-12 column">
+                        <div class="heading-profile">
+                            <h2>Add Skill Type</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-area">
+                <div class="row">
+                    <div class="col-md-12">
+
+
+                        <div class="row">
+                            <div class="widget white with-padding">
+                                <div id="Notifocation">
+
+                                    @if (TempData["Info"] != null)
+                                    {
+                                        <div role="alert" class="alert alert-info">
+                                            <strong><i class="fa fa-info-circle"></i></strong>
+                                            @TempData["Info"].
+                                        </div>
+                                    }
+                                    @if (TempData["Success"] != null)
+                                    {
+                                        <div role="alert" class="alert alert-success">
+                                            <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                            @TempData["Success"].
+                                        </div>
+                                    }
+                                    @if (TempData["Error"] != null)
+                                    {
+                                        <div role="alert" class="alert alert-danger">
+                                            <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                            @TempData["Error"].
+                                        </div>
+                                    }
+
+                                </div>
+                                <form asp-action="SkillType" method="post" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Main Type</label>
+                                                @Html.DropDownList("StId", (SelectList)ViewData["Skills"], "Main Type", new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Skill Type</label>
+                                                <input type="text" class="form-control" asp-for="StName" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Select Status</label>
+                                                @{
+                                                    var list = new List<SelectListItem>();
+                                                    list.Add(new SelectListItem { Text = "Approved", Value = "true" });
+                                                    list.Add(new SelectListItem { Text = "DisApproved", Value = "false" });
+
+                                                }
+                                                <select asp-for="StStatus" class="form-control" asp-items="@list" required></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Select Category</label>
+                                                @{
+                                                    var list1 = new List<SelectListItem>();
+                                                    list1.Add(new SelectListItem { Text = "Free", Value = "Free" });
+                                                    list1.Add(new SelectListItem { Text = "Paid", Value = "Paid" });
+
+                                                }
+                                                <select asp-for="StCategory" class="form-control" asp-items="@list1" required></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Skill Type Detail</label>
+                                                <input type="text" class="form-control" asp-for="StDetail" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Skill Type Image</label>
+                                                <input type="file" name="Image" class="form-control" asp-for="StImage"  />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Cover Image</label>
+                                                <input type="file" name="cImage" class="form-control" asp-for="StCoverImage"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-info" style="background-color:#1b3767">Submit</button>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (TempData["List"] != null)
+                    {
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="widget white">
+                                    <div class="form-group" hidden>
+                                        &nbsp;
+                                        <div class="col-md-3">
+                                            <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                        </div>
+                                    </div>
+
+
+                                    <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                        <thead>
+                                            <tr>
+                                                <th>Sr#</th>
+                                                <th>Sub Type</th>
+                                                <th>Type Name</th>
+                                                <th>Detail</th>
+                                                <th>Cateory</th>
+                                                <th>Status</th>
+                                                <th>Image</th>
+                                                <th>Cover Image</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var i in (List<EasySystem.Models.SkillTypeVM>)TempData["List"])
+                                            {
+                                                <tr>
+                                                    <td>@SrNo</td>
+                                                    <td>@i.SubTypeName</td>
+                                                    <td>@i.StName</td>
+                                                    <td>@i.StDetail</td>
+                                                    <td>@i.StCategory</td>
+                                                    <td>@i.StStatus</td>
+                                                    <td><img src="~/images/SkillTypeImages/@i.StImage" width="30" height="30" /></td>
+                                                    <td><img src="~/images/SkillTypeImages/@i.StCoverImage" width="30" height="30" /></td>
+                                                    <td>
+                                                        <a asp-controller="Admin" asp-action="DeleteSkillType" asp-route-id="@i.StId" title="Delete Record" style="color:red"><i class="fa fa-trash-o"></i></a>
+                                                        &nbsp;
+                                                        <a asp-controller="Admin" asp-action="EditSkillType" asp-route-id="@i.StId" title="Update Record"><i class="fa fa-edit"></i></a>
+                                                    </td>
+                                                </tr>
+                                                SrNo = SrNo + 1;
+                                            }
+
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="9">
+                                                    <ul class="pagination pull-right"></ul>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- Panel Content -->
+    </div>
+

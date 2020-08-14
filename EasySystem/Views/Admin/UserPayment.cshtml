@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewData["Title"] = "User Payment";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int SrNo = 1;
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>User Money Draw Request</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                        @if (TempData["Info"] != null)
+                        {
+                            <div role="alert" class="alert alert-info">
+                                <strong><i class="fa fa-info-circle"></i></strong>
+                                @TempData["Info"].
+                            </div>
+                        }
+                        @if (TempData["Success"] != null)
+                        {
+                            <div role="alert" class="alert alert-success">
+                                <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                @TempData["Success"].
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div role="alert" class="alert alert-danger">
+                                <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                @TempData["Error"].
+                            </div>
+                        }
+                    </p>
+
+                    <div class="row">
+                        <div class="widget white with-padding">
+                            <form asp-action="GetMoneyDrawRequest" method="post">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">UserCode</label>
+                                            @Html.DropDownList("usrCode", (SelectList)ViewData["Codes"], "All", new { @Name = "Code", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">From Date</label>
+                                            <input type="text" class="form-control date-picker" name="fromDate" id="fromDate" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">To Date</label>
+                                            <input type="text" class="form-control date-picker" name="toDate" id="toDate" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Select Status</label>
+                                            @{
+                                                var list = new List<SelectListItem>();
+                                                list.Add(new SelectListItem { Text = "All", Value = "All" });
+                                                list.Add(new SelectListItem { Text = "Pending", Value = "Pending" });
+                                                list.Add(new SelectListItem { Text = "Rejected", Value = "Rejected" });
+                                                list.Add(new SelectListItem { Text = "Accepted", Value = "Accepted" });
+                                                list.Add(new SelectListItem { Text = "Completed", Value = "Completed" });
+
+                                            }
+                                            <select name="status" class="form-control" asp-items="@list" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-info" style="background-color:#1b3767">Show</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                @if (TempData["List"] != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="widget white">
+                                <div class="form-group" hidden>
+                                    &nbsp;
+                                    <div class="col-md-3">
+                                        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                    </div>
+                                </div>
+
+
+                                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+                                            <th>Sr.No</th>
+                                            <th>User Name</th>
+                                            <th>User Code</th>
+                                            <th>Code</th>
+                                            <th>Description</th>
+                                            <th>Created Date</th>
+                                            <th>Amount (PKR)</th>
+                                            <th>Bank</th>
+                                            <th>Action Date</th>
+                                            <th>Remarks</th>
+                                            <th>Status</th>
+                                            <th>Image</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var i in (List<EasySystem.Models.MoneyDrawVM>)TempData["List"])
+                                        {
+                                            <tr>
+                                                <td>@SrNo</td>
+                                                <td>@i.UsrName</td>
+                                                <td>@i.UsrCode</td>
+                                                <td>@i.udrCode</td>
+                                                <td>@i.udrDetail</td>
+                                                <td>@i.udrCreatedDate.ToString("dd-MMM-yyyy")</td>
+                                                <td>@i.udrAmount</td>
+                                                <td>@i.BankName (@i.ubNumber)</td>
+                                                <td>
+                                                    @if (i.udrActionDate.Year < 2000)
+                                                    {
+
+                                                    }
+                                                    else
+                                                    {
+                                                        @i.udrActionDate.ToString("dd-MMM-yyyy")
+                                                    }
+                                                </td>
+                                                <td>@i.udrRemarks</td>
+                                                <td>@i.udrStatus</td>
+                                                @if (i.udrImage != null)
+                                                {
+                                                    <td>
+                                                        <img src="~/images/@i.udrImage" height="35" width="35" />
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td>No Image</td>
+                                                }
+                                                <td>
+                                                    <a asp-controller="Admin" asp-action="ApproveDrawRequest" asp-route-id="@i.udrId" asp-route-usrId="@i.usrId" title="Approve Request"><i class="fa fa-check-circle-o"></i></a>
+                                                </td>
+                                            </tr>
+                                            SrNo = SrNo + 1;
+
+                                        }
+
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="9">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+

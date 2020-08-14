@@ -1,0 +1,296 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var ID = @HttpContextAccessor.HttpContext.Session.GetInt32("ID");
+}
+@{
+    ViewData["Title"] = "Profile";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    var usr = TempData["User"] as EasySystem.Models.Users;
+    var mentor = TempData["Mentor"] as EasySystem.Models.Users;
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-12 column">
+                        <div class="heading-profile">
+                            <div role="alert" class="alert alert-info">
+                                <strong><i class="fa fa-info-circle"></i></strong>
+                                @TempData["Error"].
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- Panel Content -->
+    </div>
+}
+
+
+@if (TempData["User"] != null)
+{
+    <div class="main-content">
+        <div class="panel-content">
+            <div class="main-title-sec">
+                <div class="row">
+                    <div class="col-md-12 column">
+                        <div class="heading-profile">
+                            <h2>@usr.usrName's Profile</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-area">
+                <div class="mail-area">
+                    <div class="row">
+
+                        <div class="col-md-8">
+                            <div class="widget white no-padding">
+                                <div class="widget-tabs">
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item"><a class="active" data-toggle="tab" data-target="#tab1">Skills</a></li>
+                                        <li class="nav-item"><a data-toggle="tab" data-target="#tab2">Whiteboard</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="tab1" class="tab-pane active fade show">
+                                            @if (TempData["UserSkills"] != null)
+                                            {
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="widget white">
+                                                            <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Skill Name</th>
+                                                                        <th>Level</th>
+
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var i in (List<EasySystem.Models.UserSkillVM>)TempData["UserSkills"])
+                                                                    {
+
+                                                                        <tr>
+                                                                            <td>@i.StName</td>
+                                                                            <td>@i.usLevel</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <td colspan="9">
+                                                                            <ul class="pagination pull-right"></ul>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div id="tab2" class="tab-pane fade">
+                                            @if (TempData["UserWhiteBoard"] != null)
+                                            {
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="widget white">
+                                                            <table id="List1" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Skill Name</th>
+                                                                        <th>Title</th>
+
+
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+
+                                                                    @foreach (var i in (List<EasySystem.Models.UserWhiteBoardVM>)TempData["UserWhiteBoard"])
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@i.usName</td>
+                                                                            <td>@i.uwbName</td>
+
+                                                                        </tr>
+                                                                    }
+
+                                                                </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <td colspan="9">
+                                                                            <ul class="pagination pull-right"></ul>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="inbox-nav">
+                                <div class="user-mail">
+                                    @if (usr.usrImage != null)
+                                    {
+                                        <span><img src="~/images/@usr.usrImage" alt="" /></span>
+                                    }
+                                    else
+                                    {
+                                        <span><img src="~/images/Logo-01.png" alt="" /></span>
+                                    }
+                                    <h5>@usr.usrName</h5>
+                                    <h6>Code:<b> @usr.usrCode</b></h6>
+                                    <div class="mailer-name">
+
+                                        @if (mentor != null)
+                                        {
+                                            <h3>Mentor</h3>
+                                            <a asp-controller="My" asp-action="Profile" asp-route-id="@mentor.usrId" style="color:darkslategray"><i>@mentor.usrName-@mentor.usrCode</i></a>
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                                <div class="mail-labels">
+                                    <h3>@usr.usrName's Info</h3>
+                                    <ul>
+                                        @if (ID != null)
+                                        {
+                                            <li><i class="fa fa-envelope-open"></i>  @usr.usrEmail</li>
+                                            <li><i class="fa fa-phone-square"></i>  @usr.usrPhone</li>
+                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
+                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
+                                            @if (usr.ExpiryDate.Year > 2000)
+                                            {
+                                                <li><i class="fa fa-calendar-check-o"></i> Fee Valid till: <b>@usr.ExpiryDate.ToString("dd-MMM-yyyy")</b></li>
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
+                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
+                                        }
+
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Modal -->
+                </div>
+                <!-- Mail Area -->
+            </div>
+
+            @if (TempData["MyTeam"] != null)
+            { }
+
+
+            <div class="heading-profile">
+                <br />
+                <h2>@usr.usrName's Blogs</h2>
+            </div>
+            <input type="hidden" id="Val" value="0" />
+            <input type="hidden" id="UsrId" value="@usr.usrId" />
+            <div id="BlogData">
+
+            </div>
+
+           
+
+            <div id="load" class="col-md-12 col-sm-6 col-lg-12">
+                <div class="cell">
+                    <div class="card">
+                        <button type="button" id="more" class="btn btn-info" style="background-color:#1b3767">Load More</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Panel Content -->
+    </div>
+}
+
+
+
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        GetData();
+    });
+</script>
+
+
+<script>
+    $("#more").click(function () {
+        GetData();
+    });
+</script>
+
+
+<script>
+ function GetData() {
+            var count = $("#Val").val();
+            var UserId = $("#UsrId").val();
+            $("#more").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+             $('#more').attr('disabled', true);
+             $('#load').hide();
+            $.ajax(
+                {
+                    url: "@Url.Action("_ProfileBlogData", "Blogs")",
+                    data: { Value: count, usId: UserId },
+                    type: "Get",
+                    dataType: "html",
+                    async: "true",
+                    cache: "false",
+                    success: function (data) {
+                        //Whatever result you have got from your controller with html partial view replace with a specific html.
+                        // HTML DOM replace
+                        if (data !== "") {
+                            var newC = 9;
+                            var newCount = parseInt(newC) + parseInt(count);
+                            $("#Val").val(newCount);
+                            $("#BlogData").append(data);
+                            $("#more").html('Load More');
+                            $('#more').attr('disabled', false);
+
+                        } else {
+                            if (count == 0) {
+                                $("#more").html('No blogs found');
+                                $('#more').attr('disabled', true);
+                                $('#load').hide();
+                            } else {
+                                $("#more").html('<i class="fa fa-flag-checkered"></i>  No more blogs');
+                                $('#more').attr('disabled', true);
+                            }
+                        }
+                    },
+
+                    Error: function () {
+                        alert("Some error");
+                    }
+                });
+        }
+</script>
