@@ -1,0 +1,36 @@
+﻿<div id="Data">
+    <div class="col-md-12">
+        <div id="table-wrapper">
+            <div id="table-scroll">
+                <div class="table-responsive">
+                    <table id="example" class="table table-bordered" data-page-size="5" data-filter=#filter>
+                        <thead>
+                            <tr>
+                                <th>Skill Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (TempData["sName"] != null)
+                            {
+                                foreach (var item in (List<EasySystemAPI.Models.SkillType>)TempData["sName"])
+                                {
+                                    <tr id="myRow">
+                                        <td>@item.StName</td>
+                                        <td>
+                                            <a title="Update Data" style="cursor: pointer" onclick="createModal('@Url.Action("_UpdateName", "Admin", new { id = item.StId })')">
+                                                <i class="fa fa-edit" style="font-size:20px"></i>
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

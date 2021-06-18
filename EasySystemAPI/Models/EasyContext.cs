@@ -29,9 +29,15 @@ namespace EasySystemAPI.Models
         public DbSet<InfoSend> infoSends { get; set; }
         public DbSet<InfoSend_Company> infoSend_Companies  { get; set; }
         public DbSet<SkillType> skillTypes  { get; set; }
+        public DbSet<SkillMaterial> skillMaterials  { get; set; }
+        public DbSet<SkillMaterialDetail> skillMaterialDetails  { get; set; }
         public DbSet<Question_Story> question_Stories  { get; set; }
         public DbSet<UserQuestionnaireResult> userQuestionnaireResults  { get; set; }
         public DbSet<UserCertificate> userCertificates  { get; set; }
+        public DbSet<UserMentors> UserMentors { get; set; }
+        public DbSet<FeeBreakup> feeBreakups { get; set; }
+        public DbSet<MentorFee> mentorFees { get; set; }
+        public DbSet<LoginLogs> loginLogs { get; set; }
 
         //PublicLayout
         public DbSet<FeeList> feeLists { get; set; }

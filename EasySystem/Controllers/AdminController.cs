@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using EasySystem.EasyAPI;
+﻿using EasySystem.EasyAPI;
+using EasySystem.General;
 using EasySystem.Models;
 using EasySystemAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using Microsoft.AspNetCore.Hosting.Internal;
-using Microsoft.AspNetCore.Hosting;
+using System.Linq;
+using System.Net.Http;
 
 namespace EasySystem.Controllers
 {
@@ -20,14 +19,14 @@ namespace EasySystem.Controllers
     public class AdminController : Controller
     {
         EasySysAPI _api = new EasySysAPI();
+        Common comm = new Common();
+
         private readonly IHostingEnvironment HostingEnvironment;
 
         public AdminController(IHostingEnvironment hostingEnvironment)
         {
             this.HostingEnvironment = hostingEnvironment;
         }
-
-
 
         public IActionResult SignUpUsers()
         {
@@ -100,7 +99,7 @@ namespace EasySystem.Controllers
                     return RedirectToAction("Logout", "Users");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["Error"] = "An error occured during getting the request. Please try again later";
                 return View();
@@ -1504,13 +1503,15 @@ namespace EasySystem.Controllers
             {
                 List<SkillTypeVM> datalist = new List<SkillTypeVM>();
                 datalist = GetSkillTypeList();
-                if(datalist.Count > 0)
-                {
-                    TempData["List"] = datalist;
-                }
-               
+
+
                 SelectList slist = new SelectList(datalist, "StId", "StName");
                 ViewData["Skills"] = slist;
+
+                //get Data for Search
+                var getData = datalist.Where(s => s.StId == s.SubType).ToList();
+                SelectList list = new SelectList(getData, "StId", "StName");
+                ViewData["SearchSkills"] = list;
             }
 #pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch (Exception ex)
@@ -1522,6 +1523,24 @@ namespace EasySystem.Controllers
             return View();
         }
 
+        public ActionResult _SkillTypeData(int id)
+        {
+            try
+            {
+                List<SkillTypeVM> datalist = new List<SkillTypeVM>();
+                datalist = GetSkillTypeListById(id);
+                if (datalist.Count > 0)
+                {
+                    TempData["List"] = datalist;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return PartialView();
+        }
+
         [HttpPost]
         public ActionResult SkillType(SkillType data, IFormFile Image, IFormFile cImage)
         {
@@ -1529,7 +1548,7 @@ namespace EasySystem.Controllers
             {
                 if (Image != null)
                 {
-                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/SkillTypeImages");
+                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/SkillType/Thumbnail");
                     string fileName = Image.FileName;
                     string filePath = Path.Combine(uploadFolder, fileName);
                     Image.CopyTo(new FileStream(filePath, FileMode.Create));
@@ -1537,14 +1556,27 @@ namespace EasySystem.Controllers
                 }
                 if (cImage != null)
                 {
-                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/SkillTypeImages");
+                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/SkillType/Cover");
                     string fileName = cImage.FileName;
                     string filePath = Path.Combine(uploadFolder, fileName);
                     cImage.CopyTo(new FileStream(filePath, FileMode.Create));
                     data.StCoverImage = fileName;
                 }
+
+                ////Code for Enter 10000 Entries for testing purpose
+                //var Name = data.StName;
+                //var Detail = data.StDetail;
+                //List<SkillType> sList = new List<SkillType>();
+                //for (int i = 1; i < 10000; i++)
+                //{
+                //    data.StName = Name + "-" + comm.RandomString(5);
+                //    data.StDetail = Detail + "-" + comm.RandomString(15);
+                //    sList.Add(data);
+                //}
+                var Id = (int)HttpContext.Session.GetInt32("ID");
                 data.SubType = data.StId;
                 data.StId = 0;
+                data.CreatedBy = Id;
                 HttpClient client = _api.Initial();
                 var postData = client.PostAsJsonAsync("My/AddSkillType", data);
                 postData.Wait();
@@ -1614,8 +1646,8 @@ namespace EasySystem.Controllers
                 {
                     var res = result.Content.ReadAsStringAsync().Result;
                     var data = JsonConvert.DeserializeObject<SkillType>(res);
-                    var datalist = GetSkillTypeList();
-                    SelectList slist = new SelectList(datalist, "StId", "StName");
+                    var datalist = PopulateSkillType();
+                    SelectList slist = new SelectList(datalist, "SubType", "StName");
                     ViewData["Skills"] = slist;
                     return View(data);
                 }
@@ -1638,13 +1670,13 @@ namespace EasySystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditSkillType(int id, SkillType data, IFormFile Image, IFormFile cImage)
-            {
+        public IActionResult EditSkillType(int id, string SubType, SkillType data, IFormFile Image, IFormFile cImage)
+        {
             try
             {
                 if (Image != null)
                 {
-                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/SkillTypeImages");
+                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/SkillType/Thumbnail");
                     string fileName = Image.FileName;
                     string filePath = Path.Combine(uploadFolder, fileName);
                     Image.CopyTo(new FileStream(filePath, FileMode.Create));
@@ -1652,14 +1684,14 @@ namespace EasySystem.Controllers
                 }
                 if (cImage != null)
                 {
-                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/SkillTypeImages");
+                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/SkillType/Cover");
                     string fileName = cImage.FileName;
                     string filePath = Path.Combine(uploadFolder, fileName);
                     cImage.CopyTo(new FileStream(filePath, FileMode.Create));
                     data.StCoverImage = fileName;
                 }
 
-                data.SubType = data.StId;
+                //data.SubType = data.StId;
                 HttpClient client = _api.Initial();
                 var UpdateData = client.PutAsJsonAsync("My/UpdateSkillType?id=" + id.ToString(), data);
                 UpdateData.Wait();
@@ -1686,6 +1718,406 @@ namespace EasySystem.Controllers
             }
         }
 
+        public IActionResult SkillName()
+        {
+            return View();
+        }
+
+        public IActionResult _SkillNameData()
+        {
+            var getNames = comm.SkillTypeName();
+            TempData["sName"] = getNames;
+            return PartialView();
+        }
+
+        public IActionResult _UpdateName(int id)
+        {
+            HttpClient client = _api.Initial();
+            var UpdateData = client.GetAsync("Skills/EditSkillType?id=" + id.ToString());
+            UpdateData.Wait();
+            var result = UpdateData.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<SkillType>(res);
+                return PartialView(data);
+            }
+            else
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                //TempData["Error"] = "" + errorMsg.message + "";
+                return PartialView();
+            }
+        }
+
+        public IActionResult UpdateSkillName(SkillType data)
+        {
+            HttpClient client = _api.Initial();
+            var UpdateData = client.PostAsJsonAsync("Skills/UpdateSkillTypeName", data);
+            UpdateData.Wait();
+            var result = UpdateData.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return Content("");
+            }
+            else
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                TempData["Error"] = "" + errorMsg.message + "";
+                return Content("Not Updated");
+            }
+        }
+
+        public IActionResult SkillMaterial()
+        {
+            try
+            {
+                List<SkillType> datalist = new List<SkillType>();
+                datalist = GetSkillList();
+                SelectList slist = new SelectList(datalist, "StId", "StName");
+                ViewData["Skills"] = slist;
+            }
+            catch (Exception)
+            {
+
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SkillMaterial(SkillMaterial data)
+        {
+            try
+            {
+                var Id = (int)HttpContext.Session.GetInt32("ID");
+                data.CreatedBy = Id;
+                HttpClient client = _api.Initial();
+                var postData = client.PostAsJsonAsync("Skills/AddSkillMaterial", data);
+                postData.Wait();
+                var result = postData.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var skill = JsonConvert.DeserializeObject<SkillMaterial>(res);
+
+
+
+                    List<SkillMaterialDetail> sList = new List<SkillMaterialDetail>();
+                    if (TempData["Url"] != null)
+                    {
+                        var Url = TempData["Url"].ToString();
+                        List<string> Urls = Url.Split(',').ToList();
+                        if (Urls.Count > 0)
+                        {
+                            foreach (var item in Urls)
+                            {
+                                if (item != "")
+                                {
+                                    SkillMaterialDetail detail = new SkillMaterialDetail();
+                                    detail.SmdURL = item;
+                                    detail.SmId = skill.SmId;
+                                    detail.StId = data.StId;
+                                    sList.Add(detail);
+                                }
+                            }
+
+                            var pData = client.PostAsJsonAsync("Skills/AddSkillMaterialDetail", sList);
+                            pData.Wait();
+                            var resultt = pData.Result;
+                            if (resultt.IsSuccessStatusCode)
+                            {
+                                return Content("");
+                            }
+                            else
+                            {
+                                var ress = resultt.Content.ReadAsStringAsync().Result;
+                                var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                                //TempData["Error"] = "" + errorMsg.message + "";
+                                return Content("" + errorMsg.message + "");
+                            }
+                        }
+                    }
+
+                }
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    //TempData["Error"] = "" + errorMsg.message + "";
+                    return Content("" + errorMsg.message + "");
+                }
+            }
+            catch (Exception)
+            {
+                return Content("Not Added");
+            }
+            return Content("Not Added");
+        }
+
+        public ActionResult _SkillMaterialData(int id)
+        {
+            try
+            {
+                List<SkillDetailVM> datalist = new List<SkillDetailVM>();
+                datalist = GetSkillMaterialListById(id);
+                if (datalist.Count > 0)
+                {
+                    TempData["List"] = datalist;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return PartialView();
+        }
+
+        public IActionResult DeleteSkillMaterialData(int id)
+        {
+            try
+            {
+
+                HttpClient clientt = _api.Initial();
+                var data = clientt.DeleteAsync("Skills/DelSkillMaterial?id=" + id.ToString());
+                data.Wait();
+                var result = data.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    //TempData["Success"] = "Record Deleted successfully";
+                    return Content("");
+                }
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    //TempData["Error"] = "" + errorMsg.message + "";
+                    return Content("" + errorMsg.message + "");
+                }
+            }
+            catch (Exception)
+            {
+                //TempData["Error"] = "An error occured during getting the request. Please try again later";
+                return Content("Not Deleted");
+            }
+
+        }
+
+        public ActionResult _UpdateSkillMaterial(int id)
+        {
+            try
+            {
+                try
+                {
+                    HttpClient client = _api.Initial();
+                    var UpdateData = client.GetAsync("Skills/EditSkillMaterial?id=" + id.ToString());
+                    UpdateData.Wait();
+                    var result = UpdateData.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var res = result.Content.ReadAsStringAsync().Result;
+                        var data = JsonConvert.DeserializeObject<SkillMaterial>(res);
+                        List<SkillType> datalist = new List<SkillType>();
+                        datalist = GetSkillList();
+                        SelectList slist = new SelectList(datalist, "StId", "StName");
+                        ViewData["Skills"] = slist;
+                        return PartialView(data);
+                    }
+                    else
+                    {
+                        var res = result.Content.ReadAsStringAsync().Result;
+                        var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                        TempData["Error"] = "" + errorMsg.message + "";
+                        return RedirectToAction("SkillMaterial");
+                    }
+                }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+                catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+                {
+                    TempData["Error"] = "An error occured during getting the request. Please try again later";
+                    return RedirectToAction("SkillMaterial");
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return PartialView();
+        }
+
+        [HttpPost]
+        public ActionResult UpdateSkillMaterial(SkillMaterial data)
+        {
+            try
+            {
+                HttpClient client = _api.Initial();
+                int id = data.SmId;
+                var UpdateData = client.PutAsJsonAsync("Skills/UpdateSkillMaterial?id=" + id.ToString(), data);
+                UpdateData.Wait();
+                var result = UpdateData.Result;
+                if (result.IsSuccessStatusCode)
+                {
+
+                    List<SkillMaterialDetail> sList = new List<SkillMaterialDetail>();
+                    if (TempData["Url"] != null)
+                    {
+                        var Url = TempData["Url"].ToString();
+                        List<string> Urls = Url.Split(',').ToList();
+                        if (Urls.Count > 0)
+                        {
+                            foreach (var item in Urls)
+                            {
+                                if (item != "")
+                                {
+                                    SkillMaterialDetail detail = new SkillMaterialDetail();
+                                    detail.SmdURL = item;
+                                    detail.SmId = data.SmId;
+                                    detail.StId = data.StId;
+                                    sList.Add(detail);
+                                }
+                            }
+
+                            var pData = client.PostAsJsonAsync("Skills/AddSkillMaterialDetail", sList);
+                            pData.Wait();
+                            var resultt = pData.Result;
+                            if (resultt.IsSuccessStatusCode)
+                            {
+                                return Content("");
+                            }
+                            else
+                            {
+                                var ress = resultt.Content.ReadAsStringAsync().Result;
+                                var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(ress);
+                                return Content("" + errorMsg.message + "");
+                            }
+                        }
+                    }
+
+
+                    return Content("");
+                }
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    TempData["Error"] = "" + errorMsg.message + "";
+                    return Content("Data Not Updated");
+                }
+            }
+            catch (Exception)
+            {
+                //TempData["Error"] = "An error occured during getting the request. Please try again later";
+                return Content("Not Updated");
+            }
+
+
+        }
+
+        public ActionResult SkillMaterialDetail(int id)
+        {
+            try
+            {
+                HttpClient client = _api.Initial();
+                var data = client.GetAsync("Skills/GetSkillMaterialAdmin?id=" + id.ToString());
+                data.Wait();
+                var result = data.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var getdata = JsonConvert.DeserializeObject<SkillDetailVM>(res);
+
+                    if (getdata != null)
+                    {
+                        TempData["Material"] = getdata;
+                        List<SkillMaterialDetail> detail = new List<SkillMaterialDetail>();
+                        detail = comm.GetSkillMaterialDetailAdmin(getdata.SmId);
+                        if (detail.Count > 0)
+                        {
+                            TempData["MaterialDetail"] = detail;
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    TempData["Error"] = "" + errorMsg.message + "";
+                    return RedirectToAction("SkillMaterial");
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return View();
+        }
+
+        public ActionResult DelMaterialVideo(int id, int SmId)
+        {
+            try
+            {
+                bool isDeleted = false;
+                isDeleted = comm.DelMaterialVideo(id);
+                if (isDeleted)
+                {
+                    TempData["Success"] = "Video deleted successfully";
+                    return RedirectToAction("SkillMaterialDetail", new { id = SmId });
+                }
+                else
+                {
+                    TempData["Error"] = "Video not deleted";
+                    return RedirectToAction("SkillMaterialDetail", new { id = SmId });
+                }
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Video not deleted";
+                return RedirectToAction("SkillMaterialDetail", new { id = SmId });
+            }
+        }
+
+        public ActionResult LoginLogs()
+        {
+            try
+            {
+                List<UserCode> cList = new List<UserCode>();
+                cList = GetCodesForCoupan();
+                SelectList list = new SelectList(cList, "usrId", "usrName");
+                ViewData["Users"] = list;
+            }
+            catch (Exception)
+            {
+
+            }
+            return View();
+        }
+
+        public ActionResult _LoginLogs(int? UsrId, string fromDate, string toDate)
+        {
+            try
+            {
+                if (UsrId != null)
+                {
+
+                }
+                else if (fromDate != null && toDate != null)
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return PartialView();
+        }
 
         public List<UserCode> GetCodesForCoupan()
         {
@@ -1779,6 +2211,93 @@ namespace EasySystem.Controllers
                 li = JsonConvert.DeserializeObject<List<SkillTypeVM>>(res);
             }
             return li;
+        }
+
+        public List<SkillType> GetSkillList()
+        {
+            List<SkillType> li = new List<SkillType>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/GetSkillTypeList");
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                li = JsonConvert.DeserializeObject<List<SkillType>>(res);
+            }
+            return li;
+        }
+
+        public List<SkillTypeVM> GetSkillTypeListById(int id)
+        {
+            List<SkillTypeVM> li = new List<SkillTypeVM>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("My/GetSkillTypeById?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                li = JsonConvert.DeserializeObject<List<SkillTypeVM>>(res);
+            }
+            return li;
+        }
+
+        public List<SkillDetailVM> GetSkillMaterialListById(int id)
+        {
+            List<SkillDetailVM> li = new List<SkillDetailVM>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/GetMaterialTypeById?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                li = JsonConvert.DeserializeObject<List<SkillDetailVM>>(res);
+            }
+            return li;
+        }
+
+        public List<SkillType> PopulateSkillType()
+        {
+            List<SkillType> li = new List<SkillType>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("My/PopulateSkillType");
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                li = JsonConvert.DeserializeObject<List<SkillType>>(res);
+            }
+            return li;
+        }
+
+        public string VideoLink(string Link)
+        {
+            if (Link != null)
+            {
+                SkillMaterialDetail skill = new SkillMaterialDetail();
+                skill.SmdURL = Link;
+                TempData["Url"] = TempData["Url"] + "," + Link;
+                return "";
+            }
+
+            if (Link == null)
+            {
+                var Url = TempData["Url"].ToString();
+                List<string> Urls = Url.Split(',').ToList();
+                foreach (var item in Urls)
+                {
+                    var u = item;
+                }
+            }
+
+            else
+            {
+                return "Not Added";
+            }
+            return "Not Added";
         }
 
     }

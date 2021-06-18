@@ -8,43 +8,42 @@
             <div class="TestData">
                 <div class="row">
                     <div class="col-md-12">
-                        <p>@QNo: @i.qQuestion</p>
+                        <p><b>@QNo: @i.qQuestion</b></p>
                         <input type="hidden" value="@i.qId" id="qId" name="optionsRadios">
                         <input type="hidden" value="@i.qCategory" id="qCatId" name="optionsRadios">
                     </div>
                     <div class="col-md-3">
                         <div class="checkbox pull-left">
                             <label>
-                                A:
                                 <input type="radio" value="qOpt1" id="Op1" name="optionsRadios">
-                                @i.qOpt1
+                                A: @i.qOpt1
                             </label>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="checkbox pull-left">
                             <label>
-                                B:
+
                                 <input type="radio" value="qOpt2" id="Op2" name="optionsRadios">
-                                @i.qOpt2
+                                B: @i.qOpt2
                             </label>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="checkbox pull-left">
                             <label>
-                                C:
+
                                 <input type="radio" value="qOpt3" id="Op3" name="optionsRadios">
-                                @i.qOpt3
+                                C: @i.qOpt3
                             </label>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="checkbox pull-left">
                             <label>
-                                D:
+
                                 <input type="radio" value="qOpt4" id="Op4" name="optionsRadios">
-                                @i.qOpt4
+                                D: @i.qOpt4
                             </label>
                         </div>
                     </div>
@@ -53,8 +52,12 @@
         </form>
 
         QNo = QNo + 1;
-        <br />
+        <hr />
     }
+
+    <div class="row">
+        <button type="button" id="btnSubmit" class="btn btn-info" style="background-color:#1b3767">Submit</button>
+    </div>
 
 }
 else
@@ -66,17 +69,13 @@ else
             @TempData["Info"].
         </div>
     }
-    @if (TempData["Error"] != null)
-    {
-        <div role="alert" class="alert alert-danger">
-            <strong><i class="fa fa-thumbs-o-down"></i></strong>
-            @TempData["Error"].
-        </div>
-    }
+    
+    <a asp-action="Certification" asp-controller="My" class="btn btn-info" style="background-color:#1b3767">Go back</a>
 }
-<div class="row">
-    <button type="button" id="btnSubmit" class="btn btn-info" style="background-color:#1b3767">Submit</button>
-</div>
+
+
+<link rel="stylesheet" href="~/css/sweetalert.css">
+<script src="~/js/sweetalert.js"></script>
 
 <script type="text/javascript">
 
@@ -103,8 +102,99 @@ else
         });
         return data;
     }
+
     $("#btnSubmit").click(function (e) {
-        var stId = $("#StId").val();
+
+         swal({
+            title: "Confimation",
+            text: "Are you sure you want to submit the test?",
+            type: "info",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true
+         },
+             function (isConfirm) {
+             if(isConfirm) {
+
+            var stId = $("#StId").val();
+            var caId = $("#qCatId").val();
+            var data = JSON.stringify(getAllDetails());
+            $.ajax({
+            url: "@Url.Action("AddTestResult", "My")",
+            type: "Post",
+            datatype: 'json',
+            //contentType: 'application/json; charset=utf-8',
+            data: { StId: stId, cId: caId, AccDetails: data },
+
+                success: function (response)
+                {
+                    if (response.Result == "Passed") {
+                        swal({
+                            title: "Passed!",
+                            text: "" + response.responseText + "",
+                            type: "success",
+                        }, function (value) {
+                            window.location = '/My/Certification';
+                        });
+                    } else {
+                        swal({
+                            title: "Failed!",
+                            text: "" + response.responseText + "",
+                            type: "error",
+                        }, function (value) {
+                            window.location = '/My/Certification';
+                        });
+                    }
+                },
+            error: function (e) {
+                alert("Error " + e + "");
+
+            }
+        });
+        }
+
+        });
+    });
+</script>
+
+<script>
+    function pageRedirect() {
+        window.location = '/My/Certification';
+    }
+</script>
+
+<script type="text/javascript">
+
+    @*function getAllDetails() {
+        var data = [];
+
+        $('.TestData').each(function () {
+            var Id = $(this).find("#qId").val();
+            var CId = $(this).find("#qCatId").val();
+            var Opt1 = $(this).find("#Op1:checked").val();
+            var Opt2 = $(this).find("#Op2:checked").val();
+            var Opt3 = $(this).find("#Op3:checked").val();
+            var Opt4 = $(this).find("#Op4:checked").val();
+            var alldata = {
+                'qId': Id,
+                'CatId': CId,
+                'Opt1': Opt1,
+                'Opt2': Opt2,
+                'Opt3': Opt3,
+                'Opt4': Opt4,
+                }
+            data.push(alldata);
+
+        });
+        return data;
+    }
+    $("#btnSubmit").click(function (e) {
+
+
+        var MSG = confirm("Are you sure you want to submit the test?");
+        if (MSG)
+        {
+            var stId = $("#StId").val();
         var caId = $("#qCatId").val();
         var data = JSON.stringify(getAllDetails());
         $.ajax({
@@ -117,7 +207,10 @@ else
             success: function (response) {
                 {
                     alert(response.responseText);
-                    //location.reload(true);
+                    function pageRedirect() {
+                        window.location = '/My/Certification';
+                    }
+                    setTimeout(pageRedirect(), 5000);
                 }
             },
             error: function (e) {
@@ -125,5 +218,7 @@ else
 
             }
         });
-    });
+        }
+
+    });*@
 </script>

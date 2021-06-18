@@ -8,6 +8,7 @@
     ViewBag.Image = "~/images/logo.png";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var Image = @Html.DisplayFor(model => model.blogTitleImage);
+    var cImage = @Html.DisplayFor(model => model.blogCoverPageImage);
 }
 
 
@@ -63,6 +64,8 @@
                                         <div class="form-group">
                                             <label for="exampleInputEmail2">Blog Title</label>
                                             <input type="text" asp-for="blogTitle" class="form-control" required>
+                                            <input type="hidden" asp-for="UsrId"  class="form-control">
+                                            <input type="hidden" asp-for="blogId"  class="form-control">
                                         </div>
                                     </div>
 
@@ -76,18 +79,39 @@
                                     {
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="exampleInputEmail2">Current Image</label>
-                                                <img src="~/images/@Image" height="95" width="105" />
+                                                <label for="exampleInputEmail2">Current Thumbnail</label>
+                                                <img src="~/images/Blogs/Thumbnail/@Image" height="95" width="105" />
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Choose New Thumbnail</label>
+                                            <input type="file" name="Image" accept="image/*"  class="form-control">
+                                        </div>
+                                    </div>
+
+
+                                    @if (cImage != null)
+                                    {
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Current Cover Image</label>
+                                                <img src="~/images/Blogs/CoverPage/@cImage" height="95" width="105" />
                                             </div>
                                         </div>
                                     }
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail2">Choose New Image</label>
-                                            <input type="file" name="file" class="form-control">
+                                            <label for="exampleInputEmail2">Choose New Cover Page</label>
+                                            <input type="file" name="cImage" accept="image/*" class="form-control">
                                         </div>
                                     </div>
+
+
 
                                     <div class="col-md-4">
                                         <div class="form-group">

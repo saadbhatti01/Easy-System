@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var ID = @HttpContextAccessor.HttpContext.Session.GetInt32("ID");
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -28,41 +34,20 @@
     <meta name="twitter:image" content="" />
     <meta name="twitter:url" content="https://www.universalskill.co" />
     <meta name="twitter:card" content="" />
-
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700" rel="stylesheet">
-
     <link rel="shortcut icon" href="~/images/logo.png" type="image/x-icon">
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="~/Public/css/animate.css">
-    <!-- Icomoon Icon Fonts-->
-    <link rel="stylesheet" href="~/Public/css/icomoon.css">
-    <!-- Bootstrap  -->
-    <link rel="stylesheet" href="~/Public/css/bootstrap.css">
 
-    <!-- Magnific Popup -->
-    <link rel="stylesheet" href="~/Public/css/magnific-popup.css">
-
-    <!-- Flexslider  -->
-    <link rel="stylesheet" href="~/Public/css/flexslider.css">
-
-    <!-- Owl Carousel -->
-    <link rel="stylesheet" href="~/Public/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="~/Public/css/owl.theme.default.min.css">
-
-    <!-- Flaticons  -->
-    <link rel="stylesheet" href="~/Public/css/flaticon.css">
-
-    <!-- Theme style  -->
-    <link rel="stylesheet" href="~/Public/css/style.css">
-
-    <!-- Modernizr JS -->
-    <script src="~/Public/js/modernizr-2.6.2.min.js"></script>
-    <!-- FOR IE9 below -->
-    <!--[if lt IE 9]>
-    <script src="js/respond.min.js"></script>
-    <![endif]-->
-
+    <link href="~/Public/css/animate.css" rel="stylesheet" />
+    <link href="~/Public/css/icomoon.css" rel="stylesheet" />
+    <link href="~/Public/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Public/css/magnific-popup.css" rel="stylesheet" />
+    <link href="~/Public/css/flexslider.css" rel="stylesheet" />
+    <link href="~/Public/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="~/Public/css/owl.theme.default.min.css" rel="stylesheet" />
+    <link href="~/Public/css/flaticon.css" rel="stylesheet" />
+    <link href="~/Public/css/style.css" rel="stylesheet" />
+    <link href="~/Public/css/autocomplete.css" rel="stylesheet" />
+    <link href="~/Public/css/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Public/css/Search.css" rel="stylesheet" />
 </head>
 <body>
     <div class="colorlib-loader"></div>
@@ -73,18 +58,19 @@
             <div class="upper-menu">
                 <div class="container">
                     <div class="row">
-                        <div class="col-xs-4">
-                            <p>Welcome to Cloud Knowledge</p>
+                        <div class="col-xs-8">
+                            <p style="color: white">Welcome to Cloud Knowledge   <a style="margin-left:250px; color:whitesmoke;" href="http://covid.gov.pk/press-release" target="_blank"> Stay up to date on COVID-19 info </a></p>
                         </div>
-                        <div class="col-xs-6 col-md-push-2 text-right">
+                        <div class="col-xs-4 col-md-push-0 text-center">
                             @*<p>
-                                    <ul class="colorlib-social-icons">
-                                    <li><a href="https://www.facebook.com/LESkillsOfficial/"><i class="icon-facebook"></i></a></li>
-                                    <li><a href="https://www.youtube.com/channel/UCfbH8aW1Q_X8GMZKTuG1biA"><i class="icon-youtube"></i></a></li>
-                                    <li><a href="https://www.instagram.com/LESkillsOfficial/"><i class="icon-instagram"></i></a></li>
+                                <ul class="colorlib-social-icons">
+                                    <li><a href="https://www.facebook.com/UniversalSkills.co" target="_blank"><i class="icon-facebook"></i></a></li>
+                                    &nbsp;&nbsp;
+                                   
+                                    <li><a href="https://www.instagram.com/UniversalSkills.co/" target="_blank"><i class="icon-instagram"></i></a></li>
                                 </ul>
-                                </p>*@
-                            @*<p class="btn-apply"><a href="~/Users/Login">Login</a></p>*@
+                            </p>
+                            <p class="btn-apply"><a href="~/Users/Login">Login</a></p>*@
                         </div>
                     </div>
                 </div>
@@ -92,21 +78,39 @@
             <div class="top-menu">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4">
-                            <div id="colorlib-logo">@Html.ActionLink("Universal Skills", "Index", "Home") </div>
+                        <div class="col-md-2">
+                            <div id="colorlib-logo"><a asp-action="Index" asp-controller="Home"><img src="~/images/Universal-Skills_Logo.png" alt="Universal Skills" /> </a></div>
                         </div>
-                        <div class="col-md-8 text-right menu-1">
+                        <div class="col-md-3">
+                            <form asp-action="Get" asp-controller="Courses">
+                                <input type="text" placeholder="search course" name="Course" id="SearchCourse" class="Searchtext form-control" />
+                            </form>
+
+                        </div>
+                        <div class="col-md-7 text-right menu-1">
                             <ul>
+
                                 <li>@Html.ActionLink("Home", "Index", "Home")</li>
                                 <li>@Html.ActionLink("About", "About", "Home")</li>
-                                <li>@Html.ActionLink("Trainings", "Trainings", "Home")</li>
-                                <li>@Html.ActionLink("Pay Fee", "PayFee", "Home")</li>
-                                <li>@Html.ActionLink("Helping Material", "Helping_Material", "Home")</li>
-                                <li>@Html.ActionLink("Blogs", "Index", "Blogs")</li>
-                                <li>@Html.ActionLink("LOGIN", "Login", "Users")</li>
+                                <li>@Html.ActionLink("Courses", "Index", "" + @EasySystem.EasyAPI.EasySysAPI.URLFriendly("Courses") + "")</li>
+                                @*<li>@Html.ActionLink("Pay Fee", "PayFee", "Home")</li>*@
+                                <li>@Html.ActionLink("Guidance", "Index", "Guidance")</li>
+
+                                <li>@Html.ActionLink("Blogs", "Index", "Blogs", new { Public = "Active" })</li>
+
 
                                 @*<li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
-                                <li class="btn-cta"><a href="~/Users/SignUp"><span>Join for Free</span></a></li>
+                                @if (ID == null)
+                                {
+                                    <li>@Html.ActionLink("LOGIN", "Login", "Users")</li>
+                                    <li class="btn-cta"><a href="~/Users/SignUp"><span>Join for Free</span></a></li>
+                                }
+                                else
+                                {
+                                    <li>@Html.ActionLink("My Portal", "Dashboard", "My")</li>
+                                    <li class="btn-cta"><a href="~/Users/Logout"><span>Logout</span></a></li>
+                                }
+
                             </ul>
                         </div>
                     </div>
@@ -115,17 +119,22 @@
         </nav>
 
         @RenderBody()
-        <div id="colorlib-subscribe" class="subs-img" style="background-image: url(../../Public/images/img_bg_2.jpg);" data-stellar-background-ratio="0.5">
-            <div class="overlay"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2 text-center colorlib-heading animate-box">
-                        <h2> Learn with Universal Skills</h2>
-                        <h3 class="view-more"><a href="~/Users/SignUp">Join Now for Free </a></h3>
+
+        @if (ID == null)
+        {
+            <div id="colorlib-subscribe" class="subs-img" style="background-image: url(../../Public/images/img_bg_1.jpg);" data-stellar-background-ratio="0.5">
+                <div class="overlay"></div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2 text-center colorlib-heading animate-box">
+                            <h2> Learn with Universal Skills</h2>
+                            <h3 class="view-more"><a href="~/Users/SignUp">Join Now for Free </a></h3>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+
 
     </div>
 
@@ -148,9 +157,8 @@
                             <li><a href="~/Home/Index"><i class="icon-check"></i> Home</a></li>
                             <li><a href="~/Home/About"><i class="icon-check"></i> About</a></li>
                             <li><a href="~/Home/Trainings"><i class="icon-check"></i> Trainings</a></li>
-                            <li><a href="~/Home/PayFee"><i class="icon-check"></i> Pay Fee</a></li>
-                            <li><a href="~/Home/Helping_Material"><i class="icon-check"></i> Helping Material</a></li>
-                            
+                            <li><a href="~/Guidance/Index"><i class="icon-check"></i> Guidance</a></li>
+
                         </ul>
                     </p>
                 </div>
@@ -163,6 +171,7 @@
                             <li><a href="~/Home/Terms">Terms </a></li>
                             <li><a href="~/Home/RefundPolicy">Refund Policy</a></li>
                             <li><a href="~/Home/PrivacyPolicy">Privacy Policy</a></li>
+                            <li><a href="~/Verify/">Certificate Verification</a></li>
                         </ul>
                     </p>
                     @*<h4>Socials</h4>
@@ -184,9 +193,13 @@
                             London <br />
                             WC1X 0ND
                         </li>
+                        <li>
+                            <i class="icon-location4"></i> Lahore, Pakistan
+
+                        </li>
                         <li><a href="mailto:info@universalSkills.co"><i class="icon-envelop"></i> info@universalSkills.co</a></li>
                         <li><a href="http://universalSkills.co"><i class="icon-sina-weibo"></i> universalSkills.co</a></li>
-                        <li><i class="icon-mobile22"></i> 0335-4544844</li>
+
                     </ul>
                 </div>
             </div>
@@ -199,7 +212,7 @@
                             <small class="block">
                                 &copy;
                                 Copyright &copy;
-                                <script>document.write(new Date().getFullYear());</script> All rights reserved | Powered by: UNIVERSAL SKILLS (SMC-PVT.) | Incorporation # 0150163 | UK: Company # 1261466
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved | UK: Company # 1261466 | PK: Company # 0150163
                             </small>
 
                         </p>
@@ -208,28 +221,27 @@
             </div>
         </div>
     </footer>
-    @*</div>*@
 
-    <!-- jQuery -->
+
     <script src="~/Public/js/jquery.min.js"></script>
-    <!-- jQuery Easing -->
-    <script src="~/Public/js/jquery.easing.1.3.js"></script>
-    <!-- Bootstrap -->
     <script src="~/Public/js/bootstrap.min.js"></script>
-    <!-- Waypoints -->
     <script src="~/Public/js/jquery.waypoints.min.js"></script>
-    <!-- Stellar Parallax -->
     <script src="~/Public/js/jquery.stellar.min.js"></script>
-    <!-- Flexslider -->
     <script src="~/Public/js/jquery.flexslider-min.js"></script>
-    <!-- Owl carousel -->
     <script src="~/Public/js/owl.carousel.min.js"></script>
-    <!-- Magnific Popup -->
     <script src="~/Public/js/jquery.magnific-popup.min.js"></script>
     <script src="~/Public/js/magnific-popup-options.js"></script>
-    <!-- Counters -->
     <script src="~/Public/js/jquery.countTo.js"></script>
-    <!-- Main -->
     <script src="~/Public/js/main.js"></script>
+    <script src="~/Public/js/modernizr-2.6.2.min.js"></script>
+    <script src="~/Public/js/jquery-ui.js"></script>
+
+    <script>
+
+        $("#SearchCourse").autocomplete({
+        source: '@Url.Action("SearchCourse", "Courses")'
+    });
+    </script>
+
 </body>
 </html>

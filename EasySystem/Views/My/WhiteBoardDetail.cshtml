@@ -20,6 +20,10 @@
                                 <span><a asp-controller="Users" asp-action="@TempData["Page"]" asp-route-id="@detail.usrId" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
 
                             }
+                            else if (TempData["Page"].ToString() == "Profile")
+                            {
+                                <span><a asp-controller="Users" asp-action="Profile" asp-route-id="@detail.usrId" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
+                            }
                             else
                             {
                                 <span><a asp-controller="My" asp-action="@TempData["Page"]" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
@@ -44,6 +48,18 @@
                                 <td>@detail.uwbName</td>
                             </tr>
                             <tr>
+                                <th>Type</th>
+                                @if (detail.uwbType == 0)
+                                {
+                                    <td>Free</td>
+                                }
+                                else if (detail.uwbType == 1)
+                                {
+                                    <td>Paid</td>
+                                }
+                            </tr>
+
+                            <tr>
                                 <th>Day</th>
                                 <td>@detail.uwbDay</td>
                             </tr>
@@ -66,3 +82,16 @@
     <!-- Panel Content -->
 </div>
 
+@*<script async charset="utf-8" src="//cdn.embedly.com/widgets/platform.js"></script>*@
+<script src="~/js/Platform.js"></script>
+<script>
+    document.querySelectorAll( 'oembed[url]' ).forEach( element => {
+        // Create the <a href="..." class="embedly-card"></a> element that Embedly uses
+        // to discover the media.
+        const anchor = document.createElement( 'a' );
+
+        anchor.setAttribute( 'href', element.getAttribute( 'url' ) );
+        anchor.className = 'embedly-card';
+        element.appendChild( anchor );
+    });
+</script>

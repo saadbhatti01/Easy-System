@@ -5,6 +5,8 @@
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
+
+
 <aside id="colorlib-hero">
     <div class="flexslider">
         <ul class="slides">
@@ -27,7 +29,7 @@
                     <div class="row">
                         <div class="col-md-8 col-sm-12 col-md-offset-2 slider-text">
                             <div class="slider-text-inner text-center">
-                                <h1>Online Free Trainings</h1>
+                                <h1>Online Free Courses</h1>
                                 <p><a href="~/Users/SignUp" class="btn btn-primary btn-lg btn-learn">Join for Free</a></p>
                             </div>
                         </div>
@@ -47,19 +49,6 @@
                     </div>
                 </div>
             </li>
-            <li style="background-image: url(../../Public/images/img_bg_4.jpg);">
-                <div class="overlay"></div>
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-8 col-sm-12 col-md-offset-2 slider-text">
-                            <div class="slider-text-inner text-center">
-                                <h1>Best Online Learning Cloud</h1>
-                                <p><a href="~/Users/SignUp" class="btn btn-primary btn-lg btn-learn">Join for Free</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
         </ul>
     </div>
 </aside>
@@ -73,14 +62,14 @@
                         <span class="icon"><i class="flaticon-market"></i></span>
                         <div class="desc">
                             <h3>Get Trainings Online</h3>
-                            <p><a href="~/Home/Trainings" class="view-more">View More</a></p>
+                            <p><a href="~/Courses/Index" class="view-more">View More</a></p>
                         </div>
                     </div>
                     <div class="one-third color-2 animate-box">
                         <span class="icon"><i class="flaticon-open-book"></i></span>
                         <div class="desc">
                             <h3>Online Library Store</h3>
-                            <p><a href="~/Home/Trainings" class="view-more">View More</a></p>
+                            <p><a href="~/Courses/All" class="view-more">View More</a></p>
                         </div>
                     </div>
                     <div class="one-third color-3 animate-box">
@@ -157,6 +146,111 @@
     </div>
 
 
+    <div class="colorlib-Trainings">
+        <div class="container">
+            <br />
+
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 text-center colorlib-heading animate-box">
+                    <h2>Our Courses</h2>
+                    <p>Take the next step toward your personal and professional goals</p>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    @if (ViewData["SkillList"] != null)
+                    {
+                        foreach (var i in (IEnumerable<EasySystem.Models.SkillTypeVM>)ViewData["SkillList"])
+                        {
+                            <div class="col-md-3 col-sm-6">
+                                <div class="edugate-layout-3">
+                                    <div class="edugate-layout-3-wrapper">
+                                        @if (i.StImage != null)
+                                        {
+                                            <a href="#" class="edugate-image"><img src="~/images/SkillType/Thumbnail/@i.StImage" alt="" class="img-responsive" /></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" class="edugate-image"><img src="~/images/Universal-Skills- training-thumbnail-01.jpg" alt="" class="img-responsive" /></a>
+                                        }
+
+
+                                        <div class="edugate-content">
+
+                                            <a href="@Url.Action("SkillsList","Home", new{ id = i.StId, Category = i.StName })" class="title">@i.StName</a>
+
+                                            <a asp-controller="Home" asp-action="SkillsList" asp-route-id="@i.StId" asp-route-Category="@i.StName" class="btn btn-green"><span>Learn more</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+                        <div class="col-md-12">
+                            <a asp-action="Index" class="btn btn-default" asp-controller="Courses" style="float: right; color:black; margin-bottom:20px;"><i class="icon-forward2"></i> View All Courses</a>
+                        </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+    <div id="colorlib-counter" class="colorlib-counters" style="background-image: url(../../Public/images/blog-3.jpg);" data-stellar-background-ratio="0.5">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="col-md-3 col-sm-6 animate-box">
+                        <div class="counter-entry">
+                            <span class="icon"><i class="flaticon-book"></i></span>
+                            <div class="desc">
+                                <span class="colorlib-counter js-counter" data-from="0" data-to="136" data-speed="5000" data-refresh-interval="50"></span>
+                                <span class="colorlib-counter-label">Courses</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 animate-box">
+                        <div class="counter-entry">
+                            <span class="icon"><i class="flaticon-student"></i></span>
+                            <div class="desc">
+                                <span class="colorlib-counter js-counter" data-from="0" data-to="3675" data-speed="5000" data-refresh-interval="50"></span>
+                                <span class="colorlib-counter-label">Trainees</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 animate-box">
+                        <div class="counter-entry">
+                            <span class="icon"><i class="flaticon-TRAINERS"></i></span>
+                            <div class="desc">
+                                <span class="colorlib-counter js-counter" data-from="0" data-to="437" data-speed="5000" data-refresh-interval="50"></span>
+                                <span class="colorlib-counter-label">Trainers</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 animate-box">
+                        <div class="counter-entry">
+                            <span class="icon"><i class="flaticon-earth-globe"></i></span>
+                            <div class="desc">
+                                <span class="colorlib-counter js-counter" data-from="0" data-to="09" data-speed="5000" data-refresh-interval="50"></span>
+                                <span class="colorlib-counter-label">Countries</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div id="colorlib-services">
         <div class="container">
             <div class="row">
@@ -189,7 +283,7 @@
                         </span>
                         <div class="desc">
                             <h3>Practical Training</h3>
-                            <p>from best mentors in world</p>
+                            <p>learn from best mentors across all over the world</p>
                         </div>
                     </div>
                 </div>
@@ -207,174 +301,8 @@
             </div>
         </div>
     </div>
-    <div id="colorlib-counter" class="colorlib-counters" style="background-image: url(../../Public/images/img_bg_2.jpg);" data-stellar-background-ratio="0.5">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <div class="col-md-3 col-sm-6 animate-box">
-                        <div class="counter-entry">
-                            <span class="icon"><i class="flaticon-book"></i></span>
-                            <div class="desc">
-                                <span class="colorlib-counter js-counter" data-from="0" data-to="1539" data-speed="5000" data-refresh-interval="50"></span>
-                                <span class="colorlib-counter-label">Trainings</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 animate-box">
-                        <div class="counter-entry">
-                            <span class="icon"><i class="flaticon-student"></i></span>
-                            <div class="desc">
-                                <span class="colorlib-counter js-counter" data-from="0" data-to="3653" data-speed="5000" data-refresh-interval="50"></span>
-                                <span class="colorlib-counter-label">Trainees</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 animate-box">
-                        <div class="counter-entry">
-                            <span class="icon"><i class="flaticon-TRAINERS"></i></span>
-                            <div class="desc">
-                                <span class="colorlib-counter js-counter" data-from="0" data-to="2300" data-speed="5000" data-refresh-interval="50"></span>
-                                <span class="colorlib-counter-label">Trainers</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 animate-box">
-                        <div class="counter-entry">
-                            <span class="icon"><i class="flaticon-earth-globe"></i></span>
-                            <div class="desc">
-                                <span class="colorlib-counter js-counter" data-from="0" data-to="63" data-speed="5000" data-refresh-interval="50"></span>
-                                <span class="colorlib-counter-label">Countries</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="colorlib-Trainings colorlib-light-grey">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2 text-center colorlib-heading animate-box">
-                    <h2>Our Trainings</h2>
-                    <p>Take the next step toward your personal and professional goals</p>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="row">
-                    @if (TempData["List"] != null)
-                    {
-                        foreach (var i in (IEnumerable<EasySystemAPI.Models.TrainingInfo>)TempData["List"])
-                        {
-                            <div class="col-md-6 animate-box">
 
-                                <h3>
-                                    <a asp-controller="Home" asp-action="TrainingDetail" asp-route-id="@i.tiId">
-
-                                        @i.tiName
-                                        @if (@i.tiPrice != 0)
-                                        {
-                                            @i.tiPrice
-                                        }
-                                        @if (@i.tiPriceDuration != "null")
-                                        {
-                                            @i.tiPriceDuration
-                                        }
-
-                                       
-                                    </a>
-                                </h3>
-                                <p>
-                                    @Html.Raw(i.tiDetail)
-                                </p>
-
-                            </div>
-                        }
-                    }
-
-                </div>
-
-            </div>
-
-
-            @*<div class="row">
-                    <div class="col-md-4 animate-box">
-                        <div class="Trainings">
-                            <div class="Trainings-img" style="background-image: url(../../wwwroot/Public/images/blog-1.jpg);">
-
-                            </div>
-                            <div class="desc">
-                                <h3>Everyday Leadership</h3>
-                                <p>Learn about the “head and heart” of everyday leadership, individual decision making, group decision making, and managing motivation. The objectives are to understand why and how leadership skills are so critical to organizational success, and learn leadership skills.</p>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 animate-box">
-                        <div class="Trainings">
-                            <div class="Trainings-img" style="background-image: url(../../Public/images/Trainings-2.jpg);">
-
-                            </div>
-                            <div class="desc">
-                                <h3>Financial Markets</h3>
-                                <p>Emphasis on financially-savvy leadership skills. Description of practices today and analysis of prospects for the future. Introduction to risk management and behavioral finance principles to understand the real-world functioning of securities, insurance, and banking industries.</p>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 animate-box">
-                        <div class="Trainings">
-                            <div class="Trainings-img" style="background-image: url(../../Public/images/Trainings-3.jpg);">
-
-                            </div>
-                            <div class="desc">
-                                <h3>Learning How to Learn</h3>
-                                <p>Learn about the how the brain uses two very different learning modes and how it encapsulates (“chunks”) information. We’ll also cover illusions of learning, memory techniques, dealing with procrastination, and best practices shown by research to be most effective in helping you master tough subjects.  </p>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 animate-box">
-                        <div class="Trainings">
-                            <div class="Trainings-img" style="background-image: url(../../Public/images/Trainings-4.jpg);">
-
-                            </div>
-                            <div class="desc">
-                                <h3>Speak English Professionally</h3>
-                                <p>You will demonstrate  culturally appropriate body language and tone. As you work through the course, you will complete self- and peer-evaluations. Through a combination of lectures, comprehension and vocabulary quizzes, practice and performance, you’ll gain the skills and confidence to communicate well in English.</p>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 animate-box">
-                        <div class="Trainings">
-                            <div class="Trainings-img" style="background-image: url(../../Public/images/Trainings-5.jpg);">
-
-                            </div>
-                            <div class="desc">
-                                <h3>Immunology Specialization</h3>
-                                <p>This specialization is designed to equip students with the basic concepts and vocabulary of immunology. The goal is to provide students from different backgrounds with a fundamental understanding of immunology and the ability to appreciate and analyze new developments in immunological therapies designed for the treatment of disease.</p>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 animate-box">
-                        <div class="Trainings">
-                            <div class="Trainings-img" style="background-image: url(../../wwwroot/Public/images/blog-5.jpg);">
-
-                            </div>
-                            <div class="desc">
-                                <h3>Positive Psychology</h3>
-                                <p>Learners design and justify small-scale positive interventions to enhance specific aspects of their personal wellbeing based on the skills acquired in each course of the specialization. Personal reflections are implemented provide learners with the skills to impact their personal and professional lives.</p>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>*@
-        </div>
-    </div>
-
-    <div id="colorlib-testimony" class="testimony-img" style="background-image: url(../../Public/images/img_bg_2.jpg);" data-stellar-background-ratio="0.5">
+    <div id="colorlib-testimony" class="testimony-img" style="background-image: url(../../Public/images/img_bg_3.jpg);" data-stellar-background-ratio="0.5">
         <div class="overlay"></div>
         <div class="container">
             <div class="row">
@@ -478,3 +406,16 @@
         </div>
     </div>
 </div>
+
+
+<script src="~/Public/js/jquery.min.js"></script>
+<link type="text/css" rel="stylesheet" href="#" id="color-skins">
+
+<script src="~/Public/js/js.cookie.js"></script>
+<script>
+    if ((Cookies.get('color-skin') != undefined) && (Cookies.get('color-skin') != 'color-1')) {
+        $('#color-skins').attr('href', 'assets/css/' + Cookies.get('color-skin') + '.css');
+    } else if ((Cookies.get('color-skin') == undefined) || (Cookies.get('color-skin') == 'color-1')) {
+        $('#color-skins').attr('href', '/Public/css/color-1.css');
+    }
+</script>

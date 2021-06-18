@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EasySystemAPI.Models;
+﻿using EasySystemAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 
 namespace EasySystemAPI
@@ -28,14 +21,19 @@ namespace EasySystemAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(c =>
-            {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
-            });
+            var EasySysDB = "Server= .; Database= DB_A57897_uniSkills;Trusted_Connection= True; MultipleActiveResultSets= True";
+            //var EasySysDB = "Data Source=SQL5052.site4now.net;Initial Catalog=DB_A57897_uniSkills;User Id=DB_A57897_uniSkills_admin;Password=Nopassword0;";
+            //var EasySysDB = "Data Source=SQL5074.site4now.net;Initial Catalog=db_a71534_test;User Id=db_a71534_test_admin;Password=Test123*";
+
             //services.AddCors(c =>
             //{
             //    c.AddPolicy("AllowOrigin", options => options.WithOrigins("https://localhost:60337", "https://www.leskills.com/"));
             //});
+
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options =>
                 {
@@ -46,7 +44,9 @@ namespace EasySystemAPI
                         (resolver as DefaultContractResolver).NamingStrategy = null;
                     }
                 });
-            services.AddDbContext<EasyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EasySystem")));
+
+            services.AddDbContext<EasyContext>(options => options.UseSqlServer(EasySysDB));
+            //services.AddDbContext<EasyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EasySystem")));
             services.Configure<SkillsFee>(Configuration.GetSection("SkillsFee"));
             services.AddSingleton<DataProtection>();
         }

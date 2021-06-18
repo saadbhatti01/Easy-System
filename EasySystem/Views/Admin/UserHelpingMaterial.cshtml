@@ -194,11 +194,19 @@
                                                     }
                                                     else if (i.umsType == "video")
                                                     {
-                                                        
+
                                                     }
                                                     else
                                                     {
-                                                        <img src="~/images/UserMarketingMaterial/@i.umsFor/@i.umsPath" height="100" width="100" alt="@i.umsTitle">
+                                                        @if (i.umsPath != null)
+                                                        {
+                                                            <img src="~/images/UserMarketingMaterial/@i.umsFor/@i.umsPath" height="100" width="100" alt="@i.umsTitle">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img rc="~/images/admin.jpg" width="30" height="30" />
+                                                        }
+
                                                     }
 
                                                 </td>

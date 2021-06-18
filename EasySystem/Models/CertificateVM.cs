@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EasySystem.Models
 {
@@ -11,6 +8,9 @@ namespace EasySystem.Models
         public string StName { get; set; }
         public string ucNumber { get; set; }
         public string uqrStatus { get; set; }
+        public string usrName { get; set; }
+        public string Mentor { get; set; }
         public DateTime uqrDate { get; set; }
+        public DateTime ucDate { get; set; }
     }
 }

@@ -24,9 +24,14 @@
             </div>
         </div>
         <input type="hidden" id="Val" value="0" />
+        @if (TempData["Public"] != null)
+        {
+            <input type="hidden" id="Public" value="@TempData["Public"]" />
+        }
+
         <div class="main-content-area">
             <div class="row">
-                @if (UsrId != null)
+                @if (UsrId != null && TempData["Public"] == null)
                 {
                     <div class="col-md-12">
 
@@ -77,8 +82,14 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="exampleInputEmail2">Choose Image</label>
-                                                <input type="file" name="file" class="form-control">
+                                                <label for="exampleInputEmail2">Choose Thumbnail</label>
+                                                <input type="file" name="Image" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Choose Cover Page</label>
+                                                <input type="file" name="cImage" class="form-control">
                                             </div>
                                         </div>
 
@@ -174,12 +185,14 @@
 <script>
  function GetData() {
             var count = $("#Val").val();
+            var public = $("#Public").val();
+     
              $("#more").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
              $('#more').attr('disabled', true);
             $.ajax(
                 {
                     url: "@Url.Action("_BlogData", "Blogs")",
-                    data: { Value: count },
+                    data: { Value: count, Public: public },
                     type: "Get",
                     dataType: "html",
                     async: "true",

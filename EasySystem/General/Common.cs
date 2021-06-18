@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace EasySystem.General
 {
@@ -28,6 +27,21 @@ namespace EasySystem.General
             return SerialNo;
         }
 
+        public MentorFee GetMentorFee(int id)
+        {
+            MentorFee users = new MentorFee();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("My/TrainingFee?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                users = JsonConvert.DeserializeObject<MentorFee>(res);
+            }
+            return users;
+        }
+
         public SkillsFee GetSkillsFee()
         {
             SkillsFee fee = new SkillsFee();
@@ -39,6 +53,21 @@ namespace EasySystem.General
             {
                 var res = result.Content.ReadAsStringAsync().Result;
                 fee = JsonConvert.DeserializeObject<SkillsFee>(res);
+            }
+            return fee;
+        }
+
+        public FeeBreakup GetFeeBreakup()
+        {
+            FeeBreakup fee = new FeeBreakup();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Transection/GetFeeBreakup");
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                fee = JsonConvert.DeserializeObject<FeeBreakup>(res);
             }
             return fee;
         }
@@ -103,6 +132,20 @@ namespace EasySystem.General
             return CountryName;
         }
 
+        public List<LoginLogs> GetLogs(int id)
+        {
+            List<LoginLogs> sList = new List<LoginLogs>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Users/GetLogs?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                sList = JsonConvert.DeserializeObject<List<LoginLogs>>(res);
+            }
+            return sList;
+        }
 
         public List<SkillType> GetSkillTypes()
         {
@@ -119,11 +162,26 @@ namespace EasySystem.General
             return sList;
         }
 
-        public List<EasySystem.Models.QuestionVM> GetQuestions()
+        public List<SkillType> GetAllSkillType()
+        {
+            List<SkillType> sList = new List<SkillType>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Questionnaire/GetAllSkillType");
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                sList = JsonConvert.DeserializeObject<List<SkillType>>(res);
+            }
+            return sList;
+        }
+
+        public List<EasySystem.Models.QuestionVM> GetQuestions(int id)
         {
             List<EasySystem.Models.QuestionVM> sList = new List<EasySystem.Models.QuestionVM>();
             HttpClient client = _api.Initial();
-            var data = client.GetAsync("Questionnaire/GetQuestions");
+            var data = client.GetAsync("Questionnaire/GetByQuestions?id=" + id.ToString());
             data.Wait();
             var result = data.Result;
             if (result.IsSuccessStatusCode)
@@ -195,11 +253,28 @@ namespace EasySystem.General
             return sList;
         }
 
+        public List<EasySystem.Models.UserMentorVM> GetOtherTrainees(int id)
+        {
+            List<EasySystem.Models.UserMentorVM> sList = new List<EasySystem.Models.UserMentorVM>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Users/GetMyOtherTrainees?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                sList = JsonConvert.DeserializeObject<List<EasySystem.Models.UserMentorVM>>(res);
+            }
+            return sList;
+        }
+
+
+
         public bool CheckNumber(string Num)
         {
             HttpClient client = _api.Initial();
             var data = client.GetAsync("Questionnaire/CheckNumber?=No" + Num);
-            data.Wait(); 
+            data.Wait();
             var result = data.Result;
             if (result.IsSuccessStatusCode)
             {
@@ -234,6 +309,10 @@ namespace EasySystem.General
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
+
+
+
+
         //For PubliceAdmin Portal
 
         public int GetTrainingTypeCount()
@@ -265,5 +344,132 @@ namespace EasySystem.General
             }
             return SerialNo;
         }
+
+        public bool CheckTrainingDetails(int id)
+        {
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/CheckSkillMaterialDetail?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool CheckQuestionnaire(int id)
+        {
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Questionnaire/CheckQuestionnaire?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public List<SkillMaterialDetail> GetSkillMaterialDetail(int id)
+        {
+            List<SkillMaterialDetail> detail = new List<SkillMaterialDetail>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/GetSkillMaterialDetail?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                detail = JsonConvert.DeserializeObject<List<SkillMaterialDetail>>(res);
+            }
+            return detail;
+        }
+
+        public List<SkillMaterialDetail> GetSkillMaterialDetailAdmin(int id)
+        {
+            List<SkillMaterialDetail> detail = new List<SkillMaterialDetail>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/GetSkillMaterialDetailAdmin?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                detail = JsonConvert.DeserializeObject<List<SkillMaterialDetail>>(res);
+            }
+            return detail;
+        }
+
+
+        public bool DelMaterialVideo(int id)
+        {
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/DelMaterialVideo?id=" + id.ToString());
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public List<SkillType> SkillTypeName()
+        {
+            List<SkillType> detail = new List<SkillType>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/GetSkillType");
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                detail = JsonConvert.DeserializeObject<List<SkillType>>(res);
+            }
+            return detail;
+        }
+
+        public List<SkillType> GetSkillTypeList()
+        {
+            List<SkillType> sList = new List<SkillType>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/GetSkillList");
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                sList = JsonConvert.DeserializeObject<List<SkillType>>(res);
+            }
+            return sList;
+        }
+
+        public List<SkillType> GetSearchCourses()
+        {
+            List<SkillType> sList = new List<SkillType>();
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Skills/GetSearchCourses");
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                sList = JsonConvert.DeserializeObject<List<SkillType>>(res);
+            }
+            return sList;
+        }
+
+
     }
 }

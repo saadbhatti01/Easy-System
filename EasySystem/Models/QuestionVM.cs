@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EasySystem.Models
+﻿namespace EasySystem.Models
 {
     public class QuestionVM
     {
@@ -18,5 +13,6 @@ namespace EasySystem.Models
         public string StName { get; set; }
         public int qCategory { get; set; }
         public bool qStatus { get; set; }
+        public string CreatedBy { get; set; }
     }
 }

@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
 
   <ItemGroup>
+    <!--<PackageReference Include="iTextSharp" Version="5.5.13.2" />
+    <PackageReference Include="itextsharp.xmlworker" Version="5.5.13.2" />-->
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
@@ -19,7 +21,12 @@
   <ItemGroup>
     <Folder Include="Images\Transection\" />
     <Folder Include="Images\Profile\" />
-    <Folder Include="wwwroot\images\SkillTypeImages\" />
+    <Folder Include="wwwroot\images\Blogs\CoverPage\" />
+    <Folder Include="wwwroot\images\Blogs\Thumbnail\" />
+    <Folder Include="wwwroot\images\VerifiedPictures\" />
+    <Folder Include="wwwroot\images\ProfilePictures\" />
+    <Folder Include="wwwroot\images\SkillType\Cover\" />
+    <Folder Include="wwwroot\images\SkillType\Thumbnail\" />
     <Folder Include="wwwroot\images\UserMarketingMaterial\All\" />
     <Folder Include="wwwroot\images\UserMarketingMaterial\personal\" />
   </ItemGroup>

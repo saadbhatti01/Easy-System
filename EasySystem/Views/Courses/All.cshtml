@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewData["Title"] = "All";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+<script src="~/Public/js/jquery.min.js"></script>
+<link type="text/css" rel="stylesheet" href="#" id="color-skins">
+
+<script src="~/Public/js/js.cookie.js"></script>
+<script>
+    if ((Cookies.get('color-skin') != undefined) && (Cookies.get('color-skin') != 'color-1')) {
+        $('#color-skins').attr('href', 'assets/css/' + Cookies.get('color-skin') + '.css');
+    } else if ((Cookies.get('color-skin') == undefined) || (Cookies.get('color-skin') == 'color-1')) {
+        $('#color-skins').attr('href', '/Public/css/color-1.css');
+    }
+</script>
+
+<div class="container" style="margin-top: 10px !important;">
+    <div class="row">
+        @if (TempData["Info"] != null)
+        {
+            <div class="alert alert-info alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Success! @TempData["Info"].
+            </div>
+        }
+
+        <div id="wrapper-content">
+            <!-- PAGE WRAPPER-->
+            <div id="page-wrapper">
+                <!-- MAIN CONTENT-->
+                <div class="main-content">
+                    <!-- CONTENT-->
+                    <div class="content">
+                        <div class="top-content">
+                            <a asp-action="Search" class="btn btn-default" asp-controller="Courses" style="float: right; color:black; margin-bottom:20px;"><i class="icon-address-book"></i> Courses having Certificate</a>
+                        </div>
+
+                      
+
+                        <div class="section section-padding list-categories">
+                            @if (TempData["List"] != null)
+                            {
+                                foreach (var m in (List<EasySystemAPI.Models.SkillType>)TempData["List"])
+                                {
+                                    if (m.StId == m.SubType)
+                                    {
+                                        <div class="container">
+                                            <div class="list-categories-wrapper">
+                                                <div class="top-content">
+                                                    <div class="result-output"><h3>@m.StName</h3></div>
+                                                </div>
+                                                <div class="list-categories-content row">
+                                                    <div class="customs-row">
+                                                        <div id="Data">
+
+                                                            @foreach (var i in (List<EasySystemAPI.Models.SkillType>)TempData["List"])
+                                                            {
+                                                                if (i.SubType == m.StId && i.StId != m.StId)
+                                                                {
+                                                                    <div class="col-md-3 col-sm-6">
+                                                                        <div class="edugate-layout-3">
+                                                                            <div class="edugate-layout-3-wrapper">
+                                                                                @if (i.StImage != null)
+                                                                                {
+                                                                                    <img src="~/images/SkillType/Thumbnail/@i.StImage" alt="@i.StName" height="300" width="300" class="img-responsive" />
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <img src="~/images/Universal-Skills- training-thumbnail-01.jpg" alt="@i.StName" height="300" width="300" class="img-responsive" />
+                                                                                }
+
+
+                                                                                <div class="edugate-content">
+
+
+
+                                                                                    <a href="@Url.Action("List","Courses", new{ id = i.StId, Category = @EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.StName) })" class="title">@i.StName</a>
+
+                                                                                    <a asp-controller="Courses" asp-action="List" asp-route-id="@i.StId" asp-route-Category="@EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.StName)" class="btn btn-green"><span>Learn more</span></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+
+                                                            }
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

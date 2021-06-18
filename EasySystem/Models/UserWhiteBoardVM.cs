@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EasySystem.Models
+﻿namespace EasySystem.Models
 {
     public class UserWhiteBoardVM
     {
         public int uwbId { get; set; }
         public string usName { get; set; }
         public int usrId { get; set; }
+        public int uwbType { get; set; }
         public string uwbName { get; set; }
         public string uwbDetail { get; set; }
         public string uwbDay { get; set; }

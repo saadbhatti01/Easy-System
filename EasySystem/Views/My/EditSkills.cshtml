@@ -62,13 +62,13 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail2">Skill Level (Out of Ten)</label>
-                                            <select class="form-control" asp-for="usLevel">
-                                                @for (var i = 10; i >= 1; i--)
-                                                {
-                                                    <option value="@i">@i</option>
-                                                }
-                                            </select>
+                                            <label for="exampleInputEmail2">Type</label>
+                                            @{
+                                                var list = new List<SelectListItem>();
+                                                list.Add(new SelectListItem { Text = "Free", Value = "0" });
+                                                list.Add(new SelectListItem { Text = "Paid", Value = "1" });
+                                            }
+                                            <select asp-for="usLevel" class="form-control" asp-items="@list" required></select>
                                         </div>
                                     </div>
 
@@ -110,13 +110,23 @@
         if (dropdownValue !== "" || dropdownValue !== null) {
             $.ajax({
                 type: 'GET',
-                url: 'https://api.leskills.com/api/My/GeSkillDetail?val=' + dropdownValue,
+                url: 'http://fabricaerp-001-site3.gtempurl.com/api/My/GeSkillDetail?val=' + dropdownValue,
+                //url: 'http://sajawal-001-site3.ctempurl.com/api/My/GeSkillDetail?val=' + dropdownValue,
                 //url: 'http://localhost:54383/api/My/GeSkillDetail?val=' + dropdownValue,
 
                 dataType: 'json',
                 success: function (data) {
                     if (data.Success === "true") {
-                        $("#skillDetail").val(data.Data.GenName);   // Jo Vlaue ye Controller se lay ga us ko StudentName textbox me insert krwaa k StudentName Textboxko readonly kr de ga
+
+                        var rdetail = data.Data.GenName;
+
+                        //convert html to plain text
+                        var html = jQuery(rdetail).text();
+
+                        $("#skillDetail").val(html);
+
+
+                        //$("#skillDetail").val(data.Data.GenName);   
                     } else {
                         $("#skillDetail").val('');
                     }
@@ -132,4 +142,11 @@
         }
     };
 
+</script>
+
+<script>
+    function convertToPlain(rtf) {
+        rtf = rtf.replace(/\\par[d]?/g, "");
+        return rtf.replace(/\{\*?\\[^{}]+}|[{}]|\\\n?[A-Za-z]+\n?(?:-?\d+)?[ ]?/g, "").trim();
+    }
 </script>

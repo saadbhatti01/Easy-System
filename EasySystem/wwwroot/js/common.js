@@ -41,7 +41,7 @@ $(document).on('ready', function(){
     distance : '0px',
     color:'#878787',
     railOpacity : '0.1',
-    size: '2px'
+    size: '2px',
   });
 
   //***** Toggle Full Screen *****//

@@ -51,6 +51,7 @@
                                 }
 
                             </div>
+
                             <input type="hidden" value="@TempData["Total"]" id="amount" />
                             @if (TempData["Transaction"] != null)
                             {
@@ -76,56 +77,85 @@
                             }
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h6>
-                                        My mentor is <b>@TempData["MentorName"]</b>. I am agreeing to pay my Monthly fee <b>@TempData["Total"]/- pkr</b>.
-                                    </h6>
-                                    <br />
-
-                                    @if (TempData["IsPak"] != null)
+                                    @if (TempData["PayMsg"] == null)
                                     {
-                                        @*<form method="post" action="PayNow">
-                                                <button type="submit" id="btnAmount" class="btn btn-info" style="background-color:#1b3767">Pay Now</button>
-                                            </form>*@
-
-                                        <form name="jsform" method="post" action="https://payments.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform">
-                                            <input type="hidden" name="pp_Version" value="@jazz.pp_Version">
-                                            <input type="hidden" name="pp_TxnType" id="pType" value="">
-                                            <input type="hidden" name="pp_Language" value="@jazz.pp_Language">
-                                            <input type="hidden" name="pp_MerchantID" value="@jazz.pp_MerchantID">
-                                            <input type="hidden" name="pp_SubMerchantID" value="">
-                                            <input type="hidden" name="pp_Password" value="@jazz.pp_Password">
-                                            <input type="hidden" name="pp_BankID" value="@jazz.pp_BankID">
-                                            <input type="hidden" name="pp_ProductID" value="@jazz.pp_ProductID">
-                                            <input type="hidden" name="pp_TxnRefNo" id="pp_TxnRefNo" value="@jazz.pp_TxnRefNo">
-                                            <input type="hidden" name="pp_Amount" id="pp_Amount" value="@jazz.pp_Amount">
-                                            <input type="hidden" name="pp_TxnCurrency" value="@jazz.pp_TxnCurrency">
-                                            <input type="hidden" name="pp_TxnDateTime" value="@jazz.pp_TxnDateTime">
-                                            <input type="hidden" name="pp_BillReference" value="@jazz.pp_BillReference">
-                                            <input type="hidden" name="pp_Description" value="@jazz.pp_Description">
-                                            <input type="hidden" name="pp_TxnExpiryDateTime" value="@jazz.pp_TxnExpiryDateTime">
-                                            <input type="hidden" name="pp_ReturnURL" value="@jazz.pp_ReturnURL">
-                                            <input type="hidden" name="pp_SecureHash" value="">
-                                            <input type="hidden" name="ppmpf_1" value="@jazz.ppmpf_1">
-                                            <input type="hidden" name="ppmpf_2" value="@jazz.ppmpf_2">
-                                            <input type="hidden" name="ppmpf_3" value="@jazz.ppmpf_3">
-                                            <input type="hidden" name="ppmpf_4" value="@jazz.ppmpf_4">
-                                            <input type="hidden" name="ppmpf_5" value="@jazz.ppmpf_5">
-                                            <label id="salt" style="display:none;">@jazz.salt</label>
-                                            <div class="formFielWrapper" hidden>
-                                                <label class="">Hash values string: </label>
-                                                <input type="text" id="hashValuesString" value="">
-                                            </div>
-                                            <button type="button" id="btnAmount" class="btn btn-info" onclick="submitForm()" style="background-color:#1b3767">Pay Now</button>
-                                        </form>
+                                        @if (TempData["IsPak"] != null)
+                                        {
+                                            <h6>
+                                                My mentor is<b> @TempData["MentorName"]</b>. I am agreeing to pay my Monthly fee <b>@TempData["Total"]/- pkr</b>.
+                                            </h6>
+                                        }
+                                        else
+                                        {
+                                            <h6>
+                                                My mentor is<b>@TempData["MentorName"]</b>. I am agreeing to pay my Monthly fee <b>@TempData["Total"]/- USD</b>.
+                                            </h6>
+                                        }
 
                                     }
                                     else
                                     {
-                                        <div class="col-md-8">
-                                            <div id="PayWithPaypal">
-                                                <div id="paypal-button-container"></div>
+                                        @if (TempData["Success"] == null)
+                                        {
+                                            <h6>
+                                                @TempData["PayMsg"]
+                                            </h6>
+                                        }
+                                    }
+
+                                    <br />
+
+                                    @*<form method="post" action="PayNow">
+                                            <button type="submit" id="btnAmount" class="btn btn-info" style="background-color:#1b3767">Pay Now</button>
+                                        </form>*@
+
+                                    @if (TempData["IsPak"] != null)
+                                    {
+
+                                        @if (TempData["PayNow"] != null)
+                                        {
+                                            <form name="jsform" method="post" action="https://payments.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform">
+                                                <input type="hidden" name="pp_Version" value="@jazz.pp_Version">
+                                                <input type="hidden" name="pp_TxnType" id="pType" value="">
+                                                <input type="hidden" name="pp_Language" value="@jazz.pp_Language">
+                                                <input type="hidden" name="pp_MerchantID" value="@jazz.pp_MerchantID">
+                                                <input type="hidden" name="pp_SubMerchantID" value="">
+                                                <input type="hidden" name="pp_Password" value="@jazz.pp_Password">
+                                                <input type="hidden" name="pp_BankID" value="@jazz.pp_BankID">
+                                                <input type="hidden" name="pp_ProductID" value="@jazz.pp_ProductID">
+                                                <input type="hidden" name="pp_TxnRefNo" id="pp_TxnRefNo" value="@jazz.pp_TxnRefNo">
+                                                <input type="hidden" name="pp_Amount" id="pp_Amount" value="@jazz.pp_Amount">
+                                                <input type="hidden" name="pp_TxnCurrency" value="@jazz.pp_TxnCurrency">
+                                                <input type="hidden" name="pp_TxnDateTime" value="@jazz.pp_TxnDateTime">
+                                                <input type="hidden" name="pp_BillReference" value="@jazz.pp_BillReference">
+                                                <input type="hidden" name="pp_Description" value="@jazz.pp_Description">
+                                                <input type="hidden" name="pp_TxnExpiryDateTime" value="@jazz.pp_TxnExpiryDateTime">
+                                                <input type="hidden" name="pp_ReturnURL" value="@jazz.pp_ReturnURL">
+                                                <input type="hidden" name="pp_SecureHash" value="">
+                                                <input type="hidden" name="ppmpf_1" value="@jazz.ppmpf_1">
+                                                <input type="hidden" name="ppmpf_2" value="@jazz.ppmpf_2">
+                                                <input type="hidden" name="ppmpf_3" value="@jazz.ppmpf_3">
+                                                <input type="hidden" name="ppmpf_4" value="@jazz.ppmpf_4">
+                                                <input type="hidden" name="ppmpf_5" value="@jazz.ppmpf_5">
+                                                <label id="salt" style="display:none;">@jazz.salt</label>
+                                                <div class="formFielWrapper" hidden>
+                                                    <label class="">Hash values string: </label>
+                                                    <input type="text" id="hashValuesString" value="">
+                                                </div>
+                                                <button type="button" id="btnAmount" class="btn btn-info" onclick="submitForm()" style="background-color:#1b3767">Pay Now</button>
+                                            </form>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (TempData["PayNow"] != null)
+                                        {
+                                            <div class="col-md-8">
+                                                <div id="PayWithPaypal">
+                                                    <div id="paypal-button-container"></div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        }
                                     }
 
 
@@ -134,22 +164,25 @@
                                     <br />
 
                                 </div>
-
-                                <div class="col-md-6">
-                                    <button type="button" class="btn btn-info" id="btnCoupon" onclick="return DisplayCoupon();" style="background-color:#1b3767">Use Coupon</button>
-                                    <br />
-                                    <br />
-                                    <div id="ShowCoupon" style="display:none;">
-                                        <h6>
-                                            If you have a coupon then enter coupon value in below box and click on submit.
-                                        </h6>
-                                        <form asp-controller="MyTransaction" asp-action="Coupan">
-                                            <input type="number" required asp-for="cCode" maxlength="8" class="col-md-4 form-control" placeholder="Coupon Value" />
-                                            <br />
-                                            <button type="submit" class="btn btn-info" style="background-color:#1b3767">SUBMIT</button>
-                                        </form>
+                                @if (TempData["PayNow"] != null)
+                                {
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-info" id="btnCoupon" onclick="return DisplayCoupon();" style="background-color:#1b3767">Use Coupon</button>
+                                        <br />
+                                        <br />
+                                        <div id="ShowCoupon" style="display:none;">
+                                            <h6>
+                                                If you have a coupon then enter coupon value in below box and click on submit.
+                                            </h6>
+                                            <form asp-controller="MyTransaction" asp-action="Coupan">
+                                                <input type="number" required asp-for="cCode" maxlength="8" class="col-md-4 form-control" placeholder="Coupon Value" />
+                                                <br />
+                                                <button type="submit" class="btn btn-info" style="background-color:#1b3767">SUBMIT</button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -161,11 +194,12 @@
 </div>
 <script src="~/js/jquery-2.1.3.js"></script>
 
-@if (TempData["IsPak"] != null)
-{
-    <script src="https://sandbox.jazzcash.com.pk/Sandbox/Scripts/hmac-sha256.js"></script>
-}
+@*@if (TempData["IsPak"] != null)
+    {
 
+    }*@
+
+<script src="https://sandbox.jazzcash.com.pk/Sandbox/Scripts/hmac-sha256.js"></script>
 
 
 <script>
@@ -175,7 +209,7 @@
     }
 
 
-    setTimeout(location.reload.bind(location), 180000);
+    setTimeout(location.reload.bind(location), 420000);
 </script>
 
 
@@ -279,7 +313,8 @@
 
 @if (TempData["IsPak"] == null)
 {
-    <script src="https://www.paypal.com/sdk/js?client-id=AX-_2IOw08vJUrhkqlIY388465hiSs3tJYrpBc-6WbUMt7YtEzzGtxS_6EkjEdN7CP6-zZkrdKXOhHrt&currency=USD"></script>
+    @*<script src="https://www.paypal.com/sdk/js?client-id=AX-_2IOw08vJUrhkqlIY388465hiSs3tJYrpBc-6WbUMt7YtEzzGtxS_6EkjEdN7CP6-zZkrdKXOhHrt&currency=USD"></script>*@
+    <script src="https://www.paypal.com/sdk/js?client-id=AbCf8mElufUh6bG8Ll0_XpDwXg5wlZ-piAkuncMxEFiwEyhKJZIwMAtKlUZR3WYjPPE1it0tGGLIiUqF&currency=USD"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -294,6 +329,12 @@
                 // Render the PayPal button into #paypal-button-container
                 paypal.Buttons({
 
+                    //style: {
+                    //    shape: 'pill',
+                    //    color: 'white',
+                    //    layout: 'horizontal',
+                    //    label: 'pay',
+                    //},
                     // Set up the transaction
                     createOrder: function (data, actions) {
                         return actions.order.create({

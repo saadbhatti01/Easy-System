@@ -71,7 +71,7 @@
                                     @{
                                         var list = new List<SelectListItem>();
                                         list.Add(new SelectListItem { Text = "Male", Value = "Male" });
-                                        list.Add(new SelectListItem { Text = "Female", Value = "Female" });
+                                        list.Add(new SelectListItem { Text = "Female", Value = "female" });
 
                                     }
                                     <select asp-for="usrGender" class="form-control" disabled="@(true)" asp-items="@list" required></select>
@@ -108,7 +108,7 @@
                                     </div>
                                     <div class="col-md-3 form-group">
                                         <label for="">Current Image</label>
-                                        <span><img src="~/images/@image" width="95" height="95" alt="" /></span>
+                                        <span><img src="~/images/ProfilePictures/@image" width="95" height="95" alt="" /></span>
 
                                     </div>
 

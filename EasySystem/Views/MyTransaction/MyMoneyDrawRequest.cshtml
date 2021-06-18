@@ -1,10 +1,10 @@
-﻿@model  EasySystemAPI.Models.UserDrawRequest
+﻿@model EasySystemAPI.Models.UserDrawRequest
 @{
     ViewData["Title"] = "My_Money_Draw_Request";
     ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
     ViewBag.Image = "~/images/logo.png";
     Layout = "~/Views/Shared/_Layout.cshtml";
-   
+
 }
 
 <div class="main-content">
@@ -21,7 +21,7 @@
         <div class="main-content-area">
             <div class="row">
                 <div class="col-md-12">
-                    
+
                     <div class="row">
                         <div class="widget white with-padding">
                             <div id="Notifocation">
@@ -49,10 +49,21 @@
                                     @TempData["Info"].
                                 </div>
                             }
-                            <div role="alert" class="alert alertoh-blue">
-                                <strong><i class="fa fa-info-circle"></i></strong>
-                                Only your verified bank account(s) come(s) here. For adding bank account <a asp-controller="My" asp-action="BankInfo" target="_blank" style="color: white;">Click here</a>. For more detail see <a asp-controller="Home" asp-action="FAQs" target="_blank" style="color: white;">FAQs</a> section.
-                            </div>  
+                            @if (TempData["Verified"] == null)
+                            {
+                                <div role="alert" class="alert alertoh-orange">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    You cannot send withdraw request because your account verification is not completed yet. For account verification please <a asp-controller="My" asp-action="AccountVerification" target="_blank" style="color: white;">Click here</a>
+                                </div>
+                            }
+                            @if (TempData["Verified"] != null)
+                            {
+                                <div role="alert" class="alert alertoh-blue">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    Only your verified bank account(s) come(s) here and 'ADMIN' will verified your bank account(s). For adding bank account <a asp-controller="My" asp-action="BankInfo" target="_blank" style="color: white;">Click here</a>. For more detail see <a asp-controller="Home" asp-action="FAQs" target="_blank" style="color: white;">FAQs</a> section.
+                                </div>
+                            }
+
                             <form asp-action="MyMoneyDrawRequest" method="post">
                                 <div class="row">
 
@@ -65,7 +76,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="exampleInputEmail2">Amount</label>
-                                            <input type="text" class="form-control" asp-for="udrAmount" value="@TempData["Balance"]" readonly id="toDate" />
+                                            <input type="text" class="form-control" asp-for="udrAmount" value="@TempData["Balance"]" id="Amount"/>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -80,6 +91,10 @@
                                 {
                                     <button type="submit" disabled class="btn btn-info" style="background-color:#1b3767">Send</button>
                                 }
+                                else if (TempData["Verified"] == null)
+                                {
+                                    <button type="submit" class="btn btn-info" disabled style="background-color:#1b3767">Send</button>
+                                }
                                 else
                                 {
                                     <button type="submit" class="btn btn-info" style="background-color:#1b3767">Send</button>
@@ -88,7 +103,7 @@
                             </form>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -96,3 +111,10 @@
     <!-- Panel Content -->
 </div>
 
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#Amount").prop('readonly', true);
+    });
+</script>

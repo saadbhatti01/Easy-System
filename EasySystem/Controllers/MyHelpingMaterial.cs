@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using EasySystem.EasyAPI;
+﻿using EasySystem.EasyAPI;
 using EasySystem.Models;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace EasySystem.Controllers
 {
@@ -57,7 +51,7 @@ namespace EasySystem.Controllers
         {
             try
             {
-                if(Path != null && Path != "")
+                if (Path != null && Path != "")
                 {
                     TempData["Path"] = Path;
                 }

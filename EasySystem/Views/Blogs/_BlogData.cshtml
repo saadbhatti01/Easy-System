@@ -10,12 +10,12 @@
                             @if (i.blogTitleImage != null)
                             {
                                 <div class="blog-post-thumb">
-                                    <img src="~/images/@i.blogTitleImage" width="200" height="200" alt="" />
+                                    <img src="~/images/Blogs/Thumbnail/@i.blogTitleImage" width="200" height="200" alt="@i.blogTitle" />
                                 </div>
                             }
                             else
                             {
-                                <div class="blog-post-thumb"> <img src="~/images/admin.jpg" width="200" height="200" alt="" /> </div>
+                                <div class="blog-post-thumb"> <img src="~/images/admin.jpg" width="200" height="200" alt="@i.blogTitle" /> </div>
                             }
                             <div class="blog-post-info">
                                 @*<h3><a asp-controller="Blogs" asp-action="BlogDetail" asp-route-id="@i.blogId" title="Blog Detail">@i.blogTitle</a></h3>*@

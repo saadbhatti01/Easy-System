@@ -1,11 +1,14 @@
-﻿@model  EasySystem.Models.Transections
+﻿@model EasySystem.Models.Transections
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "My_Wallet";
     ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
     ViewBag.Image = "~/images/logo.png";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var CountryId = @HttpContextAccessor.HttpContext.Session.GetInt32("CountryId");
 }
-@{ 
+@{
     int SrNo = 1;
     double Amount = 0;
 }
@@ -107,8 +110,16 @@
                                             <th>Transaction#</th>
                                             <th>Narration</th>
                                             <th>Date</th>
-                                            <th>Amount (PKR)</th>
-                                            <th>Deduction (PKR)</th>
+                                            @if (CountryId == 6)
+                                            {
+                                                <th>Amount (PKR)</th>
+                                                <th>Deduction (PKR)</th>
+                                            }
+                                            else
+                                            {
+                                                <th>Amount (USD)</th>
+                                                <th>Deduction (USD)</th>
+                                            }
                                             <th>Status</th>
                                         </tr>
                                     </thead>

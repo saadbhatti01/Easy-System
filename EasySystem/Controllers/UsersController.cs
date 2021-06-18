@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EasySystem.Models;
-using EasySystem.EasyAPI;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using Microsoft.AspNetCore.Hosting.Internal;
-using Microsoft.AspNetCore.Hosting;
-using EasySystemAPI.Models;
-using Country = EasySystem.Models.Country;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using EasySystem.EasyAPI;
 using EasySystem.General;
+using EasySystem.Models;
+using EasySystemAPI.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using Country = EasySystem.Models.Country;
 
 namespace EasySystem.Controllers
 {
@@ -32,6 +30,7 @@ namespace EasySystem.Controllers
         {
             try
             {
+                TempData["SearchProfile"] = "SearchProfile";
                 if (id == null)
                 {
                     var Id = HttpContext.Session.GetInt32("ID");
@@ -80,6 +79,20 @@ namespace EasySystem.Controllers
                         {
                             TempData["MyTeam"] = tlist;
                         }
+
+                        var pdata = client.GetAsync("Questionnaire/GetMyPassedCertificateData?id=" + Id.ToString());
+                        pdata.Wait();
+                        var presult = pdata.Result;
+                        if (presult.IsSuccessStatusCode)
+                        {
+                            var ress = presult.Content.ReadAsStringAsync().Result;
+                            var pList = JsonConvert.DeserializeObject<List<CertificateVM>>(ress);
+                            if (pList.Count > 0)
+                            {
+                                TempData["Passed"] = pList;
+                            }
+                        }
+
 
                         //MyBlog
                         //List<EasySystem.Models.Blog> blist = new List<EasySystem.Models.Blog>();
@@ -150,6 +163,20 @@ namespace EasySystem.Controllers
                             TempData["MyTeam"] = tlist;
                         }
 
+
+                        var pdata = client.GetAsync("Questionnaire/GetMyPassedCertificateData?id=" + id.ToString());
+                        pdata.Wait();
+                        var presult = pdata.Result;
+                        if (presult.IsSuccessStatusCode)
+                        {
+                            var ress = presult.Content.ReadAsStringAsync().Result;
+                            var pList = JsonConvert.DeserializeObject<List<CertificateVM>>(ress);
+                            if (pList.Count > 0)
+                            {
+                                TempData["Passed"] = pList;
+                            }
+                        }
+
                         //MyBlog
                         //List<EasySystem.Models.Blog> blist = new List<EasySystem.Models.Blog>();
                         //blist = GetBlogs(ID);
@@ -194,6 +221,7 @@ namespace EasySystem.Controllers
 
             return View();
         }
+
         [HttpPost]
         public IActionResult SignUp(EasySystem.Models.UserSignUpCode usr, string code, string cCode)
         {
@@ -201,6 +229,17 @@ namespace EasySystem.Controllers
             {
                 if (cCode != null && cCode != "")
                 {
+                    //GetUsr Country Id
+                    if (cCode != null)
+                    {
+                        Country country = GetCountryId(cCode);
+                        if (country != null)
+                        {
+                            int cId = country.CountryId;
+                            TempData["CountryId"] = cId;
+                        }
+                    }
+
                     EasySystem.Models.PhoneNumber no = new EasySystem.Models.PhoneNumber();
                     no.Num = usr.usPhone;
                     no.Code = cCode;
@@ -220,6 +259,7 @@ namespace EasySystem.Controllers
                             TempData["MentorCode"] = code;
                         }
                         TempData["cCode"] = cCode;
+
                         return RedirectToAction("Code_Verification");
                     }
                     else
@@ -271,6 +311,7 @@ namespace EasySystem.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Code_Verification(EasySystem.Models.UserSignUpCode usr, string code, string cCode)
         {
@@ -293,6 +334,17 @@ namespace EasySystem.Controllers
                                 TempData["MentorCode"] = code;
                             }
                             TempData["cCode"] = cCode;
+
+                            //GetUsr Country Id
+                            if (cCode != null)
+                            {
+                                Country country = GetCountryId(cCode);
+                                if (country != null)
+                                {
+                                    int cId = country.CountryId;
+                                    TempData["CountryId"] = cId;
+                                }
+                            }
                             return View("Registration");
                         }
                         else
@@ -355,6 +407,11 @@ namespace EasySystem.Controllers
                             usr.CountryId = country.CountryId;
                         }
                     }
+
+                    //Make Name in Uppercase
+                    usr.usrName = usr.usrName.ToUpper();
+
+
                     HttpClient client = _api.Initial();
                     var postSignUp = client.PostAsJsonAsync<EasySystem.Models.Users>("Users/RegisterUser", usr);
                     postSignUp.Wait();
@@ -380,6 +437,21 @@ namespace EasySystem.Controllers
                         HttpContext.Session.SetString("Gender", usrData.usrGender);
                         HttpContext.Session.SetString("Expiry", usrData.ExpiryDate.ToString());
                         TempData["Name"] = HttpContext.Session.GetString("Name");
+
+
+                        //For Login Logs
+                        EasySystemAPI.Models.Users uLogs = new EasySystemAPI.Models.Users();
+                        uLogs.usrId = usrData.usrId;
+                        uLogs.refId = usrData.refId;
+                        HttpClient clientt = _api.Initial();
+                        var logs = client.PostAsJsonAsync("Users/AddLoginLogs", uLogs);
+                        logs.Wait();
+                        var resultt = logs.Result;
+                        if (resultt.IsSuccessStatusCode)
+                        {
+
+                        }
+
 
                         //Add SignUp Congratulations Amount
                         //var SerialNo = comm.GetSerialNo();
@@ -408,7 +480,6 @@ namespace EasySystem.Controllers
                     TempData["Error"] = "Re-Type Password must be matched";
                     return View();
                 }
-
             }
 #pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch (Exception ex)
@@ -498,6 +569,21 @@ namespace EasySystem.Controllers
                                 HttpContext.Session.SetString("Gender", usrData.usrGender);
                                 HttpContext.Session.SetString("Expiry", usrData.ExpiryDate.ToString());
                                 TempData["Name"] = HttpContext.Session.GetString("Name");
+
+
+                                //For Login Logs
+                                EasySystemAPI.Models.Users uLogs = new EasySystemAPI.Models.Users();
+                                uLogs.usrId = usrData.usrId;
+                                uLogs.refId = usrData.refId;
+                                HttpClient clientt = _api.Initial();
+                                var logs = client.PostAsJsonAsync("Users/AddLoginLogs", uLogs);
+                                logs.Wait();
+                                var resultt = logs.Result;
+                                if (resultt.IsSuccessStatusCode)
+                                {
+
+                                }
+
                                 return RedirectToAction("Dashboard", "My");
                             }
                             else
@@ -819,14 +905,29 @@ namespace EasySystem.Controllers
             {
                 if (perImage != null)
                 {
-                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images");
-                    string fileName = Guid.NewGuid().ToString() + "_" + perImage.FileName;
-                    string filePath = Path.Combine(uploadFolder, fileName);
-                    perImage.CopyTo(new FileStream(filePath, FileMode.Create));
-                    usr.usrImage = fileName;
+                    var allowedExtensions = new[] { ".Jpg", ".JPG", ".jpg", ".jpeg", ".JPEG", ".png", ".PNG" };
+                    var ext = Path.GetExtension(perImage.FileName);
+                    if (allowedExtensions.Contains(ext)) //check what type of extension  
+                    {
+                        string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/ProfilePictures");
+                        string fileName = Guid.NewGuid().ToString() + "_" + perImage.FileName;
+                        string filePath = Path.Combine(uploadFolder, fileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            perImage.CopyTo(fileStream);
+                        }
+                        //perImage.CopyTo(new FileStream(filePath, FileMode.Create));
+                        usr.usrImage = fileName;
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Please Upload a valid image file. Valid formates are ('.Jpg','.JPG', '.jpg', .'jpeg', '.JPEG', '.png', '.PNG')";
+                        return RedirectToAction("PersonalInfo");
+                    }
                 }
                 int Id = Convert.ToInt32(HttpContext.Session.GetInt32("ID"));
                 usr.usrId = Id;
+                usr.usrName = usr.usrName.ToUpper();
                 HttpClient client = _api.Initial();
                 var postData = client.PostAsJsonAsync("Users/ChangeUserInfo", usr);
                 postData.Wait();
@@ -857,7 +958,6 @@ namespace EasySystem.Controllers
             }
         }
 
-        [SessionCheck]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
@@ -888,15 +988,22 @@ namespace EasySystem.Controllers
         public List<Country> GetCountryList()
         {
             List<Country> li = new List<Country>();
-            int id = Convert.ToInt32(HttpContext.Session.GetInt32("ID"));
-            HttpClient client = _api.Initial();
-            var data = client.GetAsync("My/GetCountryList");
-            data.Wait();
-            var result = data.Result;
-            if (result.IsSuccessStatusCode)
+            try
             {
-                var res = result.Content.ReadAsStringAsync().Result;
-                li = JsonConvert.DeserializeObject<List<EasySystem.Models.Country>>(res);
+                int id = Convert.ToInt32(HttpContext.Session.GetInt32("ID"));
+                HttpClient client = _api.Initial();
+                var data = client.GetAsync("My/GetCountryList");
+                data.Wait();
+                var result = data.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    li = JsonConvert.DeserializeObject<List<EasySystem.Models.Country>>(res);
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
             return li;
         }
@@ -943,7 +1050,7 @@ namespace EasySystem.Controllers
                 if (result.IsSuccessStatusCode)
                 {
                     var res = result.Content.ReadAsStringAsync().Result;
-                    var list = JsonConvert.DeserializeObject<List<EasySystem.Models.UserSkills>>(res);
+                    var list = JsonConvert.DeserializeObject<List<EasySystem.Models.UserSkillVM>>(res);
                     TempData["UserSkills"] = list;
                     return View();
                 }
@@ -1001,35 +1108,35 @@ namespace EasySystem.Controllers
 
         public IActionResult Blogs(int Id)
         {
-            
-            TempData["UsrId"] = Id;
-//            try
-//            {
-//                HttpClient client = _api.Initial();
-//                var GetBank = client.GetAsync("My/GetUsersBlogs?Id=" + Id.ToString());
-//                GetBank.Wait();
-//                var result = GetBank.Result;
-//                if (result.IsSuccessStatusCode)
-//                {
-//                    var res = result.Content.ReadAsStringAsync().Result;
-//                    var List = JsonConvert.DeserializeObject<List<EasySystem.Models.Blog>>(res);
-//                    TempData["List"] = List;
-//                }
 
-//                else
-//                {
-//                    var res = result.Content.ReadAsStringAsync().Result;
-//                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
-//                    TempData["Error"] = "" + errorMsg.message + "";
-//                }
-//            }
-//#pragma warning disable CS0168 // The variable 'ex' is declared but never used
-//            catch (Exception ex)
-//#pragma warning restore CS0168 // The variable 'ex' is declared but never used
-//            {
-//                TempData["Error"] = "An error occured during getting the request. Please try again later";
-//                //return View();
-//            }
+            TempData["UsrId"] = Id;
+            //            try
+            //            {
+            //                HttpClient client = _api.Initial();
+            //                var GetBank = client.GetAsync("My/GetUsersBlogs?Id=" + Id.ToString());
+            //                GetBank.Wait();
+            //                var result = GetBank.Result;
+            //                if (result.IsSuccessStatusCode)
+            //                {
+            //                    var res = result.Content.ReadAsStringAsync().Result;
+            //                    var List = JsonConvert.DeserializeObject<List<EasySystem.Models.Blog>>(res);
+            //                    TempData["List"] = List;
+            //                }
+
+            //                else
+            //                {
+            //                    var res = result.Content.ReadAsStringAsync().Result;
+            //                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+            //                    TempData["Error"] = "" + errorMsg.message + "";
+            //                }
+            //            }
+            //#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+            //            catch (Exception ex)
+            //#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+            //            {
+            //                TempData["Error"] = "An error occured during getting the request. Please try again later";
+            //                //return View();
+            //            }
             return View();
         }
 

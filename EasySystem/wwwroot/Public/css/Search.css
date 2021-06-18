@@ -1,0 +1,25 @@
+﻿.Searchtext {
+    width: 300px;
+    height: 40px !important;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    margin-left: 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('../../images/Orange-Search-Icon.png');
+    background-position: 255px 8px;
+    border-color: #f36b21;
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 20px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+    .Searchtext:focus {
+        background-color: white;
+        border-color: #f36b21;
+       /* background-image: url('../../images/Orange-Search-Icon.png');
+        background-repeat: no-repeat;
+        background-position: 255px 8px;*/
+    }

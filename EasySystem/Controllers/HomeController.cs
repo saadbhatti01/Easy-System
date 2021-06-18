@@ -1,21 +1,19 @@
-﻿using System;
+﻿using EasySystem.EasyAPI;
+using EasySystem.General;
+using EasySystem.Models;
+using EasySystemAPI.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using EasySystem.Models;
-using EasySystem.EasyAPI;
-using Newtonsoft.Json;
-using System.Net.Http;
-using Microsoft.AspNetCore.Http;
-using EasySystemAPI.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using EasySystem.General;
-using Microsoft.AspNetCore.Hosting;
-
 using System.IO;
-using Microsoft.AspNetCore.Hosting.Internal;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace EasySystem.Controllers
 {
@@ -32,22 +30,29 @@ namespace EasySystem.Controllers
         //[SessionCheck]
         public IActionResult Index()
         {
-            List<TrainingInfo> DataList = new List<TrainingInfo>();
-            DataList = GetTraining();
-            if (DataList.Count > 0)
+            try
             {
-                if(DataList.Count > 6)
+                var Value = 0;
+                HttpClient client = _api.Initial();
+                Task<HttpResponseMessage> Data;
+                Data = client.GetAsync("My/GetMoreSkillType?value=" + Value.ToString());
+                Data.Wait();
+                var result = Data.Result;
+                if (result.IsSuccessStatusCode)
                 {
-                    IEnumerable<TrainingInfo> DataList6 = new List<TrainingInfo>();
-                    DataList6 = DataList.Take(6);
-                    TempData["List"] = DataList6;
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var List = JsonConvert.DeserializeObject<List<SkillTypeVM>>(res);
+                    if (List.Count != 0)
+                    {
+                        ViewData["SkillList"] = List.Take(4);
+                    }
                 }
-                else
-                {
-                    TempData["List"] = DataList;
-                }
-                
             }
+            catch (Exception ex)
+            {
+
+            }
+
             return View();
         }
 
@@ -56,10 +61,12 @@ namespace EasySystem.Controllers
 
             return View();
         }
+
         //public ActionResult Contact()
         //{
         //    return View();
         //}
+
         public ActionResult Helping_Material()
         {
             List<EasySystem.Models.UserHelpingMaterial> DataList = new List<EasySystem.Models.UserHelpingMaterial>();
@@ -84,31 +91,25 @@ namespace EasySystem.Controllers
             return File(memory, "application/pdf", Path.GetFileName(file));
         }
 
-
-        public ActionResult Trainings()
-        {
-            List<TrainingInfo> DataList = new List<TrainingInfo>();
-            DataList = GetTraining();
-            if (DataList.Count > 0)
-            {
-                TempData["List"] = DataList;
-            }
-            return View();
-        }
-
         public ActionResult TrainingDetail(int id)
         {
             try
             {
                 HttpClient client = _api.Initial();
-                var UpdateData = client.GetAsync("Public/GetTrainingDetail?id=" + id.ToString());
+                var UpdateData = client.GetAsync("My/EditSkillType?id=" + id.ToString());
                 UpdateData.Wait();
                 var result = UpdateData.Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var res = result.Content.ReadAsStringAsync().Result;
-                    var data = JsonConvert.DeserializeObject<TrainingInfo>(res);
+                    var data = JsonConvert.DeserializeObject<SkillType>(res);
                     TempData["Detail"] = data;
+
+                    bool isAvailable = com.CheckTrainingDetails(id);
+                    if (isAvailable)
+                    {
+                        TempData["isAvailable"] = isAvailable;
+                    }
                     return View();
                 }
                 else
@@ -118,6 +119,7 @@ namespace EasySystem.Controllers
                     TempData["Error"] = "" + errorMsg.message + "";
                     return RedirectToAction("Trainings");
                 }
+
             }
 
             catch (Exception ex)
@@ -125,6 +127,56 @@ namespace EasySystem.Controllers
                 TempData["Error"] = "An error occured during getting the request. Please try again later";
                 return RedirectToAction("Trainings");
             }
+        }
+
+        public ActionResult TrainingMaterial(int id)
+        {
+            try
+            {
+                var Id = HttpContext.Session.GetInt32("ID");
+                if (Id != null)
+                {
+                    HttpClient client = _api.Initial();
+                    var data = client.GetAsync("Skills/GetSkillMaterial?id=" + id.ToString());
+                    data.Wait();
+                    var result = data.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var res = result.Content.ReadAsStringAsync().Result;
+                        var getdata = JsonConvert.DeserializeObject<List<SkillMaterial>>(res);
+
+                        if (getdata.Count > 0)
+                        {
+                            var getStId = getdata.Select(g => g.StId).FirstOrDefault();
+                            TempData["Material"] = getdata;
+                            List<SkillMaterialDetail> detail = new List<SkillMaterialDetail>();
+                            detail = com.GetSkillMaterialDetail(getStId);
+                            if (detail.Count > 0)
+                            {
+                                TempData["MaterialDetail"] = detail;
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        var res = result.Content.ReadAsStringAsync().Result;
+                        var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                        TempData["Error"] = "" + errorMsg.message + "";
+                        return RedirectToAction("Trainings");
+                    }
+                }
+                else
+                {
+                    TempData["Info"] = "Please Login to continue";
+                    return RedirectToAction("Logout", "Users");
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return View();
         }
 
         public ActionResult PayFee()
@@ -222,8 +274,6 @@ namespace EasySystem.Controllers
             return RedirectToAction("PayFee");
         }
 
-
-        //[SessionCheck]
         public IActionResult Thankyou(JazzCash jazz)
         {
 
@@ -269,7 +319,15 @@ namespace EasySystem.Controllers
                                 EasySystemAPI.Models.Users Mentor = new EasySystemAPI.Models.Users();
                                 usr = com.GetUser(UsrId);
                                 Mentor = com.GetMentor(usr.refId);
-                                TempData["Transaction"] = "Transaction completed successfully." + usr.usrName + " you have paid " + totalAmount + " /- pkr' on dated " + DateTime.Now + ". " + trn.TuitionAmount + " /- pkr has been reflected in your Mentor's (" + Mentor.usrName + "-" + Mentor.usrCode + ") account, " + trn.ThirdPartyCharges + " /- pkr is money transferred fee and " + trn.SoftServiceCharges + " /- pkr is system fee and the transaction # is " + trn.tNumber + ".";
+                                int cId = Convert.ToInt32(HttpContext.Session.GetInt32("CountryId"));
+                                if (cId == 6)
+                                {
+                                    TempData["Transaction"] = "Transaction completed successfully." + usr.usrName + " you have paid " + totalAmount + " /- pkr' on dated " + DateTime.Now + ". " + trn.TuitionAmount + " /- pkr has been reflected in your Mentor's (" + Mentor.usrName + "-" + Mentor.usrCode + ") account, " + trn.ThirdPartyCharges + " /- pkr is money transferred fee and " + trn.SoftServiceCharges + " /- pkr is system fee and the transaction # is " + trn.tNumber + ".";
+                                }
+                                else
+                                {
+                                    TempData["Transaction"] = "Transaction completed successfully." + usr.usrName + " you have paid " + totalAmount + " /- USD' on dated " + DateTime.Now + ". " + trn.TuitionAmount + " /- USD has been reflected in your Mentor's (" + Mentor.usrName + "-" + Mentor.usrCode + ") account, " + trn.ThirdPartyCharges + " /- USD is money transferred fee and " + trn.SoftServiceCharges + " /- USD is system fee and the transaction # is " + trn.tNumber + ".";
+                                }
                                 return RedirectToAction("PayMyFee", "MyTransaction");
                             }
                             else
@@ -297,6 +355,10 @@ namespace EasySystem.Controllers
             return View();
         }
 
+        public IActionResult Verify()
+        {
+            return View();
+        }
 
 
         public List<TrainingInfo> GetTraining()

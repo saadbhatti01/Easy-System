@@ -1,61 +1,28 @@
-﻿using EasySystem.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System;
 using System.Net.Http;
-using System.Security.Policy;
 using System.Text;
-using System.Threading.Tasks;
 
 
 namespace EasySystem.EasyAPI
 {
-    //public static class IsLocalExtension
-    //{
-    //    private const string NullIpAddress = "::1";
-
-    //    public static bool IsLocal(this HttpRequest req)
-    //    {
-    //        var connection = req.HttpContext.Connection;
-    //        if (connection.RemoteIpAddress.IsSet())
-    //        {
-    //            //We have a remote address set up
-    //            return connection.LocalIpAddress.IsSet()
-    //                //Is local is same as remote, then we are local
-    //                ? connection.RemoteIpAddress.Equals(connection.LocalIpAddress)
-    //                //else we are remote if the remote IP address is not a loopback address
-    //                : IPAddress.IsLoopback(connection.RemoteIpAddress);
-    //        }
-
-    //        return true;
-    //    }
-
-    //    private static bool IsSet(this IPAddress address)
-    //    {
-    //        return address != null && address.ToString() != NullIpAddress;
-    //    }
-    //}
-
 
     public class EasySysAPI
     {
-        private readonly GetAPI _myAPI;
-        
+        //private readonly GetAPI _myAPI;
+
         public HttpClient Initial()
         {
             var Client = new HttpClient();
 
-            
-            //Local
+            //Local Server Path
             Client.BaseAddress = new Uri("http://localhost:54383/api/");
 
-            //Live
+            //Live Server Path
             //Client.BaseAddress = new Uri("https://api.leskills.com/api/");
+            //Client.BaseAddress = new Uri("http://sajawal-001-site3.ctempurl.com/api/");
+
+            //New Path
+            //Client.BaseAddress = new Uri("http://fabricaerp-001-site3.gtempurl.com/api/");
 
             return Client;
         }
@@ -189,4 +156,31 @@ namespace EasySystem.EasyAPI
             }
         }
     }
+
+    //public static class IsLocalExtension
+    //{
+    //    private const string NullIpAddress = "::1";
+
+    //    public static bool IsLocal(this HttpRequest req)
+    //    {
+    //        var connection = req.HttpContext.Connection;
+    //        if (connection.RemoteIpAddress.IsSet())
+    //        {
+    //            //We have a remote address set up
+    //            return connection.LocalIpAddress.IsSet()
+    //                //Is local is same as remote, then we are local
+    //                ? connection.RemoteIpAddress.Equals(connection.LocalIpAddress)
+    //                //else we are remote if the remote IP address is not a loopback address
+    //                : IPAddress.IsLoopback(connection.RemoteIpAddress);
+    //        }
+
+    //        return true;
+    //    }
+
+    //    private static bool IsSet(this IPAddress address)
+    //    {
+    //        return address != null && address.ToString() != NullIpAddress;
+    //    }
+    //}
+
 }

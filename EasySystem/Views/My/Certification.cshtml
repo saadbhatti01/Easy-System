@@ -48,36 +48,28 @@
                     <div class="widget white with-padding">
 
                         <div class="row">
-                            @if (TempData["Certificates"] != null)
+                            @if (TempData["Passed"] != null)
                             {
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <div class="widget white">
                                         <div class="panel panel-default work-progress-table">
                                             <div class="panel-heading">Passed</div>
-                                            <div class="form-group" hidden>
-                                                &nbsp;
-                                                <div class="col-md-3">
-                                                    <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
-
-                                                </div>
-                                            </div>
                                             <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
                                                 <theader>
-                                                    @foreach (var i in (List<EasySystem.Models.CertificateVM>)TempData["Certificates"])
+                                                    @foreach (var i in (List<EasySystem.Models.CertificateVM>)TempData["Passed"])
                                                     {
-                                                        if (i.uqrStatus == "Passed")
-                                                        {
-                                                            <tr>
-                                                                <th>@i.StName</th>
-                                                                <th>@i.ucNumber</th>
-                                                                <th>@i.uqrDate.ToString("dd-MMM-yyyy")</th>
-                                                                <th>
 
-                                                                    <a asp-controller="" asp-action="" asp-route-id="@i.ucId" class="btn btn-default"><i class="fa fa-eye"></i> View</a>
-
-                                                                </th>
-                                                            </tr>
-                                                        }
+                                                        <tr>
+                                                            <th>@i.StName</th>
+                                                            <th>@i.ucNumber</th>
+                                                            <th>@i.ucDate.ToString("dd-MMM-yyyy")</th>
+                                                            <th>
+                                                                @*<a title="" asp-controller="My" asp-action="GetCertificate" asp-route-Num="@i.ucNumber"> View</a>*@
+                                                                <a asp-controller="My" asp-action="GetCertificate" asp-route-Num="@i.ucNumber" class="btn btn-primary mini" style="background-color:#1b3767">
+                                                                    <i class="fa fa-eye"></i> View
+                                                                </a>
+                                                            </th>
+                                                        </tr>
                                                     }
                                                 </theader>
                                                 <tfoot>
@@ -91,29 +83,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                            }
+                            @if (TempData["Failed"] != null)
+                            {
+                                <div class="col-md-5">
                                     <div class="widget white">
                                         <div class="panel panel-default work-progress-table">
                                             <div class="panel-heading">Failed</div>
-                                            <div class="form-group" hidden>
-                                                &nbsp;
-                                                <div class="col-md-3">
-                                                    <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
-
-                                                </div>
-                                            </div>
                                             <table id="List1" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
                                                 <theader>
-                                                    @foreach (var i in (List<EasySystem.Models.CertificateVM>)TempData["Certificates"])
+                                                    @foreach (var i in (List<EasySystem.Models.CertificateVM>)TempData["Failed"])
                                                     {
-                                                        if (i.uqrStatus == "Failed")
-                                                        {
-                                                            <tr>
-                                                                <th>@i.StName</th>
-                                                                <th>@i.ucNumber</th>
-                                                                <th>@i.uqrDate.ToString("dd-MMM-yyyy")</th>
-                                                            </tr>
-                                                        }
+
+                                                        <tr>
+                                                            <th>@i.StName</th>
+                                                            <th>@i.uqrDate.ToString("dd-MMM-yyyy")</th>
+                                                        </tr>
+
                                                     }
                                                 </theader>
                                                 <tfoot>
@@ -132,12 +118,25 @@
 
                         </div>
                         <br />
-                        <h4>if you want to get ceritificate then select anyone category from below</h4>
+                        @if (TempData["Passed"] != null || TempData["Failed"] != null)
+                        {
+                            <h4>If you want to get more ceritificate then select anyone category from below</h4>
+                        }
+                        else
+                        {
+                            <h4>If you want to get ceritificate then select anyone category from below</h4>
+                        }
+
                         <div class="row">
                             <div id="SkillsData">
 
                             </div>
                         </div>
+
+
+                        <br />
+                        <button type="button" id="more" class="btn btn-info" style="background-color: #1b3767; margin-top: 10px;">Load More</button>
+
                     </div>
 
                 </div>
@@ -148,7 +147,7 @@
 </div>
 
 <div class="modal fade" id="TestModal">
-    <div class="modal-dialog">
+    <div class="modal-lg modal-dialog">
         <div class="modal-content">
 
             <!-- Modal Header -->
@@ -160,7 +159,14 @@
             <!-- Modal body -->
             <div class="modal-body" id="modelContent">
 
+                <div id="Data">
+
+                </div>
+
+                <button type="button" id="moreSkill" class="btn btn-info" style="background-color:#1b3767; margin-top:10px;">Load More</button>
             </div>
+
+
 
             <!-- Modal footer -->
             <div class="modal-footer">
@@ -178,14 +184,18 @@
     });
 </script>
 
-
+<script>
+    $("#more").click(function () {
+        GetData();
+    });
+</script>
 
 
 <script>
  function GetData() {
             var count = $("#Val").val();
-             //$("#more").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
-             //$('#more').attr('disabled', true);
+             $("#more").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+             $('#more').attr('disabled', true);
             $.ajax(
                 {
                     url: "@Url.Action("_SkillData", "My")",
@@ -198,15 +208,15 @@
                         //Whatever result you have got from your controller with html partial view replace with a specific html.
                         // HTML DOM replace
                         if (data !== "") {
-                            var newC = 9;
+                            var newC = 20;
                             var newCount = parseInt(newC) + parseInt(count);
                             $("#Val").val(newCount);
                             $("#SkillsData").append(data);
-                            //$("#more").html('Load More');
-                            //$('#more').attr('disabled', false);
+                            $("#more").html('Load More');
+                            $('#more').attr('disabled', false);
                         } else {
-                            //$("#more").html('<i class="fa fa-flag-checkered"></i>  No more blogs');
-                            //$('#more').attr('disabled', true);
+                            $("#more").html('<i class="fa fa-flag-checkered"></i>  No more recod found');
+                            $('#more').attr('disabled', true);
                         }
                     },
 
@@ -221,7 +231,72 @@
 
 <script>
     function createModal(url) {
-        $('#modelContent').load(url);
+        $("#moreSkill").html('Load');
+        $('#moreSkill').attr('disabled', false);
+        $('#Data').load(url);
         $('#TestModal').modal('show');
     }
+</script>
+
+
+
+<script>
+    $("#moreSkill").click(function () {
+        GetSkillData();
+    });
+</script>
+
+
+<script>
+    function GetSkillData() {
+        var count = $("#SkillVal").val();
+        var sId = $("#Id").val();
+        $("#moreSkill").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+        $('#moreSkill').attr('disabled', true);
+            $.ajax(
+                {
+                    url: "@Url.Action("_TestSkillData", "My")",
+                    data: { Value: count, Id: sId },
+                    type: "Get",
+                    dataType: "html",
+                    async: "true",
+                    cache: "false",
+                    success: function (data) {
+                        //Whatever result you have got from your controller with html partial view replace with a specific html.
+                        // HTML DOM replace
+
+                        if (data !== "") {
+                            var newC = 12;
+                            var newCount = parseInt(newC) + parseInt(count);
+                            $("#SkillVal").val(newCount);
+                            $("#Data").append(data);
+                            $("#moreSkill").html('Load More');
+                            $('#moreSkill').attr('disabled', false);
+
+                        } else {
+
+                            //$("#moreSkill").html('<i class="fa fa-flag-checkered"></i>  No record found');
+                            //$('#moreSkill').attr('disabled', true);
+
+                            if (count == 12) {
+                                $("#moreSkill").html('<i class="fa fa-flag-checkered"></i>  No record found');
+                                $('#moreSkill').attr('disabled', true);
+                                $("#SkillVal").val('0');
+                            } else if (count > 12) {
+                                $("#moreSkill").html('<i class="fa fa-flag-checkered"></i>  No more record found');
+                                $('#moreSkill').attr('disabled', true);
+                                $("#SkillVal").val('0');
+                            } else {
+                                $("#moreSkill").html('<i class="fa fa-flag-checkered"></i> No record found');
+                                $('#moreSkill').attr('disabled', true);
+                                $("#SkillVal").val('0');
+                            }
+                        }
+                    },
+
+                    Error: function () {
+                        alert("Some error");
+                    }
+                });
+        }
 </script>

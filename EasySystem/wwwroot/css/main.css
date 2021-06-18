@@ -927,6 +927,7 @@ body.modal-open header {
     top: 0;
 	border-right: 1px solid #d7d7d7;
 	width: 286px !important;
+    overflow: auto !important;
 }
 .quick-report-side {
     float: left;

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EasySystem.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Net.Http;
-using EasySystem.EasyAPI;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Configuration;
-using EasySystemAPI.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Users = EasySystem.Models.Users;
+﻿using EasySystem.EasyAPI;
 using EasySystem.General;
+using EasySystem.Models;
+using EasySystemAPI.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using Users = EasySystem.Models.Users;
 
 namespace EasySystem.Controllers
 {
@@ -22,15 +20,16 @@ namespace EasySystem.Controllers
         EasySysAPI _api = new EasySysAPI();
         Common comm = new Common();
         readonly IConfiguration _configuration;
-        string apiKey = "";
+
         public MyTransactionController(IConfiguration configuration)
         {
             _configuration = configuration;
-            apiKey = _configuration.GetValue<string>("GetAPI:MyAPI");
         }
 
         public IActionResult PayMyFee()
         {
+            TempData["Name"] = HttpContext.Session.GetString("Name");
+            int cId = (int)HttpContext.Session.GetInt32("CountryId");
             int UsrId = Convert.ToInt32(HttpContext.Session.GetInt32("ID"));
             int? MentorId = HttpContext.Session.GetInt32("RefId");
             int? MentorCode = HttpContext.Session.GetInt32("Code");
@@ -42,6 +41,9 @@ namespace EasySystem.Controllers
 
             //var Expiry = HttpContext.Session.GetString("Expiry");
             var Expiry = GetUser(UsrId);
+            //For Status
+            HttpContext.Session.SetString("Status", Expiry.usrStatus);
+
             if (Expiry != null)
             {
                 DateTime exp = Convert.ToDateTime(Expiry.ExpiryDate);
@@ -51,70 +53,108 @@ namespace EasySystem.Controllers
                     {
                         var getLeftDays = exp - DateTime.Now;
                         TempData["Expired"] = "Fee Validity Expired on: " + exp.ToString("dd-MMM-yyyy") + ".";
-
+                        TempData["PayNow"] = "not Null";
                     }
                     else
                     {
                         var getLeftDays = exp - DateTime.Now;
                         TempData["Validity"] = "Fee Validity: " + exp.ToString("dd-MMM-yyyy") + ". " + getLeftDays.Days + " Days left.";
-
+                        if (getLeftDays.Days <= 7)
+                        {
+                            TempData["PayNow"] = "not Null";
+                        }
+                        else
+                        {
+                            if (TempData["Transaction"] == null)
+                            {
+                                DateTime getPayFeeDate = exp.AddDays(-7);
+                                TempData["PayMsg"] = "You already have paid your fee, If you want to pay next fee then you have to wait till (" + getPayFeeDate.ToString("dd-MMM-yyyy") + ".)";
+                            }
+                        }
                     }
+                }
+                else
+                {
+                    TempData["PayNow"] = "Not Null";
                 }
             }
 
+            double MentorFee = 0;
+            //Getting MentorFee
+            var mfee = comm.GetMentorFee(Mentor.usrId);
+            if (mfee != null)
+            {
+                TempData["Total"] = mfee.usrFeeAmount;
+                MentorFee = mfee.usrFeeAmount;
+            }
+            else
+            {
+                //Getting Fee TotalAmount
+                if (cId == 6)
+                {
+                    SkillsFee fee = new SkillsFee();
+                    fee = GetSkillsFee();
+                    TempData["Total"] = fee.Total;
+                    MentorFee = fee.Total;
+                }
+                else
+                {
+                    SkillsFee fee = new SkillsFee();
+                    fee = GetSkillsFee();
+                    TempData["Total"] = fee.IntTotal;
+                    MentorFee = fee.IntTotal;
+                }
+            }
+            if (cId == 6)
+            {
+                //JazzCash Code
+                JazzCash jazz = new JazzCash();
+                double Amount = MentorFee * 100;
+                jazz.pp_Amount = "" + Amount + "";
+                jazz.pp_TxnDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                jazz.pp_TxnExpiryDateTime = DateTime.Now.AddDays(+8).ToString("yyyyMMddHHmmss");
+                jazz.pp_TxnRefNo = "T" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                jazz.pp_Version = "1.1";
+                jazz.pp_TxnType = "";
+                jazz.pp_Language = "EN";
+                jazz.pp_SubMerchantID = "";
+                jazz.pp_BankID = "TBANK";
+                jazz.pp_ProductID = "RETL";
+                jazz.pp_TxnCurrency = "PKR";
+                jazz.pp_BillReference = "" + UsrId + "";
+                jazz.pp_Description = "Thank you for using our services";
+                jazz.ppmpf_1 = "1";
+                jazz.ppmpf_2 = "2";
+                jazz.ppmpf_3 = "3";
+                jazz.ppmpf_4 = "4";
+                jazz.ppmpf_5 = "5";
 
-            //Getting Fee TotalAmount
-            SkillsFee fee = new SkillsFee();
-            fee = GetSkillsFee();
-            TempData["Total"] = fee.Total;
+                //Local
+                //jazz.salt = "2d8w96dwtv";
+                //jazz.pp_MerchantID = "MC0793";
+                //jazz.pp_Password = "5z1yu80v4w";
+                //jazz.pp_ReturnURL = "http://localhost:60337/Home/Thankyou";
 
 
-            //JazzCash Code
-            JazzCash jazz = new JazzCash();
-            double Amount = fee.Total * 100;
-            jazz.pp_Amount = "" + Amount + "";
-            jazz.pp_TxnDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
-            jazz.pp_TxnExpiryDateTime = DateTime.Now.AddDays(+8).ToString("yyyyMMddHHmmss");
-            jazz.pp_TxnRefNo = "T" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            jazz.pp_Version = "1.1";
-            jazz.pp_TxnType = "";
-            jazz.pp_Language = "EN";
-            jazz.pp_SubMerchantID = "";
-            jazz.pp_BankID = "TBANK";
-            jazz.pp_ProductID = "RETL";
-            jazz.pp_TxnCurrency = "PKR";
-            jazz.pp_BillReference = "" + UsrId + "";
-            jazz.pp_Description = "Thank you for using our services";
-            jazz.ppmpf_1 = "1";
-            jazz.ppmpf_2 = "2";
-            jazz.ppmpf_3 = "3";
-            jazz.ppmpf_4 = "4";
-            jazz.ppmpf_5 = "5";
-
-            //Local
-            //jazz.salt = "2d8w96dwtv";
-            //jazz.pp_MerchantID = "MC0793";
-            //jazz.pp_Password = "5z1yu80v4w";
-            //jazz.pp_ReturnURL = "http://localhost:60337/Home/Thankyou";
+                //Live
+                jazz.salt = "e39yxwc120";
+                jazz.pp_MerchantID = "00168609";
+                jazz.pp_Password = "g1f4e1h595";
+                jazz.pp_ReturnURL = "https://universalskills.co/Home/Thankyou";
 
 
-            //Live
-            jazz.salt = "e39yxwc120";
-            jazz.pp_MerchantID = "00168609";
-            jazz.pp_Password = "g1f4e1h595";
-            jazz.pp_ReturnURL = "https://universalskills.co/Home/Thankyou";
+                //jazz.pp_SecureHash = sHash;
+                TempData["JazzCash"] = jazz;
 
-
-            //jazz.pp_SecureHash = sHash;
-            TempData["JazzCash"] = jazz;
+            }
 
             //Check Country
-            int cId = Convert.ToInt32(HttpContext.Session.GetInt32("CountryId"));
-            var CountryName = comm.CountryName(cId);
-            if(CountryName == "PAK")
+
+            if (cId == 6)
             {
-                TempData["IsPak"] = CountryName;
+                TempData["IsPak"] = "Pakistan";
             }
+
             return View();
         }
         [HttpPost]
@@ -123,8 +163,23 @@ namespace EasySystem.Controllers
             try
             {
                 var SerialNo = GetSerialNo();
+                var getFeeBreakUp = comm.GetFeeBreakup();
+                var Mentor = Convert.ToInt32(HttpContext.Session.GetInt32("RefId"));
+
+                double MentorFee = 0;
                 SkillsFee fee = new SkillsFee();
-                fee = GetSkillsFee();
+                //Getting MentorFee
+                var mfee = comm.GetMentorFee(Mentor);
+                if (mfee != null)
+                {
+                    MentorFee = mfee.usrFeeAmount;
+                }
+                else
+                {
+                    fee = GetSkillsFee();
+                    MentorFee = fee.Total;
+                }
+
                 EasySystemAPI.Models.Transections trn = new EasySystemAPI.Models.Transections();
                 int? usrCode = HttpContext.Session.GetInt32("Code");
                 string usrName = HttpContext.Session.GetString("Name");
@@ -134,9 +189,21 @@ namespace EasySystem.Controllers
                 trn.tNarration = "" + usrName + "(" + usrCode + ")";
                 trn.tPaying = Convert.ToInt32(HttpContext.Session.GetInt32("ID"));
                 trn.tReceiving = Convert.ToInt32(HttpContext.Session.GetInt32("RefId"));
-                trn.TuitionAmount = fee.TuitionFee;
-                trn.SoftServiceCharges = fee.SoftwdareFee;
-                trn.ThirdPartyCharges = fee.ThirdPartyFee;
+
+                if (mfee != null)
+                {
+                    trn.TuitionAmount = (mfee.usrFeeAmount * getFeeBreakUp.fbMentorPer) / 100;
+                    trn.SoftServiceCharges = (mfee.usrFeeAmount * getFeeBreakUp.fbSystemPer) / 100;
+                    trn.ThirdPartyCharges = (mfee.usrFeeAmount * getFeeBreakUp.fbThirdPartyPer) / 100;
+                }
+                else if (fee != null)
+                {
+                    trn.TuitionAmount = fee.TuitionFee;
+                    trn.SoftServiceCharges = fee.SoftwdareFee;
+                    trn.ThirdPartyCharges = fee.ThirdPartyFee;
+                }
+
+
                 trn.tNumber = "" + usrCode + "-" + DateTime.Now.ToString("ddMMyy") + "-" + SerialNo + "";
 
                 HttpClient client = _api.Initial();
@@ -166,6 +233,8 @@ namespace EasySystem.Controllers
 
         }
 
+
+        [SessionCheckActiveUser]
         public IActionResult MyWallet(string Page)
         {
             if (Page != null)
@@ -231,10 +300,16 @@ namespace EasySystem.Controllers
             return View();
         }
 
+        [SessionCheckActiveUser]
         public IActionResult MyMoneyDrawRequest()
         {
             try
             {
+                bool IsVerified = CheckVerification();
+                if (IsVerified == true)
+                {
+                    TempData["Verified"] = "Verified";
+                }
                 double Balance = GetBalance();
                 TempData["Balance"] = Balance;
                 var GetBankInfo = PopulateUBInfo();
@@ -320,7 +395,7 @@ namespace EasySystem.Controllers
                 }
                 else
                 {
-                    TempData["Error"] = "You can not width draw Amount because your Amount is less then width draw limit ("+ fee.DrawAmount + "). Please see terms and conditions section";
+                    TempData["Error"] = "You can not width draw Amount because your Amount is less then width draw limit (" + fee.DrawAmount + "). Please see terms and conditions section";
                     return RedirectToAction("MyMoneyDrawRequest");
                 }
             }
@@ -333,6 +408,7 @@ namespace EasySystem.Controllers
             return RedirectToAction("MyMoneyDrawRequest");
         }
 
+        [SessionCheckActiveUser]
         public IActionResult GetMoneyDrawRequest()
         {
             return View();
@@ -342,7 +418,7 @@ namespace EasySystem.Controllers
         {
             try
             {
-                
+
                 if (status != "" && status != null)
                 {
                     List<MoneyDrawVM> reqList = new List<MoneyDrawVM>();
@@ -392,6 +468,7 @@ namespace EasySystem.Controllers
 
             return View();
         }
+
 
         public IActionResult Coupan(Coupan cpn)
         {
@@ -557,6 +634,23 @@ namespace EasySystem.Controllers
                 var res = result.Content.ReadAsStringAsync().Result;
                 var info = JsonConvert.DeserializeObject<UserDrawRequest>(res);
                 return true;
+            }
+        }
+
+        public bool CheckVerification()
+        {
+            var Id = HttpContext.Session.GetInt32("ID");
+            HttpClient client = _api.Initial();
+            var GetData = client.GetAsync("Users/CheckVerification?id=" + Id.ToString());
+            GetData.Wait();
+            var result = GetData.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

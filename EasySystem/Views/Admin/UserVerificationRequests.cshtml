@@ -96,7 +96,15 @@
                                                     }
                                                     else
                                                     {
-                                                        <img src="~/images/@i.uvImagePath" width="170" height="150" />
+                                                        if (i.uvImagePath != null)
+                                                        {
+                                                            <img src="~/images/VerifiedPictures/@i.uvImagePath" width="170" height="150" />
+                                                        }
+                                                        else
+                                                        {
+                                                             <img rc="~/images/admin.jpg" width="30" height="30" />
+                                                        }
+
                                                     }
 
                                                 </td>

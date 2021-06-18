@@ -1,13 +1,18 @@
-﻿@if (TempData["TestSkills"] != null)
+﻿
+@if (TempData["TestSkills"] != null)
 {
-        <div class="button-sec">
-            @foreach (var i in (List<EasySystemAPI.Models.SkillType>)TempData["TestSkills"])
-            {
-                <a asp-controller="My" asp-action="CertificationTest" asp-route-id="@i.StId" class="button pulse-grow">@i.StName</a>
-            }
-        </div>
+    <input type="hidden" id="SkillVal" value="12" />
+    <input type="hidden" id="Id" value="@TempData["SkillId"]" />
+    <div class="button-sec">
+        @foreach (var i in (List<EasySystemAPI.Models.SkillType>)TempData["TestSkills"])
+        {
+            <a asp-controller="My" asp-action="CertificationTest" asp-route-id="@i.StId" asp-route-Name="@i.StName" class="button pulse-grow">@i.StName</a>
+        }
+    </div>
 }
-else
-{
-    <p>No Skill Found for this category</p>
-}
+
+
+
+
+
+

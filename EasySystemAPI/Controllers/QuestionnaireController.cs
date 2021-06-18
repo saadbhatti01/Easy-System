@@ -25,6 +25,12 @@ namespace EasySystemAPI.Controllers
         [HttpGet("GetSkillType")]
         public async Task<ActionResult<List<SkillType>>> GetSkillType()
         {
+            return await con.skillTypes.Where(b => b.StStatus == true && b.StId != b.SubType).ToListAsync();
+        }
+
+        [HttpGet("GetAllSkillType")]
+        public async Task<ActionResult<List<SkillType>>> GetAllSkillType()
+        {
             return await con.skillTypes.Where(b => b.StStatus == true).ToListAsync();
         }
 
@@ -48,6 +54,38 @@ namespace EasySystemAPI.Controllers
                                          q.qStatus,
                                          s.StName,
                                          s.StId
+                                     }).OrderByDescending(o => o.qId).ToListAsync();
+                return Ok(getData);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "There is some error please try agai later" });
+            }
+        }
+
+        [HttpGet("GetByQuestions")]
+        public async Task<ActionResult> GetByQuestions(int id)
+        {
+            try
+            {
+                var getData = await (from q in con.question_Stories
+                                     join s in con.skillTypes on q.StId equals s.StId
+                                     join u in con.users on q.qCreatedBy equals u.usrId
+                                     where s.StId == id
+                                     select new
+                                     {
+                                         q.qId,
+                                         q.qQuestion,
+                                         q.qOpt1,
+                                         q.qOpt2,
+                                         q.qOpt3,
+                                         q.qOpt4,
+                                         q.qAnswer,
+                                         q.qCategory,
+                                         q.qStatus,
+                                         s.StName,
+                                         s.StId,
+                                         CreatedBy = u.usrName + "-" + u.usrCode
                                      }).OrderByDescending(o => o.qId).ToListAsync();
                 return Ok(getData);
             }
@@ -153,7 +191,7 @@ namespace EasySystemAPI.Controllers
                 {
                     if (i.uqrStatus == "Passed")
                     {
-                        return BadRequest(new { message = "You already Pass this test" });
+                        return BadRequest(new { message = "You already passed this test. Please choose another category" });
                     }
                     else
                     {
@@ -261,23 +299,76 @@ namespace EasySystemAPI.Controllers
             }
         }
 
-        [HttpGet("GetMyCertificateData")]
-        public async Task<ActionResult> GetMyCertificateData(int id)
+        [HttpGet("GetMyFailedCertificateData")]
+        public async Task<ActionResult> GetMyFailedCertificateData(int id)
         {
             var getData = await (from q in con.userQuestionnaireResults
-                                 join c in con.userCertificates on q.uqrId equals c.uqrId
                                  join s in con.skillTypes on q.StId equals s.StId
-                                 where q.usrId == id
+                                 where q.usrId == id && q.uqrStatus == "Failed"
+                                 select new
+                                 {
+                                     q.uqrId,
+                                     s.StName,
+                                     q.uqrDate,
+                                     q.uqrStatus,
+                                 }).OrderByDescending(o => o.uqrId).ToListAsync();
+
+            return Ok(getData);
+        }
+
+        [HttpGet("GetMyPassedCertificateData")]
+        public async Task<ActionResult> GetMyPassedCertificateData(int id)
+        {
+            var getData = await (from c in con.userCertificates
+                                 //join c in con.userCertificates on q.uqrId equals c.uqrId
+                                 join s in con.skillTypes on c.StId equals s.StId
+                                 where c.usrId == id
                                  select new
                                  {
                                      s.StName,
-                                     q.uqrDate,
+                                     c.ucDate,
                                      c.ucNumber,
                                      c.ucId,
-                                     q.uqrStatus,
-                                 }).ToListAsync();
+                                 }).OrderByDescending(o => o.ucId).ToListAsync();
 
             return Ok(getData);
+        }
+
+
+        [HttpGet("GetMyCertificate")]
+        public async Task<ActionResult> GetMyCertificate(string Num)
+        {
+            var getData = await (from c in con.userCertificates
+                                 join s in con.skillTypes on c.StId equals s.StId
+                                 join u in con.users on c.usrId equals u.usrId
+                                 join m in con.users on u.refId equals m.usrId
+                                 where c.ucNumber == Num
+                                 select new
+                                 {
+                                     s.StName,
+                                     c.ucDate,
+                                     c.ucNumber,
+                                     c.ucId,
+                                     u.usrName,
+                                     Mentor = m.usrName
+                                 }).FirstOrDefaultAsync();
+
+            return Ok(getData);
+        }
+
+
+        [HttpGet("CheckQuestionnaire")]
+        public async Task<ActionResult> CheckQuestionnaire(int id)
+        {
+            var ChkData = await con.question_Stories.Where(s => s.StId == id && s.qStatus == true).AnyAsync();
+            if (ChkData == true)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

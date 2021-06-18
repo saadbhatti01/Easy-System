@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Dashboard";
@@ -8,6 +7,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var Data = TempData["Dashboard"] as EasySystemAPI.Models.Dashboard;
     var UsrStatus = @HttpContextAccessor.HttpContext.Session.GetString("Status");
+    var CountryId = @HttpContextAccessor.HttpContext.Session.GetInt32("CountryId");
 }
 
 <div class="main-content">
@@ -112,7 +112,15 @@
                     <div class="col-md-4 col-sm-6">
                         <div class="widget">
                             <div class="quick-report-widget">
-                                <span>Current (pkr)</span>
+                                @if (CountryId == 6)
+                                {
+                                    <span>Current (pkr)</span>
+                                }
+                                else
+                                {
+                                    <span>Current (USD)</span>
+                                }
+
                                 @if (Data != null)
                                 {
                                     <h4 id="Current" style="display:none">@Data.Current</h4>
@@ -131,7 +139,15 @@
                     <div class="col-md-4 col-sm-6">
                         <div class="widget">
                             <div class="quick-report-widget">
-                                <span>Withdraw (pkr)</span>
+                                @if (CountryId == 6)
+                                {
+                                    <span>Withdraw (pkr)</span>
+                                }
+                                else
+                                {
+                                    <span>Withdraw (USD)</span>
+                                }
+
                                 @if (Data != null)
                                 {
                                     <h4 id="Withdraw" style="display:none">@Data.Withdraw</h4>
@@ -150,7 +166,15 @@
                     <div class="col-md-4 col-sm-6">
                         <div class="widget">
                             <div class="quick-report-widget">
-                                <span>Total Earning (pkr)</span>
+                                @if (CountryId == 6)
+                                {
+                                    <span>Total Earning (pkr)</span>
+                                }
+                                else
+                                {
+                                    <span>Total Earning (USD)</span>
+                                }
+
                                 @if (Data != null)
                                 {
                                     <h4 id="Total" style="display:none">@Data.Total</h4>
@@ -178,7 +202,7 @@
     <div class="container">
         <span class="footer-line" style="color:#1b3767; margin-left:300px">
             @DateTime.Now.Year &copy; A Project of <a href="~/Home/index" target="_blank">Universal Skills</a> | <a href="~/Home/Privacy_Policy" target="_blank">Privacy Policy</a> | <a href="~/Home/TermsAndConditions" target="_blank">Terms &amp; Conditions </a>
-            | <a href="~/Home/EarningDisclaimer" target="_blank">Earning Disclaimer</a> | <a href="~/Home/FAQs" target="_blank">FAQs</a>
+            | <a href="~/Home/FAQs" target="_blank">FAQs</a>
         </span>
     </div>
 

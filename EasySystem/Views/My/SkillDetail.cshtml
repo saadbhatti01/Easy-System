@@ -25,6 +25,10 @@
                             {
                                 <span><a asp-controller="My" asp-action="MentorSkills" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
                             }
+                            else if (TempData["Page"].ToString() == "Profile")
+                            {
+                                <span><a asp-controller="Users" asp-action="Profile"  asp-route-id="@detail.usrId" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
+                            }
                             else
                             {
                                 <span><a asp-controller="My" asp-action="Skills" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a></span>
@@ -47,8 +51,15 @@
                                 <td>@detail.StName</td>
                             </tr>
                             <tr>
-                                <th>Level</th>
-                                <td>@detail.usLevel</td>
+                                <th>Type</th>
+                                @if (detail.usLevel == 0)
+                                {
+                                    <td>Free</td>
+                                }
+                                else if (detail.usLevel == 1)
+                                {
+                                    <td>Paid</td>
+                                }
                             </tr>
                             <tr>
                                 <th>Detail</th>

@@ -1,0 +1,377 @@
+﻿@model EasySystemAPI.Models.SkillMaterial
+@{
+    ViewData["Title"] = "SkillMaterial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["Url"] != null)
+{
+    TempData.Peek("Url");
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>
+                            Skill Material
+                            <a data-toggle="modal" href="#myModal" class="btn btn-info" style="float: right; background-color:#1b3767">Add Skill Material Detail</a>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+
+
+                    <div class="row">
+                        <div id="Notifocation">
+
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+
+                    <div class="widget white">
+                        <div class="progress" style="height:6px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <br />
+                        <form>
+                            <div class="col-md-12">
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.DropDownList("StId", (SelectList)ViewData["Skills"], "Select Skill Type", new { @id = "id", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-info" id="btnSearch" style="background-color:#1b3767">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div id="Data">
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+
+
+<div class="modal fade" id="myModal">
+    <div class="modal-lg modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Add Skill Material
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modelContent">
+                <form id="FormData">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Main Type</label>
+                                @Html.DropDownList("StId", (SelectList)ViewData["Skills"], "Main Type", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Title</label>
+                                <input type="text" class="form-control" id="SmTitle" asp-for="SmTitle" required />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Select Status</label>
+                                @{
+                                    var list = new List<SelectListItem>();
+                                    list.Add(new SelectListItem { Text = "Approved", Value = "true" });
+                                    list.Add(new SelectListItem { Text = "DisApproved", Value = "false" });
+
+                                }
+                                <select asp-for="SmStatus" class="form-control" asp-items="@list" required></select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Skill Type Detail</label>
+                                <textarea id="Content" asp-for="SmContent" rows="9" placeholder="Enter SKill Detail" class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="Url" name="Url" placeholder="Enter Video URL" required />
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button type="button" id="btnVideo" class="btn btn-info" title="Click to add video Link" style="background-color:#1b3767">+</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="button" id="btnAdd" class="btn btn-info" style="background-color:#1b3767">Submit</button>
+
+                </form>
+            </div>
+
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="updateModal">
+    <div class="modal-lg modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Update Skill Material
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="updateContent">
+
+            </div>
+
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+
+
+<script>
+    $("#btnSearch").click(function () {
+        GetData();
+    });
+</script>
+
+
+
+<script>
+    function GetData() {
+        $('.progress-bar').show();
+     var id = $("#id").val();
+     if (id != "") {
+         $("#btnSearch").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+         $('#btnSearch').attr('disabled', true);
+
+             $.ajax(
+                 {
+                    url: "@Url.Action("_SkillMaterialData", "Admin")",
+                    data: { Id: id },
+                    type: "Get",
+                    dataType: "html",
+                     async: "true",
+                     cache: "false",
+                     beforeSend: function () {
+                         //$('.my-box').html('<div class="progress"><div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>');
+                         $('.progress-bar').animate({ width: "30%" }, 100);
+                     },
+                    success: function (data) {
+                        //Whatever result you have got from your controller with html partial view replace with a specific html.
+                        // HTML DOM replace
+                        if (data !== "") {
+                            $('.progress-bar').animate({ width: "100%" }, 100);
+                            setTimeout(function () {
+                                $('.progress-bar').css({ width: "100%" });
+                                setTimeout(function () {
+                                    $("#Data").html(data);
+                                    $("#btnSearch").html('Search');
+                                    $('#btnSearch').attr('disabled', false);
+                                    //$('.my-box').html(data);
+                                    $('.progress-bar').hide();
+                                    $('.progress-bar').css({ width: "0%" });
+                                }, 100);
+                            }, 500);
+
+                        } else {
+                            $("#btnSearch").html('Search');
+                            $('#btnSearch').attr('disabled', false);
+                            $(".progress-bar").hide();
+                            $('.progress-bar').animate({ width: "100%" }, 100);
+                            setTimeout(function () {
+                                $('.progress-bar').css({ width: "100%" });
+                                setTimeout(function () {
+                                    $('.progress-bar').hide();
+                                }, 100);
+                            }, 500);
+
+                        }
+                    },
+
+                    Error: function () {
+                        alert("Some error");
+                    }
+                });
+     }
+     else {
+         Command: toastr["warning"]("Please select Skill Type")
+     }
+
+        }
+</script>
+
+
+
+<script>
+    $(function () {
+        $("#btnAdd").click(function (event) {
+            $("#btnAdd").html('<i class="fa fa-spinner fa-spin"></i>  Please Wait...');
+            var myData = $("#FormData").serialize();
+            //var body = tinymce.get("Content").getBody();
+            //var Content = body.textContent;
+            //alert(Content);
+                $.ajax({
+                    url: "@Url.Action("SkillMaterial", "Admin")",
+                    //data: { smContent: Content },
+                    data: myData,
+                    type: "post",
+                    dataType: "text",
+                    success: function (data) {
+                        var procemessage = "Submit";
+                        $("#btnAdd").html(procemessage);
+                        $("#SmTitle").val('');
+                        $("#Url").val('');
+                        Command: toastr["info"]("Data Added successfully")
+                    }
+
+                });
+
+        });
+    });
+</script>
+
+<script>
+    function createModal(url) {
+        $('#updateContent').load(url);
+        $('#updateModal').modal('show');
+    }
+</script>
+
+
+<script>
+    $(function () {
+        $("#btnVideo").click(function (event) {
+            $("#btnVideo").html('<i class="fa fa-spinner fa-spin"></i>');
+            $('#btnVideo').attr('disabled', true);
+            var link = $("#Url").val();
+            if (link != "") {
+                $.ajax({
+                    url: "/Admin/VideoLink",
+                    data: { Link: link },
+                    type: "Get",
+                    dataType: "text",
+                    success: function (data) {
+                            if (data !== "") {
+                            var procemessage = "+";
+                            $("#btnVideo").html(procemessage);
+                            $('#btnVideo').attr('disabled', false);
+                            Command: toastr["error"]("" + data + "")
+
+                        } else {
+                            var procemessage = "+";
+                            $("#btnVideo").html(procemessage);
+                                $('#btnVideo').attr('disabled', false);
+                                $('#Url').val('');
+                            Command: toastr["success"]("Video Link Add to cart successfully")
+                        }
+                        //var procemessage = "+";
+                        //$("#btnVideo").html(procemessage);
+                        //$('#btnVideo').attr('disabled', false);
+                        //$('#Url').val('');
+                        //Command: toastr["success"]("Video Link Add to cart successfully")
+                    },
+                    error: function(){
+                        var procemessage = "+";
+                        $("#btnVideo").html(procemessage);
+                        $('#btnVideo').attr('disabled', false);
+                        $('#Url').val('');
+                        Command: toastr["success"]("Video Link Add to cart successfully")
+                    }
+                        
+
+                });
+                    } else {
+
+                        var procemessage = "+";
+                        $("#btnVideo").html(procemessage);
+                        $('#btnVideo').attr('disabled', false);
+                        Command: toastr["error"]("Please add link before proceed")
+                    }
+
+
+        });
+    });
+</script>
+

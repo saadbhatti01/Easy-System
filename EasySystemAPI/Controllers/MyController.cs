@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using EasySystemAPI.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -15,13 +17,11 @@ namespace EasySystemAPI.Controllers
     public class MyController : ControllerBase
     {
         private readonly EasyContext con;
-        private readonly IDataProtector protector;
 
-        public MyController(EasyContext context, IDataProtectionProvider dataProtectionProvider
-            , DataProtection dataProtection)
+
+        public MyController(EasyContext context)
         {
             con = context;
-            protector = dataProtectionProvider.CreateProtector(dataProtection.UserId);
         }
 
         [HttpGet("GetMyProfile")]
@@ -109,7 +109,7 @@ namespace EasySystemAPI.Controllers
                                              b.blogType,
                                              c.usrName,
 
-                                         }).Take(9).OrderByDescending(o => o.blogId).ToListAsync();
+                                         }).OrderByDescending(o => o.blogId).Take(9).ToListAsync();
                     return Ok(getData);
                 }
                 else
@@ -167,7 +167,7 @@ namespace EasySystemAPI.Controllers
                                              b.blogType,
                                              c.usrName,
 
-                                         }).Skip(Value).Take(9).OrderByDescending(o => o.blogId).ToListAsync();
+                                         }).OrderByDescending(o => o.blogId).Skip(Value).Take(9).ToListAsync();
                     return Ok(getData);
                 }
                 else
@@ -188,7 +188,7 @@ namespace EasySystemAPI.Controllers
                                              b.blogType,
                                              c.usrName,
 
-                                         }).Skip(Value).OrderByDescending(o => o.blogId).ToListAsync();
+                                         }).OrderByDescending(o => o.blogId).Skip(Value).ToListAsync();
                     if (getData.Count > 0)
                     {
                         return Ok(getData);
@@ -232,7 +232,7 @@ namespace EasySystemAPI.Controllers
                                              c.usrId,
                                              c.usrName,
 
-                                         }).Skip(Data.Count).Take(9).OrderByDescending(o => o.blogId).ToListAsync();
+                                         }).OrderByDescending(o => o.blogId).Skip(Data.Count).Take(9).ToListAsync();
                     return Ok(getData);
                 }
                 else
@@ -254,7 +254,7 @@ namespace EasySystemAPI.Controllers
                                              c.usrId,
                                              c.usrName,
 
-                                         }).Skip(Data.Count).OrderByDescending(o => o.blogId).ToListAsync();
+                                         }).OrderByDescending(o => o.blogId).Skip(Data.Count).ToListAsync();
                     if (getData.Count > 0)
                     {
                         return Ok(getData);
@@ -450,6 +450,10 @@ namespace EasySystemAPI.Controllers
                 {
                     getData.blogTitleImage = blog.blogTitleImage;
                 }
+                if (blog.blogCoverPageImage != null)
+                {
+                    getData.blogCoverPageImage = blog.blogCoverPageImage;
+                }
 
 
                 con.Entry(getData).State = EntityState.Modified;
@@ -489,9 +493,6 @@ namespace EasySystemAPI.Controllers
                 return BadRequest(new { message = "An error occured while getting the data. Please try again later." });
             }
         }
-
-
-
 
         [HttpGet("GetBankData")]
         public async Task<ActionResult> GetBankData()
@@ -1289,6 +1290,7 @@ namespace EasySystemAPI.Controllers
                                          u.uwbId,
                                          u.uwbName,
                                          u.uwbDetail,
+                                         u.uwbType,
                                          u.uwbDay,
                                          u.uwbTime,
                                          u.Status,
@@ -1304,6 +1306,7 @@ namespace EasySystemAPI.Controllers
                         UserWhiteBoardVM white = new UserWhiteBoardVM();
                         white.uwbId = i.uwbId;
                         white.uwbName = i.uwbName;
+                        white.uwbType = i.uwbType;
                         white.uwbDay = i.uwbDay;
                         white.uwbTime = i.uwbTime;
                         white.Status = i.Status;
@@ -1361,6 +1364,7 @@ namespace EasySystemAPI.Controllers
                                          u.uwbId,
                                          u.uwbName,
                                          u.uwbDetail,
+                                         u.uwbType,
                                          u.uwbDay,
                                          u.uwbTime,
                                          u.Status,
@@ -1380,25 +1384,27 @@ namespace EasySystemAPI.Controllers
         {
             try
             {
-                var Count = con.userWhiteBoards.Where(a => a.usrId == usr.usrId).Count();
-                if (Count >= 15)
+                //var Count = con.userWhiteBoards.Where(a => a.usrId == usr.usrId).Count();
+                //if (Count >= 15)
+                //{
+                //    return BadRequest(new { message = "You Can add upto 15 Lectures." });
+                //}
+                //else
+                //{
+                //}
+
+                usr.Status = true;
+                con.userWhiteBoards.Add(usr);
+                try
                 {
-                    return BadRequest(new { message = "You Can add upto 15 Lectures." });
+                    await con.SaveChangesAsync();
+                    return Ok();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    usr.Status = true;
-                    con.userWhiteBoards.Add(usr);
-                    try
-                    {
-                        await con.SaveChangesAsync();
-                        return Ok();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        return BadRequest(new { message = "An error occured while adding the user white board Info. Please try again later" });
-                    }
+                    return BadRequest(new { message = "An error occured while adding the user white board Info. Please try again later" });
                 }
+
             }
 #pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch (Exception ex)
@@ -1457,6 +1463,7 @@ namespace EasySystemAPI.Controllers
                 getData.uwbName = data.uwbName;
                 getData.usId = data.usId;
                 getData.uwbDetail = data.uwbDetail;
+                getData.uwbType = data.uwbType;
                 getData.uwbTime = data.uwbTime;
                 getData.uwbDay = data.uwbDay;
                 getData.Status = true;
@@ -1512,7 +1519,9 @@ namespace EasySystemAPI.Controllers
                                  select new
                                  {
                                      sk.usId,
+                                     sk.usLevel,
                                      st.StName,
+
                                  }).OrderByDescending(o => o.usId).ToListAsync();
             return Ok(getData);
             //var getSkills = await con.userSkills.Where(b => b.usrId == id && b.Status == true).ToListAsync();
@@ -1548,6 +1557,7 @@ namespace EasySystemAPI.Controllers
             {
                 var GetDetail = con.skillTypes.Where(a => a.StId == val).FirstOrDefault();
                 var GenName = GetDetail.StDetail;
+
                 return new JsonResult(new { Success = "true", Data = new { GenName } });
             }
             return new JsonResult(new { Success = "false" });
@@ -1563,8 +1573,9 @@ namespace EasySystemAPI.Controllers
         [HttpGet("GetMyTeam")]
         public async Task<ActionResult<IEnumerable<Users>>> GetMyTeam(int id)
         {
-            return await con.users.Where(b => b.refId == id).ToListAsync();
+            return await con.users.Where(b => b.refId == id).OrderByDescending(o => o.usrId).ToListAsync();
         }
+
         [HttpGet("GetMyMentorSkill")]
         public async Task<ActionResult> GetMyMentorSkill(int id)
         {
@@ -1582,13 +1593,13 @@ namespace EasySystemAPI.Controllers
                                      sk.Status,
                                      st.StCoverImage,
                                      st.StImage
-                                 }).ToListAsync();
+                                 }).OrderByDescending(o => o.usId).ToListAsync();
             return Ok(getData);
             //return await con.userSkills.Where(b => b.usrId == id).ToListAsync();
         }
 
         [HttpGet("GetMyMentorWhiteBoard")]
-        public async Task<ActionResult<IEnumerable<UserWhiteBoard>>> GetMyMentorWhiteBoard(int id)
+        public async Task<ActionResult> GetMyMentorWhiteBoard(int id)
         {
             var getData = await (from u in con.userWhiteBoards
                                  join b in con.userSkills on u.usId equals b.usId
@@ -1599,6 +1610,7 @@ namespace EasySystemAPI.Controllers
                                      u.uwbId,
                                      u.uwbName,
                                      u.uwbDetail,
+                                     u.uwbType,
                                      u.Status,
                                      usName = s.StName
                                  }).OrderByDescending(o => o.uwbId).ToListAsync();
@@ -1649,12 +1661,13 @@ namespace EasySystemAPI.Controllers
                                      where u.usrIdM == id
                                      select new
                                      {
+                                         u.ultId,
                                          u.ultReason,
                                          us.usrName,
                                          us.usrGender,
                                          us.usrPhone
 
-                                     }).ToListAsync();
+                                     }).OrderByDescending(o => o.ultId).ToListAsync();
                 //var getLostTraine = await con.userLostTrainees.Where(b => b.usrIdM == id).ToListAsync();
                 //if (getLostTraine.Count != 0)
                 //{
@@ -1729,6 +1742,7 @@ namespace EasySystemAPI.Controllers
         {
             var getData = await (from sk in con.skillTypes
                                  join st in con.skillTypes on sk.SubType equals st.StId
+                                 join u in con.users on sk.CreatedBy equals u.usrId
                                  select new
                                  {
                                      sk.StId,
@@ -1739,8 +1753,33 @@ namespace EasySystemAPI.Controllers
                                      sk.SubType,
                                      sk.StCoverImage,
                                      sk.StImage,
-                                     SubTypeName = st.StName
-                                 }).ToListAsync();
+                                     SubTypeName = st.StName,
+                                     CreatedBy = u.usrName + "-" + u.usrCode
+                                 }).OrderByDescending(o => o.StId).ToListAsync();
+            return Ok(getData);
+            //return await con.userSkills.Where(b => b.usrId == id).ToListAsync();
+        }
+
+        [HttpGet("GetSkillTypeById")]
+        public async Task<ActionResult> GetSkillTypeById(int id)
+        {
+            var getData = await (from sk in con.skillTypes
+                                 join st in con.skillTypes on sk.SubType equals st.StId
+                                 join u in con.users on sk.CreatedBy equals u.usrId
+                                 where sk.SubType == id
+                                 select new
+                                 {
+                                     sk.StId,
+                                     sk.StName,
+                                     sk.StDetail,
+                                     sk.StStatus,
+                                     sk.StCategory,
+                                     sk.SubType,
+                                     sk.StCoverImage,
+                                     sk.StImage,
+                                     SubTypeName = st.StName,
+                                     CreatedBy = u.usrName + "-" + u.usrCode
+                                 }).OrderByDescending(o => o.StId).ToListAsync();
             return Ok(getData);
             //return await con.userSkills.Where(b => b.usrId == id).ToListAsync();
         }
@@ -1750,17 +1789,16 @@ namespace EasySystemAPI.Controllers
         {
             try
             {
-                if(data.SubType == 0)
+                if (data.SubType == 0)
                 {
+
                     con.skillTypes.Add(data);
                     await con.SaveChangesAsync();
-                    
 
                     data.SubType = data.StId;
                     con.Entry(data).State = EntityState.Modified;
                     await con.SaveChangesAsync();
                     return Ok();
-
                 }
                 else
                 {
@@ -1768,11 +1806,11 @@ namespace EasySystemAPI.Controllers
                     await con.SaveChangesAsync();
                     return Ok();
                 }
-                
+
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "an error occured. Data not added" });
+                return BadRequest(new { message = "" + ex.InnerException + "" });
             }
         }
 
@@ -1853,7 +1891,279 @@ namespace EasySystemAPI.Controllers
                 return BadRequest(new { message = "An error occured while Updating Info. Please try again later" });
             }
 
+
+        }
+
+
+        [HttpGet("GetMoreSkillType")]
+        public async Task<ActionResult> GetMoreSkillType(int value)
+        {
+            try
+            {
+                var Count = con.skillTypes.Where(b => b.StStatus == true).Count();
+                if (Count >= value)
+                {
+                    var getData = await con.skillTypes.Where(s => s.StId == s.SubType && s.StStatus == true).Skip(value).Take(8).ToListAsync();
+                    return Ok(getData);
+
+                }
+                else
+                {
+                    var getData = await con.skillTypes.Where(s => s.StId == s.SubType && s.StStatus == true).Skip(value).ToListAsync();
+                    if (getData.Count > 0)
+                    {
+                        return Ok(getData);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "No record found." });
+                    }
+                }
+            }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+            catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+            {
+                return BadRequest(new { message = "An error occured while getting Info. Please try again later." });
+            }
+        }
+
+        [HttpGet("GetSkillTypeData")]
+        public async Task<ActionResult> GetSkillTypeData(int value)
+        {
+            try
+            {
+                var Count = con.skillTypes.Where(b => b.StStatus == true).Count();
+                if (Count >= value)
+                {
+                    var getData = await con.skillTypes.Where(s => s.StId == s.SubType && s.StStatus == true).Skip(value).Take(20).ToListAsync();
+                    return Ok(getData);
+
+                }
+                else
+                {
+                    var getData = await con.skillTypes.Where(s => s.StId == s.SubType && s.StStatus == true).Skip(value).ToListAsync();
+                    if (getData.Count > 0)
+                    {
+                        return Ok(getData);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "No record found." });
+                    }
+                }
+            }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+            catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+            {
+                return BadRequest(new { message = "An error occured while getting Info. Please try again later." });
+            }
+        }
+
+        [HttpPost("GeSkillsData")]
+        public async Task<ActionResult> GeSkillsData(PageModel Data)
+        {
+            try
+            {
+                var Count = con.skillTypes.Where(b => b.StId == Data.id && b.StStatus == true).Count();
+
+                if (Count >= Data.Count)
+                {
+                    var getData = await con.skillTypes.Where(s => s.SubType == Data.id && s.StStatus == true).Skip(Data.Count).Take(12).ToListAsync();
+                    return Ok(getData);
+
+                }
+                else
+                {
+                    var getData = await con.skillTypes.Where(s => s.SubType == Data.id && s.StStatus == true).Skip(Data.Count).ToListAsync();
+                    if (getData.Count > 0)
+                    {
+                        return Ok(getData);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "No record found." });
+                    }
+                }
+            }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+            catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+            {
+                return BadRequest(new { message = "An error occured while getting Info. Please try again later." });
+            }
+        }
+
+        [HttpPost("GetSkillsData")]
+        public async Task<ActionResult> GetSkillsData(PageModel Data)
+        {
+            try
+            {
+                var Count = con.skillTypes.Where(b => b.StId == Data.id && b.StId != b.SubType && b.StStatus == true).Count();
+
+                if (Count >= Data.Count)
+                {
+                    var getData = await con.skillTypes.Where(s => s.SubType == Data.id && s.StId != s.SubType && s.StStatus == true).Skip(Data.Count).Take(12).ToListAsync();
+                    return Ok(getData);
+
+                }
+                else
+                {
+                    var getData = await con.skillTypes.Where(s => s.SubType == Data.id && s.StId != s.SubType && s.StStatus == true).Skip(Data.Count).ToListAsync();
+                    if (getData.Count > 0)
+                    {
+                        return Ok(getData);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "No record found." });
+                    }
+                }
+            }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+            catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+            {
+                return BadRequest(new { message = "An error occured while getting Info. Please try again later." });
+            }
+        }
+
+
+        [HttpPost("GetMentorData")]
+        public async Task<ActionResult> GetMentorData(PageModel Data)
+        {
+            try
+            {
+                var Count = (from u in con.userSkills
+                             join us in con.users on u.usrId equals us.usrId
+                             where u.StId == Data.id && (us.usrCode != 123456 && (us.usrStatus == "Active" || us.usrStatus == "Learning"))
+                             select new
+                             {
+                                 us.usrId,
+                                 us.usrName,
+                                 us.usrCode,
+                                 us.usrImage
+                             }).Count();
+                if (Count >= Data.Count)
+                {
+                    var getData = await (from u in con.userSkills
+                                         join us in con.users on u.usrId equals us.usrId
+                                         where u.StId == Data.id && (us.usrCode != 123456 && us.usrStatus == "Active" || us.usrStatus == "Learning")
+                                         select new
+                                         {
+                                             us.usrId,
+                                             us.usrName,
+                                             us.usrCode,
+                                             us.usrImage
+                                         }).Skip(Data.Count).Take(12).ToListAsync();
+                    return Ok(getData);
+                }
+                else
+                {
+                    var getData = await (from u in con.userSkills
+                                         join us in con.users on u.usrId equals us.usrId
+                                         where u.StId == Data.id && (us.usrCode != 123456 && us.usrStatus == "Active" || us.usrStatus == "Learning")
+                                         select new
+                                         {
+                                             us.usrId,
+                                             us.usrName,
+                                             us.usrCode,
+                                             us.usrImage
+                                         }).Skip(Data.Count).ToListAsync();
+                    if (getData.Count > 0)
+                    {
+                        return Ok(getData);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "No record found." });
+                    }
+                }
+            }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
+            catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
+            {
+                return BadRequest(new { message = "An error occured while getting Info. Please try again later." });
+            }
+        }
+
+
+
+        [HttpGet("PopulateSkillType")]
+        public async Task<ActionResult> PopulateSkillType()
+        {
+            var getData = await (from s in con.skillTypes
+                                 select new
+                                 {
+                                     SubType = s.StId,
+                                     s.StName
+                                 }).ToListAsync();
+            return Ok(getData);
+        }
+
+        [HttpGet("TrainingFee")]
+        public async Task<ActionResult<MentorFee>> TrainingFee(int id)
+        {
+            return await con.mentorFees.Where(i => i.usrId == id).FirstOrDefaultAsync();
+        }
+
+
+        [HttpPost("SetTrainingAmount")]
+        public async Task<ActionResult> SetTrainingAmount(MentorFee Fee)
+        {
+            try
+            {
+                var chkData = await con.mentorFees.Where(u => u.usrId == Fee.usrId).FirstOrDefaultAsync();
+                if (chkData != null)
+                {
+                    chkData.usrFeeAmount = Fee.usrFeeAmount;
+                    chkData.updatedDate = DateTime.Now;
+                    con.Entry(chkData).State = EntityState.Modified;
+                    await con.SaveChangesAsync();
+                    return Ok();
+                }
+                else
+                {
+                    if (Fee.usrFeeAmount >= 1000)
+                    {
+                        Fee.updatedDate = DateTime.Now;
+                    }
+                    con.mentorFees.Add(Fee);
+                    await con.SaveChangesAsync();
+                    return Ok();
+                }
+
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Training Fee not added." });
+            }
+
+        }
+
+
+        [HttpGet("SearchForProfile")]
+        public async Task<ActionResult<List<Users>>> SearchForProfile(string term)
+        {
+            //int Id = Convert.ToInt32(term);
+            var AutoProfile = await con.users.Where(s => s.usrName.StartsWith(term)).ToListAsync();
+            return Ok(AutoProfile);
+            //List<string> AutoCourse;
+            //AutoCourse = con.users.Where(s => s.usrName.StartsWith(term)).Select(m => m.usrName).ToList();
+            //return AutoCourse;
+        }
+
+
             
+
+        public string RandomString(int length)
+        {
+            const string chars = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

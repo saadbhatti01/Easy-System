@@ -1,0 +1,40 @@
+﻿@if (TempData["List"] != null)
+{
+
+    foreach (var i in (List<EasySystemAPI.Models.SkillType>)TempData["List"])
+    {
+        <div class="col-md-3 col-sm-6">
+            <div class="edugate-layout-3">
+                <div class="edugate-layout-3-wrapper">
+                    @if (i.StImage != null)
+                    {
+                        <img src="~/images/SkillType/Thumbnail/@i.StImage" height="300" width="300" alt="@i.StName" class="img-responsive" />
+                    }
+                    else
+                    {
+                        <img src="~/images/Universal-Skills- training-thumbnail-01.jpg" height="300" width="300" alt="@i.StName" class="img-responsive" />
+                    }
+
+
+                    <div class="edugate-content">
+
+
+
+                        <a href="@Url.Action("List","Courses", new{ id = i.StId, Category = @EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.StName) })" class="title">@i.StName</a>
+
+                        <a asp-controller="Courses" asp-action="List" asp-route-id="@i.StId" asp-route-Category="@EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.StName)" class="btn btn-green"><span>Learn more</span></a>
+
+                        @*@if (i.StName.Length >= 30)
+                            {
+                                <a href="@Url.Action("SkillsList","Home", new{ id = i.StId, Category = i.StName })" class="title">@i.StName.ToString().Substring(0, 30)</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("SkillsList","Home", new{ id = i.StId, Category = i.StName })" class="title">@i.StName</a>
+                            }*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

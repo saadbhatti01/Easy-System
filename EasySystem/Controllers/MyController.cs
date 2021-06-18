@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using EasySystem.EasyAPI;
+﻿using EasySystem.EasyAPI;
 using EasySystem.General;
 using EasySystem.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+
 
 namespace EasySystem.Controllers
 {
@@ -32,6 +30,7 @@ namespace EasySystem.Controllers
         {
             this.HostingEnvironment = hostingEnvironment;
             protector = dataProtectionProvider.CreateProtector(dataProtection.UserId);
+
         }
 
         public IActionResult Profile(string id)
@@ -40,6 +39,7 @@ namespace EasySystem.Controllers
             {
                 if (id == null)
                 {
+                    TempData["SearchProfile"] = "SearchProfile";
                     var Id = HttpContext.Session.GetInt32("ID");
 
                     HttpClient client = _api.Initial();
@@ -87,6 +87,20 @@ namespace EasySystem.Controllers
                             TempData["MyTeam"] = tlist;
                         }
 
+
+                        //Get Certification
+                        var pdata = client.GetAsync("Questionnaire/GetMyPassedCertificateData?id=" + Id.ToString());
+                        pdata.Wait();
+                        var presult = pdata.Result;
+                        if (presult.IsSuccessStatusCode)
+                        {
+                            var ress = presult.Content.ReadAsStringAsync().Result;
+                            var pList = JsonConvert.DeserializeObject<List<CertificateVM>>(ress);
+                            if (pList.Count > 0)
+                            {
+                                TempData["Passed"] = pList;
+                            }
+                        }
                         //MyBlog
                         //List<Blog> blist = new List<Blog>();
                         //blist = GetBlogs(0);
@@ -149,6 +163,21 @@ namespace EasySystem.Controllers
                             TempData["MyTeam"] = tlist;
                         }
 
+                        //Get Certification
+                        var pdata = client.GetAsync("Questionnaire/GetMyPassedCertificateData?id=" + id.ToString());
+                        pdata.Wait();
+                        var presult = pdata.Result;
+                        if (presult.IsSuccessStatusCode)
+                        {
+                            var ress = presult.Content.ReadAsStringAsync().Result;
+                            var pList = JsonConvert.DeserializeObject<List<CertificateVM>>(ress);
+                            if (pList.Count > 0)
+                            {
+                                TempData["Passed"] = pList;
+                            }
+                        }
+
+
                         //MyBlog
                         //List<Blog> blist = new List<Blog>();
                         //blist = GetBlogs(ID);
@@ -177,6 +206,73 @@ namespace EasySystem.Controllers
                 return View();
             }
             return View();
+        }
+
+        public IActionResult AutocompleteProfile(string term)
+        {
+            List<string> msg = new List<string> { "No Record found" };
+            try
+            {
+                //List<string> AutoCourse;
+                HttpClient client = _api.Initial();
+                var GetBank = client.GetAsync("My/SearchForProfile?term=" + term.ToString());
+                GetBank.Wait();
+                var result = GetBank.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var uList = JsonConvert.DeserializeObject<List<Users>>(res);
+                    if (uList.Count == 0 || uList == null)
+                    {
+                        return Json(msg);
+                    }
+                    else
+                    {
+                        //var userList = uList.Select(s => s.usrName).ToList();
+                        var userList = (from usr in uList.Where(x => x.usrName.StartsWith(term))
+                                        select new
+                                        { value = usr.usrId, label = usr.usrName }).ToList();
+
+                        return Json(uList);
+                        //return Json(uList);
+                    }
+                }
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    TempData["Error"] = "" + errorMsg.message + "";
+                }
+
+                //List<string> AutoCourse;
+                //HttpClient client = _api.Initial();
+                //Task<HttpResponseMessage> Data;
+                //Data = client.GetAsync("My/SearchForProfile?term=" + term.ToString());
+                //Data.Wait();
+                //var result = Data.Result;
+                //if (result.IsSuccessStatusCode)
+                //{
+                //    var res = result.Content.ReadAsStringAsync().Result;
+                //    AutoCourse = JsonConvert.DeserializeObject<List<string>>(res);
+                //    if (AutoCourse.Count == 0 || AutoCourse == null)
+                //    {
+                //        return Json(msg);
+                //    }
+                //    else
+                //    {
+                //        return Json(AutoCourse);
+                //    }
+                //}
+                //else
+                //{
+                //    return Json(msg);
+                //}
+            }
+            catch (Exception)
+            {
+                return Json(msg);
+            }
+            return Json(msg);
         }
 
         [SessionCheck]
@@ -221,7 +317,7 @@ namespace EasySystem.Controllers
             }
         }
 
-        [SessionCheck]
+        [SessionCheckActiveUser]
         public IActionResult BankInfo()
         {
             try
@@ -704,10 +800,11 @@ namespace EasySystem.Controllers
 
         [SessionCheck]
         [HttpPost]
-        public IActionResult WhiteBoard(UserWhiteBoard usr)
+        public IActionResult WhiteBoard(UserWhiteBoard usr, string editor)
         {
             try
             {
+                usr.uwbDetail = editor;
                 HttpClient client = _api.Initial();
                 var postVerify = client.PostAsJsonAsync("My/AddUserWhiteBoard", usr);
                 postVerify.Wait();
@@ -790,7 +887,7 @@ namespace EasySystem.Controllers
                     var data = JsonConvert.DeserializeObject<UserWhiteBoard>(res);
                     int uId = Convert.ToInt32(HttpContext.Session.GetInt32("ID"));
                     var GetSkillList = GetUsrSkills(uId);
-                    SelectList slist = new SelectList(GetSkillList, "usId", "usName");
+                    SelectList slist = new SelectList(GetSkillList, "usId", "StName");
                     ViewData["Skills"] = slist;
                     return View(data);
                 }
@@ -814,10 +911,11 @@ namespace EasySystem.Controllers
 
         [SessionCheck]
         [HttpPost]
-        public IActionResult EditWhiteBoard(int id, UserWhiteBoard usrdata)
+        public IActionResult EditWhiteBoard(int id, UserWhiteBoard usrdata, string editor)
         {
             try
             {
+                usrdata.uwbDetail = editor;
                 int Id = Convert.ToInt32(HttpContext.Session.GetInt32("ID"));
                 usrdata.usrId = Id;
                 HttpClient client = _api.Initial();
@@ -846,7 +944,6 @@ namespace EasySystem.Controllers
             }
 
         }
-
 
         public IActionResult WhiteBoardDetail(int id, string Page)
         {
@@ -883,11 +980,20 @@ namespace EasySystem.Controllers
         }
 
         [SessionCheck]
-        public IActionResult MentorWhiteBoard()
+        public IActionResult MentorWhiteBoard(int? id)
         {
             try
             {
-                var Id = HttpContext.Session.GetInt32("RefId");
+                var Id = "";
+                if (id == null)
+                {
+                    Id = HttpContext.Session.GetInt32("RefId").ToString();
+                }
+                else
+                {
+                    Id = id.ToString();
+                }
+
                 HttpClient client = _api.Initial();
                 var GetData = client.GetAsync("My/GetMyMentorWhiteBoard?id=" + Id.ToString());
                 GetData.Wait();
@@ -904,7 +1010,11 @@ namespace EasySystem.Controllers
                 {
                     var res = result.Content.ReadAsStringAsync().Result;
                     var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
-                    TempData["Error"] = "" + errorMsg.message + "";
+                    if (errorMsg != null)
+                    {
+                        TempData["Error"] = "" + errorMsg.message + "";
+                    }
+
                     return View();
                 }
             }
@@ -943,40 +1053,29 @@ namespace EasySystem.Controllers
         {
             try
             {
-                var Id = HttpContext.Session.GetInt32("ID");
+                //Get Team 
+                int? Id = HttpContext.Session.GetInt32("ID");
                 HttpClient client = _api.Initial();
-                var GetData = client.GetAsync("My/GetMyTeam?id=" + Id.ToString());
+                var GetData = client.GetAsync("Users/GetTeam?id=" + Id.ToString());
                 GetData.Wait();
                 var result = GetData.Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var res = result.Content.ReadAsStringAsync().Result;
-                    var list = JsonConvert.DeserializeObject<List<Users>>(res);
+                    var list = JsonConvert.DeserializeObject<List<TeamVM>>(res);
                     if (Page != null)
                     {
                         TempData["Page"] = Page;
                     }
                     TempData["MyTeam"] = list;
 
-                    //ForID Encrystion
-                    //if(list.Count > 0)
+                    ////Get Team logs
+                    //var Logs = comm.GetLogs((int)Id);
+                    //if (Logs.Count > 0)
                     //{
-                    //    List<EncryptID> encryptIDs = new List<EncryptID>();
-                    //    foreach(var i in list)
-                    //    {
-                    //        EncryptID eid = new EncryptID();
-                    //        eid.usrId = i.usrId;
-                    //        eid.ID = protector.Protect(i.usrId.ToString());
-                    //        Uri.EscapeDataString(eid.ID);
-                    //        Uri.UnescapeDataString(eid.ID);
-                    //        encryptIDs.Add(eid);
-                    //    }
-                    //    TempData["ID"] = encryptIDs;
+                    //    TempData["Logs"] = Logs;
                     //}
-
-                    return View();
                 }
-
                 else
                 {
                     var res = result.Content.ReadAsStringAsync().Result;
@@ -984,19 +1083,26 @@ namespace EasySystem.Controllers
                     TempData["Error"] = "" + errorMsg.message + "";
                     return View();
                 }
+
+                //Other Trainees
+                int id = Convert.ToInt32(Id);
+                var OtherTrainees = comm.GetOtherTrainees(id);
+                if (OtherTrainees.Count > 0)
+                {
+                    TempData["OtherTrainees"] = OtherTrainees;
+                }
+
+
             }
-#pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch (Exception)
-#pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
                 TempData["Error"] = "An error occured during getting the request. Please try again later";
-                //return View();
             }
             return View();
         }
 
 
-        [SessionCheck]
+        [SessionCheckActiveUser]
         public IActionResult Coupans()
         {
             try
@@ -1040,7 +1146,7 @@ namespace EasySystem.Controllers
             return View();
         }
 
-        [SessionCheck]
+        [SessionCheckActiveUser]
         public IActionResult MyLostTrainee(string Page)
         {
             try
@@ -1119,7 +1225,7 @@ namespace EasySystem.Controllers
             return View();
         }
 
-        [SessionCheck]
+        [SessionCheckActiveUser]
         public IActionResult AccountVerification()
         {
             try
@@ -1163,10 +1269,14 @@ namespace EasySystem.Controllers
                     var ext = Path.GetExtension(file.FileName);
                     if (allowedExtensions.Contains(ext)) //check what type of extension  
                     {
-                        string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images");
+                        string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/VerifiedPictures");
                         string fileName = Guid.NewGuid().ToString() + "_" + file.FileName;
                         string filePath = Path.Combine(uploadFolder, fileName);
-                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+                        //file.CopyTo(new FileStream(filePath, FileMode.Create));
                         data.uvImagePath = fileName;
                     }
                     else
@@ -1240,23 +1350,36 @@ namespace EasySystem.Controllers
         }
 
 
-
+        [SessionCheck]
         public ActionResult Certification()
         {
             try
             {
                 var id = HttpContext.Session.GetInt32("ID");
                 HttpClient client = _api.Initial();
-                var data = client.GetAsync("Questionnaire/GetMyCertificateData?id=" + id.ToString());
+                var data = client.GetAsync("Questionnaire/GetMyFailedCertificateData?id=" + id.ToString());
                 data.Wait();
                 var result = data.Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var res = result.Content.ReadAsStringAsync().Result;
-                    var cList = JsonConvert.DeserializeObject<List<CertificateVM>>(res);
-                    if(cList.Count > 0)
+                    var fList = JsonConvert.DeserializeObject<List<CertificateVM>>(res);
+                    if (fList.Count > 0)
                     {
-                        TempData["Certificates"] = cList;
+                        TempData["Failed"] = fList;
+                    }
+                }
+
+                var pdata = client.GetAsync("Questionnaire/GetMyPassedCertificateData?id=" + id.ToString());
+                pdata.Wait();
+                var presult = pdata.Result;
+                if (presult.IsSuccessStatusCode)
+                {
+                    var res = presult.Content.ReadAsStringAsync().Result;
+                    var pList = JsonConvert.DeserializeObject<List<CertificateVM>>(res);
+                    if (pList.Count > 0)
+                    {
+                        TempData["Passed"] = pList;
                     }
                 }
             }
@@ -1267,21 +1390,158 @@ namespace EasySystem.Controllers
             return View();
         }
 
-        public ActionResult GetCertificate()
+        [SessionCheck]
+        public ActionResult GetCertificate(string Num)
+        {
+            TempData["No"] = Num;
+            return View();
+        }
+
+
+        public ActionResult _Certificate(string Num)
+        {
+            HttpClient client = _api.Initial();
+            var data = client.GetAsync("Questionnaire/GetMyCertificate?Num=" + Num);
+            data.Wait();
+            var result = data.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var res = result.Content.ReadAsStringAsync().Result;
+                var cList = JsonConvert.DeserializeObject<CertificateVM>(res);
+                if (cList != null)
+                {
+                    TempData["Certificate"] = cList;
+                }
+                else
+                {
+                    return Content("No record found");
+                }
+            }
+            return PartialView();
+        }
+
+        public ActionResult DownloadPdf()
         {
             return View();
         }
 
-        public ActionResult _SkillData()
+        [HttpPost]
+        public ActionResult DownloadPdf(string GridHtml)
+        {
+
+
+            //var globalSettings = new GlobalSettings
+            //{
+            //    ColorMode = ColorMode.Color,
+            //    Orientation = Orientation.Portrait,
+            //    PaperSize = PaperKind.A4,
+            //    Margins = new MarginSettings { Top = 10 },
+            //    DocumentTitle = "PDF Report"
+            //};
+            //var objectSettings = new ObjectSettings
+            //{
+            //    PagesCount = true,
+            //    HtmlContent = "https://code-maze.com/create-pdf-dotnetcore/",
+            //    WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = Path.Combine(Directory.GetCurrentDirectory(), "assets", "styles.css") },
+            //    HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+            //    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Report Footer" }
+            //};
+            //var pdf = new HtmlToPdfDocument()
+            //{
+            //    GlobalSettings = globalSettings,
+            //    Objects = { objectSettings }
+            //};
+            //var file = _converter.Convert(pdf);
+            //return File(file, "application/pdf");
+
+
+            //// read parameters from the webpage
+            //string url = "~/Views/My/_Certificate";
+            ////string url = Path.Combine(HostingEnvironment.ContentRootPath, "Views\\My\\_Certificate.cshtml");
+
+            //string pdf_page_size = "1";
+            //PdfPageSize pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize), pdf_page_size, true);
+
+            //string pdf_orientation = "landscape";
+            //PdfPageOrientation pdfOrientation = (PdfPageOrientation)Enum.Parse(
+            //    typeof(PdfPageOrientation), pdf_orientation, true);
+
+            //int webPageWidth = 1024;
+
+
+            //int webPageHeight = 0;
+
+            //// instantiate a html to pdf converter object
+            //HtmlToPdf converter = new HtmlToPdf();
+
+            //// set converter options
+            //converter.Options.PdfPageSize = pageSize;
+            //converter.Options.PdfPageOrientation = pdfOrientation;
+            //converter.Options.WebPageWidth = webPageWidth;
+            //converter.Options.WebPageHeight = webPageHeight;
+
+            //// create a new pdf document converting an url
+            ////PdfDocument doc = converter.ConvertUrl(url);
+            //PdfDocument doc = converter.ConvertHtmlString(url);
+
+
+            //// save pdf document
+            //byte[] pdf = doc.Save();
+
+            //// close pdf document
+            //doc.Close();
+
+            //// return resulted pdf document
+            //return File(pdf, "application/pdf", "Grid.pdf");
+
+            ////FileResult fileResult = new FileContentResult(pdf, "application/pdf");
+            ////fileResult.FileDownloadName = "Document.pdf";
+            ////return fileResult;
+            ////Byte[] res = null;
+            ////using (MemoryStream ms = new MemoryStream())
+            ////{
+            ////    var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(GridHtml, PdfSharp.PageSize.A4);
+            ////    pdf.Save(ms);
+            ////    res = ms.ToArray();
+            ////}
+            //////return File(res, "application/pdf", "Grid.pdf");
+            return View();
+        }
+
+        [SessionCheck]
+        public ActionResult _SkillData(int Value)
         {
             try
             {
-                var GetSkills = comm.GetSkills();
-                if (GetSkills.Count > 0)
+                HttpClient client = _api.Initial();
+                Task<HttpResponseMessage> Data;
+                Data = client.GetAsync("My/GetSkillTypeData?value=" + Value.ToString());
+                Data.Wait();
+                var result = Data.Result;
+                if (result.IsSuccessStatusCode)
                 {
-                    TempData["Skills"] = GetSkills;
-                    return PartialView();
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var List = JsonConvert.DeserializeObject<List<EasySystemAPI.Models.SkillType>>(res);
+                    if (List.Count == 0)
+                    {
+                        return Content("");
+                    }
+                    TempData["Skills"] = List;
                 }
+                else
+                {
+                    return Content("");
+                    //var res = result.Content.ReadAsStringAsync().Result;
+                    //var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    //TempData["Error"] = "" + errorMsg.message + "";
+                }
+
+                //var GetSkills = comm.GetSkills();
+                //if (GetSkills.Count > 0)
+                //{
+                //    TempData["Skills"] = GetSkills;
+                //    return PartialView();
+                //}
             }
             catch (Exception)
             {
@@ -1290,16 +1550,42 @@ namespace EasySystem.Controllers
             return PartialView();
         }
 
-        public ActionResult _TestSkillData(int id)
+        [SessionCheck]
+        public ActionResult _TestSkillData(int Value, int Id)
         {
             try
             {
-                var GetSkills = comm.GetTestSkills(id);
-                if (GetSkills.Count > 0)
+                EasySystemAPI.Models.PageModel data = new EasySystemAPI.Models.PageModel();
+                data.Count = Value;
+                data.id = Id;
+                HttpClient client = _api.Initial();
+                Task<HttpResponseMessage> Data;
+                Data = client.PostAsJsonAsync("My/GeSkillsData", data);
+                Data.Wait();
+                var result = Data.Result;
+                if (result.IsSuccessStatusCode)
                 {
-                    TempData["TestSkills"] = GetSkills;
-                    return PartialView();
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var List = JsonConvert.DeserializeObject<List<EasySystemAPI.Models.SkillType>>(res);
+                    if (List.Count == 0)
+                    {
+                        return Content("");
+                    }
+                    TempData["SkillId"] = Id;
+                    TempData["TestSkills"] = List;
                 }
+                else
+                {
+                    return Content("");
+                }
+
+
+                //var GetSkills = comm.GetTestSkills(id);
+                //if (GetSkills.Count > 0)
+                //{
+                //    TempData["TestSkills"] = GetSkills;
+                //    return PartialView();
+                //}
             }
             catch (Exception)
             {
@@ -1308,11 +1594,13 @@ namespace EasySystem.Controllers
             return PartialView();
         }
 
-        public ActionResult CertificationTest(int id)
+
+        [SessionCheck]
+        public ActionResult CertificationTest(int id, string Name)
         {
             try
             {
-
+                TempData["Test"] = Name;
                 TempData["StId"] = id;
             }
             catch (Exception)
@@ -1322,6 +1610,7 @@ namespace EasySystem.Controllers
             return View();
         }
 
+        [SessionCheck]
         public ActionResult _QuestionData(int id)
         {
             try
@@ -1345,6 +1634,7 @@ namespace EasySystem.Controllers
                     else
                     {
                         TempData["Info"] = "No Record found";
+                        ViewBag.No = "No";
                         return PartialView();
                     }
                 }
@@ -1354,7 +1644,7 @@ namespace EasySystem.Controllers
                     var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
                     if (errorMsg.message != null)
                     {
-                        if (errorMsg.message == "You already Pass this test")
+                        if (errorMsg.message == "You already passed this test. Please choose another category")
                         {
                             TempData["Info"] = errorMsg.message;
                             return PartialView();
@@ -1373,6 +1663,7 @@ namespace EasySystem.Controllers
             }
             return PartialView();
         }
+
 
         public ActionResult AddTestResult(int StId, int cId, string AccDetails)
         {
@@ -1429,17 +1720,17 @@ namespace EasySystem.Controllers
                             qResult.usrId = (int)HttpContext.Session.GetInt32("ID");
                             qResult.Date = DateTime.Now;
                             //CheckNum
-                            foreach(var i in comm.RandomString(6))
+                            foreach (var i in comm.RandomString(6))
                             {
-                                var Num = comm.RandomString(6) + "-" + DateTime.Now.ToString("ddMMyy");
+                                var Num = comm.RandomString(6);
                                 var check = comm.CheckNumber(Num);
-                                if(check == true)
+                                if (check == true)
                                 {
                                     qResult.ucNumber = Num;
                                     break;
                                 }
                             }
-                            
+
 
                             HttpClient client = _api.Initial();
                             var data = client.PostAsJsonAsync("Questionnaire/AddTestResult", qResult);
@@ -1449,11 +1740,11 @@ namespace EasySystem.Controllers
                             {
                                 if (qResult.uqrStatus == "Passed")
                                 {
-                                    return Json(new { success = true, responseText = "Congratulations. You have pass the Test successfully.You have secured: " + RightAns + "/" + Total + "." });
+                                    return Json(new { success = true, Result = "Passed", responseText = "Congratulations. You have pass the Test successfully.You have secured: " + RightAns + "/" + Total + ".(" + result + "%)" });
                                 }
                                 else
                                 {
-                                    return Json(new { success = true, responseText = "oops! Better luck next time! Test Result: " + RightAns + "/" + Total + "." });
+                                    return Json(new { success = true, Result = "Failed", responseText = "oops! Better luck next time! Test Result: " + RightAns + "/" + Total + ".(" + result + "%)" });
                                 }
 
                             }
@@ -1478,6 +1769,302 @@ namespace EasySystem.Controllers
             return Json(new { success = false, responseText = "No record found." });
         }
 
+        [SessionCheck]
+        public ActionResult AllMentors()
+        {
+            try
+            {
+                int? MentorId = HttpContext.Session.GetInt32("RefId");
+
+                var Mentor = GetRefData(Convert.ToInt32(MentorId));
+                if (Mentor != null)
+                {
+                    TempData["MentorName"] = Mentor.usrName + "-" + Mentor.usrCode;
+                    TempData["MentorCode"] = Mentor.usrCode;
+                }
+
+                var Code = HttpContext.Session.GetInt32("Code");
+                TempData["Code"] = Code;
+
+
+                var usrStatus = HttpContext.Session.GetString("Status");
+                TempData["Status"] = usrStatus;
+
+                int? CountryId = HttpContext.Session.GetInt32("CountryId");
+                TempData["CId"] = CountryId;
+
+                var Id = HttpContext.Session.GetInt32("ID");
+                HttpClient client = _api.Initial();
+                var GetData = client.GetAsync("Users/GetMyAllMentor?id=" + Id.ToString());
+                GetData.Wait();
+                var result = GetData.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var list = JsonConvert.DeserializeObject<List<UserMentorVM>>(res);
+                    if (list.Count > 0)
+                    {
+                        TempData["UserMentor"] = list;
+                    }
+
+                    return View();
+                }
+
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    TempData["Error"] = "" + errorMsg.message + "";
+                    return View();
+                }
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "An error occured during getting the request. Please try again later";
+                return View();
+            }
+
+        }
+
+        [SessionCheck]
+        public ActionResult MakeMentor(int id)
+        {
+            try
+            {
+                var Id = HttpContext.Session.GetInt32("ID");
+                if (Id != null)
+                {
+                    EasySystemAPI.Models.UserMentors data = new EasySystemAPI.Models.UserMentors();
+                    data.usrId = Convert.ToInt32(Id);
+                    data.mentId = id;
+                    HttpClient client = _api.Initial();
+                    var GetData = client.PostAsJsonAsync("Users/MakeMentor", data);
+                    GetData.Wait();
+                    var result = GetData.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("AllMentors");
+                    }
+
+                    else
+                    {
+                        var res = result.Content.ReadAsStringAsync().Result;
+                        var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                        TempData["Error"] = "" + errorMsg.message + "";
+                        return RedirectToAction("AllMentors");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "Users");
+                }
+
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "An error occured during getting the request. Please try again later";
+                return View();
+            }
+        }
+
+
+        [SessionCheck]
+        public ActionResult ChangeCoreMentor(int id)
+        {
+            try
+            {
+                var Id = HttpContext.Session.GetInt32("ID");
+                if (Id != null)
+                {
+                    EasySystemAPI.Models.UserMentors data = new EasySystemAPI.Models.UserMentors();
+                    data.usrId = Convert.ToInt32(Id);
+                    data.mentId = id;
+                    HttpClient client = _api.Initial();
+                    var GetData = client.PostAsJsonAsync("Users/ChangeCoreMentor", data);
+                    GetData.Wait();
+                    var result = GetData.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        HttpContext.Session.SetInt32("RefId", id);
+                        return RedirectToAction("AllMentors");
+                    }
+
+                    else
+                    {
+                        var res = result.Content.ReadAsStringAsync().Result;
+                        var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                        TempData["Error"] = "" + errorMsg.message + "";
+                        return RedirectToAction("AllMentors");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "Users");
+                }
+
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "An error occured during getting the request. Please try again later";
+                return View();
+            }
+        }
+
+
+        [SessionCheck]
+        public ActionResult LeaveMentor(int id)
+        {
+            try
+            {
+                var Id = HttpContext.Session.GetInt32("ID");
+                if (Id != null)
+                {
+                    EasySystemAPI.Models.UserMentors data = new EasySystemAPI.Models.UserMentors();
+                    data.usrId = Convert.ToInt32(Id);
+                    data.mentId = id;
+                    HttpClient client = _api.Initial();
+                    var GetData = client.PostAsJsonAsync("Users/LeaveMentor", data);
+                    GetData.Wait();
+                    var result = GetData.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("AllMentors");
+                    }
+
+                    else
+                    {
+                        var res = result.Content.ReadAsStringAsync().Result;
+                        var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                        TempData["Error"] = "" + errorMsg.message + "";
+                        return RedirectToAction("AllMentors");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "Users");
+                }
+
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "An error occured during getting the request. Please try again later";
+                return View();
+            }
+        }
+
+        [SessionCheckActiveUser]
+        public ActionResult CatchTheTrainee()
+        {
+            try
+            {
+                int cId = (int)HttpContext.Session.GetInt32("CountryId");
+                HttpClient client = _api.Initial();
+                var GetData = client.GetAsync("Users/CatchTheTrainee?id=" + cId.ToString());
+                GetData.Wait();
+                var result = GetData.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var usrData = JsonConvert.DeserializeObject<List<Users>>(res);
+                    if (usrData.Count > 0)
+                    {
+                        TempData["Trainees"] = usrData;
+                    }
+                    else
+                    {
+                        TempData["Info"] = "No new trainees for today";
+                    }
+                    return View();
+                }
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    TempData["Error"] = "" + errorMsg.message + "";
+                    return RedirectToAction("AllMentors");
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return View();
+        }
+
+        public ActionResult SetTrainingFee()
+        {
+            try
+            {
+                int Id = (int)HttpContext.Session.GetInt32("ID");
+                HttpClient client = _api.Initial();
+                var GetData = client.GetAsync("My/TrainingFee?id=" + Id.ToString());
+                GetData.Wait();
+                var result = GetData.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var usrData = JsonConvert.DeserializeObject<EasySystemAPI.Models.MentorFee>(res);
+                    if (usrData != null)
+                    {
+                        TempData["FeeData"] = usrData;
+                        return View(usrData);
+                    }
+
+                    return View();
+                }
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    TempData["Error"] = "" + errorMsg.message + "";
+                    return View();
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SetTrainingFee(string Amount)
+        {
+            try
+            {
+                if (Amount != null)
+                {
+                    int Id = (int)HttpContext.Session.GetInt32("ID");
+                    EasySystemAPI.Models.MentorFee Fee = new EasySystemAPI.Models.MentorFee();
+                    Fee.usrId = Id;
+                    Fee.usrFeeAmount = Convert.ToDouble(Amount);
+
+                    HttpClient client = _api.Initial();
+                    var GetData = client.PostAsJsonAsync("My/SetTrainingAmount", Fee);
+                    GetData.Wait();
+                    var result = GetData.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        TempData["Success"] = "Training Fee amount has been updated successfully";
+                        return Json(new { success = true, responseText = "Training Fee updated." });
+                    }
+                    else
+                    {
+                        var res = result.Content.ReadAsStringAsync().Result;
+                        var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                        TempData["Error"] = "" + errorMsg.message + "";
+                        return Json(new { success = false, responseText = "Training Fee not Updated." });
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, responseText = "Training Fee not Updated." });
+            }
+            return Json(new { success = false, responseText = "Training Fee not Updated." });
+
+        }
 
         public IActionResult Chat()
         {
@@ -1557,7 +2144,6 @@ namespace EasySystem.Controllers
             return list;
         }
 
-
         public List<Bank> PopulateBank()
         {
             List<Bank> bankList = new List<Bank>();
@@ -1622,7 +2208,7 @@ namespace EasySystem.Controllers
             {
                 //var Id = HttpContext.Session.GetInt32("ID");
                 HttpClient client = _api.Initial();
-                var GetSkills = client.GetAsync("My/GetUserSkillInfo?id=" + id.ToString());
+                var GetSkills = client.GetAsync("My/GetUserSkill?id=" + id.ToString());
                 GetSkills.Wait();
                 var result = GetSkills.Result;
                 if (result.IsSuccessStatusCode)
@@ -1635,7 +2221,7 @@ namespace EasySystem.Controllers
             {
                 var Id = HttpContext.Session.GetInt32("ID");
                 HttpClient client = _api.Initial();
-                var GetSkills = client.GetAsync("My/GetUserSkillInfo?id=" + Id.ToString());
+                var GetSkills = client.GetAsync("My/GetUserSkill?id=" + Id.ToString());
                 GetSkills.Wait();
                 var result = GetSkills.Result;
                 if (result.IsSuccessStatusCode)
@@ -1744,7 +2330,6 @@ namespace EasySystem.Controllers
             return List;
         }
 
-
         public List<EasySystemAPI.Models.SkillType> PopulateAllSkills()
         {
             List<EasySystemAPI.Models.SkillType> List = new List<EasySystemAPI.Models.SkillType>();
@@ -1823,6 +2408,34 @@ namespace EasySystem.Controllers
             {
                 return false;
             }
+        }
+
+        public ActionResult RunQuery()
+        {
+            try
+            {
+                HttpClient client = _api.Initial();
+                var GetData = client.GetAsync("Users/RecentLoginLogs");
+                GetData.Wait();
+                var result = GetData.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    TempData["Success"] = "Operation Performed successfully";
+                    return View();
+                }
+                else
+                {
+                    var res = result.Content.ReadAsStringAsync().Result;
+                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
+                    TempData["Error"] = "Operation Failed";
+                    return View();
+                }
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Operation Failed";
+            }
+            return View();
         }
     }
 }

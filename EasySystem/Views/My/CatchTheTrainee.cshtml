@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewData["Title"] = "CatchTheTrainee";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>
+                            Catch the Trainees
+                        </h2>
+                        <div id="Notifocation">
+
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div role="alert" class="alert white">
+                        <span><i class="ti-info-alt blue-bg"></i></span>
+                        This screen shows those users who belong to your country. These users are new in system. They entered today under L.E. Skills' head. You can approach them to make your trainee(s).
+                    </div>
+
+                </div>
+
+                @if (TempData["Trainees"] != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="widget white">
+                                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Phone</th>
+                                            <th>Gender</th>
+                                            <th>Joining Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var i in (List<EasySystem.Models.Users>)TempData["Trainees"])
+                                        {
+
+                                            <tr>
+                                                <td>
+                                                    <a asp-controller="Users" asp-action="Profile" asp-route-id="@i.usrId"><i class="fa fa-user"></i> @i.usrName</a>
+                                                </td>
+                                                <td>@i.usrPhone</td>
+                                                <td>@i.usrGender</td>
+                                                <td>@i.usrCreated.ToString("dd-MMM-yyyy")</td>
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="9">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>

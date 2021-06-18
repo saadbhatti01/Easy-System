@@ -5,4 +5,138 @@
 }
 
 
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>Get Certificate</h2>
+                        <div id="Notifocation">
 
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="widget white with-padding">
+                        <div class="row">
+                            <a asp-action="Certification" asp-controller="My" class="btn btn-info" style="background-color:#1b3767">Go back</a>
+
+                            <div class="col-md-12" hidden>
+                                <div class="row">
+                                    <div class="col-md-4 form-group">
+                                        <label>Enter Certificate Number</label>
+                                        <input type="text" class="form-control" name="Number" value="@TempData["No"]" id="Number" required />
+                                    </div>
+                                    <div class="col-md-12 form-group">
+                                        <button type="button" id="btnSubmit" class="btn btn-info" style="background-color:#1b3767">Get Certificate</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div id="Certificate">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function (event) {
+            var No = $("#Number").val();
+            $("#btnSubmit").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+            $('#btnSubmit').attr('disabled', true);
+            if (No != "" && No != null){
+                $.ajax({
+                url: "@Url.Action("_Certificate", "My")",
+                data: { Num: No },
+                type: "Get",
+                dataType: "html",
+                success: function (data) {
+                    //Whatever result you have got from your controller with html partial view replace with a specific html.
+                    // HTML DOM replace
+                    $("#Certificate").html(data);
+                    $("#btnSubmit").html('Get Certificate');
+                    $('#btnSubmit').attr('disabled', false);
+                }
+                });
+                } else {
+                alert("Please Enter Number");
+                $("#btnSubmit").html('Get Certificate');
+                $('#btnSubmit').attr('disabled', false);
+                }
+
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        GetMainData();
+    });
+</script>
+
+
+<script>
+    function GetMainData()
+    {
+                var No = $("#Number").val();
+                if (No != "" && No != null){
+                $.ajax({
+                url: "@Url.Action("_Certificate", "My")",
+                data: { Num: No },
+                type: "Get",
+                dataType: "html",
+                success: function (data) {
+                    //Whatever result you have got from your controller with html partial view replace with a specific html.
+                    // HTML DOM replace
+                    $("#Certificate").html(data);
+                }
+                });
+                } else {
+                alert("Please Enter Number");
+               
+                }
+    }
+</script>

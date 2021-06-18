@@ -1,0 +1,118 @@
+﻿@if (TempData["Question"] != null)
+{
+    <br />
+    <div class="row col-md-12">
+        <a data-toggle="modal" href="#TestModal" id="testModal" class="btn btn-info" style="background-color:#1b3767">Add New Questios</a>
+    </div>
+
+    <br />
+
+    int SrNo = 1;
+    <div class="row col-md-12">
+        <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+            <thead>
+                <tr>
+                    <th>Sr#</th>
+                    <th>Skill Type</th>
+                    <th>Question</th>
+                    <th>Opt 1</th>
+                    <th>Opt 2</th>
+                    <th>Opt 3</th>
+                    <th>Opt 4</th>
+                    <th>Answer</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Created By</th>
+                    <th>Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in (List<EasySystem.Models.QuestionVM>)TempData["Question"])
+                {
+                    <tr>
+                        <td>@SrNo</td>
+                        <td>@i.StName</td>
+                        <td>@i.qQuestion</td>
+                        <td>@i.qOpt1</td>
+                        <td>@i.qOpt2</td>
+                        <td>@i.qOpt3</td>
+                        <td>@i.qOpt4</td>
+                        <td>@i.qAnswer</td>
+                        <td>@i.qCategory</td>
+                        <td>@i.qStatus</td>
+                        <td>@i.CreatedBy</td>
+                        <td>
+                            <a onclick="DelData(@i.qId)" title="Delete Record" style="color:red"><i class="fa fa-trash-o"></i></a>
+                            &nbsp;
+                            <a onclick="createModal('@Url.Action("_EditQuestion", "Questionnaire", new { id = i.qId })')" title="Update Record"><i class="fa fa-edit"></i></a>
+                        </td>
+
+                    </tr>
+                    SrNo = SrNo + 1;
+
+                }
+
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="9">
+                        <ul class="pagination pull-right"></ul>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+}
+else
+{
+    <div class="col-md-12">
+        <a data-toggle="modal" href="#TestModal" class="btn btn-info" style="background-color:#1b3767">Add New Questios</a>
+    </div>
+
+    <br />
+    <div class="col-md-12">
+        <div role="alert" class="alert alert-info">
+            <strong><i class="fa fa-info-circle"></i></strong>
+            No record found.
+        </div>
+    </div>
+
+
+
+}
+
+
+<script>
+    function DelData(id) {
+
+             var MSG = confirm("Are you sure you want to delete this Record?");
+
+                if (MSG) {
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteQuestion", "Questionnaire")',
+                    data: { id: id },
+                    dataType: "text",
+                    success: function (data) {
+                        if (data !== "") {
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            Command: toastr["success"]("Data deleted successfully")
+                            GetMainData();
+                        }
+                    },
+                    error: function () {
+                        alert("Error while deleting data");
+                    }
+                });
+            }
+        }
+
+</script>
+
+
+

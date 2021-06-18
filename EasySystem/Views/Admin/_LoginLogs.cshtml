@@ -1,0 +1,52 @@
+﻿@if (TempData["List"] != null)
+{
+    int SrNo = 1;
+    <div class="col-md-12">
+        <div class="row">
+            <div class="widget white">
+                <div class="form-group" hidden>
+                    &nbsp;
+                    <div class="col-md-3">
+                        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                    </div>
+                </div>
+
+
+                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                    <thead>
+                        <tr>
+                            <th>Sr.No</th>
+                            <th>User Name</th>
+                            <th>Mentor Name</th>
+                            <th>Last Login Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var i in (List<EasySystem.Models.LoginLogsVM>)TempData["List"])
+                        {
+                            <tr>
+                                <td>@SrNo</td>
+                                <td>@i.UserName</td>
+                                <td>@i.MentorName</td>
+                                <td>@i.Date.ToShortTimeString()</td>
+                                
+
+                            </tr>
+                            SrNo = SrNo + 1;
+
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="9">
+                                <ul class="pagination pull-right"></ul>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </div>
+}

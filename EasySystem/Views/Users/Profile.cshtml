@@ -43,7 +43,7 @@
 {
     <div class="main-content">
         <div class="panel-content">
-            <div class="main-title-sec">
+            <div class="main-title-sec" hidden>
                 <div class="row">
                     <div class="col-md-12 column">
                         <div class="heading-profile">
@@ -55,13 +55,65 @@
             <div class="main-content-area">
                 <div class="mail-area">
                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="inbox-nav">
+                                <div class="user-mail">
+                                    @if (usr.usrImage != null)
+                                    {
+                                        <span><img src="~/images/ProfilePictures/@usr.usrImage" alt="" /></span>
+                                    }
+                                    else
+                                    {
+                                        <span><img src="~/images/Logo-01.png" alt="" /></span>
+                                    }
+                                    <h5>@usr.usrName</h5>
+                                    <h6>Code:<b> @usr.usrCode</b></h6>
+                                    <div class="mailer-name">
 
+                                        @if (mentor != null)
+                                        {
+                                            <h3>Mentor</h3>
+                                            <i>@mentor.usrName-@mentor.usrCode</i>
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                                <div class="mail-labels">
+                                    <h3 hidden>@usr.usrName's Info</h3>
+                                    <ul>
+                                        @if (ID != null)
+                                        {
+                                            <li><i class="fa fa-envelope-open"></i>  @usr.usrEmail</li>
+                                            <li><i class="fa fa-phone-square"></i>  @usr.usrPhone</li>
+                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
+                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
+                                            @if (usr.ExpiryDate.Year > 2000)
+                                            {
+                                                <li><i class="fa fa-calendar-check-o"></i> Fee Valid till: <b>@usr.ExpiryDate.ToString("dd-MMM-yyyy")</b></li>
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
+                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
+                                        }
+
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-8">
                             <div class="widget white no-padding">
                                 <div class="widget-tabs">
                                     <ul class="nav nav-tabs">
                                         <li class="nav-item"><a class="active" data-toggle="tab" data-target="#tab1">Skills</a></li>
                                         <li class="nav-item"><a data-toggle="tab" data-target="#tab2">WhiteBoards</a></li>
+                                        <li class="nav-item"><a data-toggle="tab" data-target="#tab3">Certified in</a></li>
                                     </ul>
                                     <div class="tab-content">
                                         <div id="tab1" class="tab-pane active fade show">
@@ -74,7 +126,8 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Skill Name</th>
-                                                                        <th>Level</th>
+                                                                        <th>Type</th>
+                                                                        <th>Action</th>
 
                                                                     </tr>
                                                                 </thead>
@@ -84,7 +137,17 @@
 
                                                                         <tr>
                                                                             <td>@i.StName</td>
-                                                                            <td>@i.usLevel</td>
+                                                                            @if (i.usLevel == 0)
+                                                                            {
+                                                                                <td>Free</td>
+                                                                            }
+                                                                            else if (i.usLevel == 1)
+                                                                            {
+                                                                                <td>Paid</td>
+                                                                            }
+                                                                            <td>
+                                                                                <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="Profile" title="Record Detail"><i class="fa fa-info-circle"></i></a>
+                                                                            </td>
                                                                         </tr>
                                                                     }
                                                                 </tbody>
@@ -112,6 +175,7 @@
                                                                     <tr>
                                                                         <th>Skill Name</th>
                                                                         <th>Title</th>
+                                                                        <th>Action</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -121,6 +185,9 @@
                                                                         <tr>
                                                                             <td>@i.usName</td>
                                                                             <td>@i.uwbName</td>
+                                                                            <td>
+                                                                                <a asp-controller="My" asp-action="WhiteBoardDetail" asp-route-id="@i.uwbId" asp-route-Page="Profile" title="Record Detail"><i class="fa fa-info-circle"></i></a>
+                                                                            </td>
                                                                         </tr>
                                                                     }
 
@@ -139,62 +206,45 @@
                                                 </div>
                                             }
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="inbox-nav">
-                                <div class="user-mail">
-                                    @if (usr.usrImage != null)
-                                    {
-                                        <span><img src="~/images/@usr.usrImage" alt="" /></span>
-                                    }
-                                    else
-                                    {
-                                        <span><img src="~/images/Logo-01.png" alt="" /></span>
-                                    }
-                                    <h5>@usr.usrName</h5>
-                                    <h6>Code:<b> @usr.usrCode</b></h6>
-                                    <div class="mailer-name">
-
-                                        @if (mentor != null)
-                                        {
-                                            <h3>Mentor</h3>
-                                            <i>@mentor.usrName-@mentor.usrCode</i>
-                                        }
-
-                                    </div>
-
-                                </div>
-
-                                <div class="mail-labels">
-                                    <h3>@usr.usrName's Info</h3>
-                                    <ul>
-                                        @if (ID != null)
-                                        {
-                                            <li><i class="fa fa-envelope-open"></i>  @usr.usrEmail</li>
-                                            <li><i class="fa fa-phone-square"></i>  @usr.usrPhone</li>
-                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
-                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
-                                            @if (usr.ExpiryDate.Year > 2000)
+                                        <div id="tab3" class="tab-pane fade">
+                                            @if (TempData["Passed"] != null)
                                             {
-                                                <li><i class="fa fa-calendar-check-o"></i> Fee Valid till: <b>@usr.ExpiryDate.ToString("dd-MMM-yyyy")</b></li>
+                                                <div class="col-md-7">
+                                                    <div class="widget white">
+                                                        <div class="panel panel-default work-progress-table">
+                                                            <table id="List3" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                                                <theader>
+                                                                    @foreach (var i in (List<EasySystem.Models.CertificateVM>)TempData["Passed"])
+                                                                    {
 
+                                                                        <tr>
+                                                                            <td>@i.StName</td>
+                                                                            <td>
+                                                                                <a asp-controller="My" asp-action="GetCertificate" asp-route-Num="@i.ucNumber" class="btn btn-primary mini" style="background-color:#1b3767">
+                                                                                    <i class="fa fa-eye"></i> View
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </theader>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <td colspan="9">
+                                                                            <ul class="pagination pull-right"></ul>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             }
-                                        }
-                                        else
-                                        {
-                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
-                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
-                                        }
-
-
-
-                                    </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
 
                     </div>
                     <!-- Modal -->
@@ -399,7 +449,7 @@
                             if (count == 0) {
                                 $("#more").html('No blogs found');
                                 $('#more').attr('disabled', true);
-                                
+
                             } else {
                                 $("#more").html('<i class="fa fa-flag-checkered"></i>  No more blogs');
                                 $('#more').attr('disabled', true);
@@ -412,4 +462,50 @@
                     }
                 });
         }
+</script>
+
+
+<script>
+
+    function MentorName() {
+
+        if ($("#ProfileSearch").val().length >= 6) {
+            var code = $("#ProfileSearch").val();
+            if (code !== null && code !== "") {
+
+                $.ajax({
+                    type: 'GET',
+                    //url: 'http://fabricaerp-001-site3.gtempurl.com/api/Users/GetCode?Code=' + code,
+                    url: 'http://sajawal-001-site3.ctempurl.com/api/Users/GetCode?Code=' + code,
+                    //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
+
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                        if (data !== "") {
+                            window.location = '/Users/Profile/?id=' + data.usrId;
+                            //Command: toastr["success"]("" + data.usrName + "")
+                        } else {
+                            Command: toastr["error"]("No record found against this Mentor Code")
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        Command: toastr["error"]("No record found")
+                    }
+
+                });
+            }
+
+        } else {
+            Command: toastr["warning"]("Please enter 6 digit Mentor Code")
+        }
+    }
+
+</script>
+
+<script>
+    $("#btnSearch").click(function () {
+        MentorName();
+    });
 </script>

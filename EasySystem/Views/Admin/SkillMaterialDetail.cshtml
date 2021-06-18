@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewData["Title"] = "SkillMaterialDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var detail = TempData["Material"] as EasySystem.Models.SkillDetailVM;
+}
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>
+                            Skill Material Detail
+
+                        </h2>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="widget white">
+
+                        <div id="Notifocation">
+
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+
+                        </div>
+                        <br />
+                        <table class="table table-bordered table-responsive-md">
+                            <tr>
+                                <th>Skill Type</th>
+                                <td>@detail.SkillName</td>
+                            </tr>
+                            <tr>
+                                <th>Title</th>
+                                <td>@detail.SmTitle</td>
+
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>@detail.SmStatus</td>
+
+                            </tr>
+                            <tr>
+                                <th>Detail</th>
+                                <td>@Html.Raw(detail.SmContent)</td>
+                            </tr>
+
+                        </table>
+
+
+                        @if (TempData["MaterialDetail"] != null)
+                        {
+                            <div class="col-md-4">
+                                <h3>Videos</h3>
+                            </div>
+
+                            <br />
+                            <div class="row">
+                                @foreach (var i in (List<EasySystemAPI.Models.SkillMaterialDetail>)TempData["MaterialDetail"])
+                                {
+
+                                    <div class="col-md-12" style="margin: 4px 10px 2px 15px;">
+                                        <span><a asp-controller="Admin" asp-action="DelMaterialVideo" asp-route-id="@i.SmdId" asp-route-SmId="@i.SmId" class="btn btn-primary" style="background-color:#1b3767; margin-bottom: 20px; " title="Delete this video"><i class="fa fa-trash-o"></i></a></span>
+
+                                        <iframe src="@i.SmdURL" frameborder="0" height="315" width="450" allow="accelerometer; autoplay;  encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+
+                                }
+                            </div>
+
+                        }
+
+                    </div>
+
+
+                </div>
+
+                <div class="col-md-12">
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>

@@ -1,5 +1,3 @@
-using System;
-
 namespace EasySystem.Models
 {
     public class ErrorViewModel

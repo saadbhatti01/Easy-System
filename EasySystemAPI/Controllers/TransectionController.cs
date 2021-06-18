@@ -120,9 +120,23 @@ namespace EasySystemAPI.Controllers
                                         con.transections.Add(trn);
                                         await con.SaveChangesAsync();
 
+                                        ////Check for Current User Balance
+                                        //var getUserSum = con.transections.Where(t => t.tReceiving == getUser.usrId && t.tStatus == "Verified").Sum(t => t.TuitionAmount);
+
+                                        ////Check for Current Mentor Balance
+                                        //var getMentorSum = con.transections.Where(t => t.tReceiving == getUser.usrId && t.tStatus == "Verified").Sum(t => t.TuitionAmount);
+
 
                                         //Mail to Mentor
-                                        string emailBody = "Congratulation !!<br/><b>" + getMentorData.usrName + " </b> you have received <b>" + trn.TuitionAmount + "/- pkr from your trainee <b>" + getUser.usrName + "-" + getUser.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                        string emailBody = "";
+                                        if (getMentorData.CountryId == 6)
+                                        {
+                                            emailBody = "Congratulation !!<br/><b>" + getMentorData.usrName + " </b> you have received <b>" + trn.TuitionAmount + "/- pkr from your trainee <b>" + getUser.usrName + "-" + getUser.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                        }
+                                        else
+                                        {
+                                            emailBody = "Congratulation !!<br/><b>" + getMentorData.usrName + " </b> you have received <b>" + trn.TuitionAmount + "/- USD from your trainee <b>" + getUser.usrName + "-" + getUser.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                        }
                                         Mailer email = new Mailer("Care@Universalskills.co", getMentorData.usrEmail, "Amount Transferred", emailBody);
                                         email.Send();
                                         InfoSend info = new InfoSend();
@@ -133,8 +147,16 @@ namespace EasySystemAPI.Controllers
                                         info.infoStatus = "Success";
                                         con.infoSends.Add(info);
 
+                                        string emailBody1 = "";
                                         //Mail to User
-                                        string emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>.";
+                                        if (getUser.CountryId == 6)
+                                        {
+                                            emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>.";
+                                        }
+                                        else
+                                        {
+                                            emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- USD</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- USD has been reflected in your Mentor's (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- USD is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- USD is system fee and transaction# is <b>" + trn.tNumber + "</b>.";
+                                        }
                                         Mailer email1 = new Mailer("Care@Universalskills.co", getUser.usrEmail, "Fee Paid", emailBody1);
                                         email1.Send();
                                         InfoSend info1 = new InfoSend();
@@ -219,21 +241,36 @@ namespace EasySystemAPI.Controllers
                                         string emailBody1 = "";
                                         if (getMentorData.ExpiryDate.Year < 2000)
                                         {
-                                            emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>."+
-                                                   " <br/>Your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) did not pay fee to his mentor so as per policy now your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) has been lost you. Now, your new mentor is company Universal Skills.";
+                                            if (getMentorData.CountryId == 6)
+                                            {
+                                                emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
+                                                  " <br/>Your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) did not pay fee to his mentor so as per policy now your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) has been lost you. Now, your new mentor is company Universal Skills.";
+                                            }
+                                            else
+                                            {
+                                                emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- USD</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- USD has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- USD is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- USD is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
+                                                  " <br/>Your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) did not pay fee to his mentor so as per policy now your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) has been lost you. Now, your new mentor is company Universal Skills.";
+                                            }
+
                                         }
                                         else
                                         {
-                                            emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
-                                            "<br/><b>" + getUser.usrName + " </b><br/> Your mentor <b> " + getMentorData.usrName + " - " + getMentorData.usrCode + " </b> 's subscription was expired on Dated <b>" + getMentorData.ExpiryDate + "</b>" +
-                                        ", as per policy now your mentor has been lost you. Now, your new mentor is company <b>Universal Skills</b>";
+                                            if (getUser.CountryId == 6)
+                                            {
+                                                emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
+                                                "<br/><b>" + getUser.usrName + " </b><br/> Your mentor <b> " + getMentorData.usrName + " - " + getMentorData.usrCode + " </b> 's subscription was expired on Dated <b>" + getMentorData.ExpiryDate + "</b>" +
+                                                ", as per policy now your mentor has been lost you. Now, your new mentor is company <b>Universal Skills</b>";
+
+                                            }
+                                            else
+                                            {
+                                                emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- USD</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- USD has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- USD is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- USD is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
+                                                "<br/><b>" + getUser.usrName + " </b><br/> Your mentor <b> " + getMentorData.usrName + " - " + getMentorData.usrCode + " </b> 's subscription was expired on Dated <b>" + getMentorData.ExpiryDate + "</b>" +
+                                                ", as per policy now your mentor has been lost you. Now, your new mentor is company <b>Universal Skills</b>";
+
+                                            }
 
                                         }
-
-
-                                        emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
-                                           "<br/><b>" + getUser.usrName + " </b><br/> Your mentor <b> " + getMentorData.usrName + " - " + getMentorData.usrCode + " </b> 's subscription was expired on Dated <b>" + getMentorData.ExpiryDate + "</b>" +
-                                       ", as per policy now your mentor has been lost you. Now, your new mentor is company <b>Universal Skills</b>";
 
                                         Mailer email1 = new Mailer("Care@Universalskills.co", getUser.usrEmail, "Fee Paid", emailBody1);
                                         email1.Send();
@@ -296,7 +333,7 @@ namespace EasySystemAPI.Controllers
                                 var Clickhere = "https://universalskills.co/Home/TermsAndConditions";
                                 ult.ultReason = "You have lost your trainee " + getUser.usrName + "(" + getUser.usrCode + ") on dated " + DateTime.Now + " because your status " +
                                                   "was 'learning' as per policy 'learner mentor' loss their trainees when trainee pays fee. With sorrow this is informed you that you cannot take back your team member " + getUser.usrName + "(" + getUser.usrCode + ") " +
-                                                  "as per terms, for more detail please see terms and conditions please "+ Clickhere + " section. Please always be active and pay your fee to your mentor on time to avoid inconvience.";
+                                                  "as per terms, for more detail please see terms and conditions please " + Clickhere + " section. Please always be active and pay your fee to your mentor on time to avoid inconvience.";
 
                                 ult.ultStatus = "Lost";
                                 con.userLostTrainees.Add(ult);
@@ -340,8 +377,17 @@ namespace EasySystemAPI.Controllers
 
                                     //Mail to New User for fee paid and Lost mentor
                                     //string emailBody1 = "<b>" + getUser.usrName + " </b><br/><b>" + trn.TuitionAmount + "</b>has been paid. to your mentor <b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
-                                    string emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
-                                     " <br/>Your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) did not pay fee to his mentor so as per policy now your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) has been lost you. Now, your new mentor is company Universal Skills.";
+                                    string emailBody1 = "";
+                                    if (getUser.CountryId == 6)
+                                    {
+                                        emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- pkr</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- pkr has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- pkr is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- pkr is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
+                                        " <br/>Your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) did not pay fee to his mentor so as per policy now your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) has been lost you. Now, your new mentor is company Universal Skills.";
+                                    }
+                                    else
+                                    {
+                                        emailBody1 = "<b>" + getUser.usrName + "</b> you have paid <b>" + totalAmount + "/- USD</b> on dated <b>" + DateTime.Now + "</b>, <b>" + trn.TuitionAmount + "</b>/- USD has been reflected in your Mentor's (<b>Universal Skills</b>) account, <b>" + trn.ThirdPartyCharges + "</b>/- USD is money transferred fee and <b>" + trn.SoftServiceCharges + "</b>/- USD is system fee and transaction# is <b>" + trn.tNumber + "</b>." +
+                                        " <br/>Your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) did not pay fee to his mentor so as per policy now your mentor (<b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b>) has been lost you. Now, your new mentor is company Universal Skills.";
+                                    }
                                     Mailer email1 = new Mailer("Care@Universalskills.co", getUser.usrEmail, "Fee Paid", emailBody1);
                                     email1.Send();
                                     InfoSend info1 = new InfoSend();
@@ -401,8 +447,6 @@ namespace EasySystemAPI.Controllers
                         return BadRequest(new { message = "No Mentor record found. Please contact to Universal Skills." });
                     }
                 }
-
-
             }
             // The variable 'ex' is declared but never used
             catch (Exception ex)
@@ -600,7 +644,7 @@ namespace EasySystemAPI.Controllers
                                                         ub.ubTitle,
                                                         b.BankId,
                                                         b.BankName
-                                                    }).ToListAsync();
+                                                    }).OrderByDescending(o => o.udrId).ToListAsync();
                             return Ok(Getrequest);
                         }
                         else
@@ -630,7 +674,7 @@ namespace EasySystemAPI.Controllers
                                                         ub.ubTitle,
                                                         b.BankId,
                                                         b.BankName
-                                                    }).ToListAsync();
+                                                    }).OrderByDescending(o => o.udrId).ToListAsync();
                             return Ok(Getrequest);
                         }
                     }
@@ -670,7 +714,7 @@ namespace EasySystemAPI.Controllers
                                                         ub.ubTitle,
                                                         b.BankId,
                                                         b.BankName
-                                                    }).ToListAsync();
+                                                    }).OrderByDescending(o => o.udrId).ToListAsync();
                             return Ok(Getrequest);
                         }
                         else
@@ -700,7 +744,7 @@ namespace EasySystemAPI.Controllers
                                                         ub.ubTitle,
                                                         b.BankId,
                                                         b.BankName
-                                                    }).ToListAsync();
+                                                    }).OrderByDescending(o => o.udrId).ToListAsync();
                             return Ok(Getrequest);
                         }
                     }
@@ -739,7 +783,7 @@ namespace EasySystemAPI.Controllers
                                                     ub.ubTitle,
                                                     b.BankId,
                                                     b.BankName
-                                                }).ToListAsync();
+                                                }).OrderByDescending(o => o.udrId).ToListAsync();
                         return Ok(Getrequest);
                     }
                     else
@@ -770,7 +814,7 @@ namespace EasySystemAPI.Controllers
                                                     ub.ubTitle,
                                                     b.BankId,
                                                     b.BankName
-                                                }).ToListAsync();
+                                                }).OrderByDescending(o => o.udrId).ToListAsync();
                         return Ok(Getrequest);
                     }
                 }
@@ -872,7 +916,6 @@ namespace EasySystemAPI.Controllers
                     getData.ubId = draw.ubId;
                     con.Entry(getData).State = EntityState.Modified;
                 }
-
                 try
                 {
                     await con.SaveChangesAsync();
@@ -885,10 +928,19 @@ namespace EasySystemAPI.Controllers
                             if (getUsrBankInfo != null)
                             {
                                 //Mail to New User
-
-                                string emailBody1 = "<b>" + usr.usrName + "-" + usr.usrCode + " </b><br/><b>" + draw.udrAmount + "/- pkr</b> amount tranferred into your bank account from <b>Universal Skills</b> on Dated <b>" + DateTime.Now + "</b>." +
+                                string emailBody1 = "";
+                                if (usr.CountryId == 6)
+                                {
+                                    emailBody1 = "<b>" + usr.usrName + "-" + usr.usrCode + " </b><br/><b>" + draw.udrAmount + "/- pkr</b> amount tranferred into your bank account from <b>Universal Skills</b> on Dated <b>" + DateTime.Now + "</b>." +
                                     "<br/>Account Details:<br/>Account Title: " + getUsrBankInfo.ubTitle + "" +
                                     "<br/>Account Number: " + getUsrBankInfo.ubNumber + "";
+                                }
+                                else
+                                {
+                                    emailBody1 = "<b>" + usr.usrName + "-" + usr.usrCode + " </b><br/><b>" + draw.udrAmount + "/- USD</b> amount tranferred into your bank account from <b>Universal Skills</b> on Dated <b>" + DateTime.Now + "</b>." +
+                                    "<br/>Account Details:<br/>Account Title: " + getUsrBankInfo.ubTitle + "" +
+                                    "<br/>Account Number: " + getUsrBankInfo.ubNumber + "";
+                                }
                                 Mailer email1 = new Mailer("Care@Universalskills.co", usr.usrEmail, "Amount Tranferred", emailBody1);
                                 email1.Send();
                                 InfoSend info1 = new InfoSend();
@@ -986,7 +1038,7 @@ namespace EasySystemAPI.Controllers
                                                     trn.tNarration = "Used Coupan Code of " + getUser.usrName + "(" + getUser.usrCode + ")";
                                                     trn.tPaying = getUser.usrId;
                                                     trn.tReceiving = 1;
-                                                    trn.TuitionAmount = 0;
+                                                    trn.TuitionAmount = CheckData.cAmount;
                                                     trn.SoftServiceCharges = 0;
                                                     trn.ThirdPartyCharges = 0;
                                                     trn.tNumber = "" + getUser.usrCode + "-" + DateTime.Now.ToString("ddMMyy") + "-" + SerialNo + "";
@@ -1015,7 +1067,15 @@ namespace EasySystemAPI.Controllers
 
                                                         //Mail to User
                                                         //string emailBody1 = "<b>" + getUser.usrName + " </b><br/><b>" + trn.TuitionAmount + "</b>has been paid. to your mentor <b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
-                                                        string emailBody1 = "<b>" + getUser.usrName + " </b><br/>You have paid <b>" + trn.TuitionAmount + "/- pkr</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        string emailBody1 = "";
+                                                        if (getUser.CountryId == 6)
+                                                        {
+                                                            emailBody1 = "<b>" + getUser.usrName + " </b><br/>You have paid <b>" + trn.TuitionAmount + "/- pkr</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        }
+                                                        else
+                                                        {
+                                                            emailBody1 = "<b>" + getUser.usrName + " </b><br/>You have paid <b>" + trn.TuitionAmount + "/- USD</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        }
                                                         Mailer email1 = new Mailer("Care@Universalskills.co", getUser.usrEmail, "Fee Paid", emailBody1);
                                                         email1.Send();
                                                         InfoSend info1 = new InfoSend();
@@ -1070,7 +1130,7 @@ namespace EasySystemAPI.Controllers
                                                 {
                                                     //Add Entry into TraineeLost Table
                                                     UserLostTrainee ult = new UserLostTrainee();
-                                                    ult.usrIdM = getUser.refId; 
+                                                    ult.usrIdM = getUser.refId;
                                                     ult.usrIdC = getUser.usrId;
                                                     ult.ultDate = DateTime.Now;
                                                     ult.ultReason = "You have lost your trainee " + getUser.usrName + "(" + getUser.usrCode + ") on dated " + DateTime.Now + " due to unpaid fee " +
@@ -1117,7 +1177,15 @@ namespace EasySystemAPI.Controllers
 
                                                         //Mail to User
                                                         //string emailBody1 = "<b>" + getUser.usrName + " </b><br/><b>" + trn.TuitionAmount + "</b>has been paid. to your mentor <b>" + getMentorData.usrName + "-" + getMentorData.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
-                                                        string emailBody1 = "<b>" + getUser.usrName + " </b><br/>You have paid <b>" + trn.TuitionAmount + "/- pkr</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        string emailBody1 = "";
+                                                        if (getUser.CountryId == 6)
+                                                        {
+                                                            emailBody1 = "<b>" + getUser.usrName + " </b><br/>You have paid <b>" + trn.TuitionAmount + "/- pkr</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        }
+                                                        else
+                                                        {
+                                                            emailBody1 = "<b>" + getUser.usrName + " </b><br/>You have paid <b>" + trn.TuitionAmount + "/- USD</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        }
                                                         Mailer email1 = new Mailer("Care@Universalskills.co", getUser.usrEmail, "Fee Paid", emailBody1);
                                                         email1.Send();
                                                         InfoSend info1 = new InfoSend();
@@ -1204,7 +1272,15 @@ namespace EasySystemAPI.Controllers
                                                         await con.SaveChangesAsync();
 
                                                         //Mail to Mentor
-                                                        string emailBody = "<b>Congratulations" + getMentor.usrName + " </b><br/><b>" + trn.TuitionAmount + "/- pkr</b> has been tranferred in your <b>Universal Skills</b> account from your trainee <b>" + getUser.usrName + "-" + getUser.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        string emailBody = "";
+                                                        if (getMentor.CountryId == 6)
+                                                        {
+                                                            emailBody = "<b>Congratulations" + getMentor.usrName + " </b><br/><b>" + trn.TuitionAmount + "/- pkr</b> has been tranferred in your <b>Universal Skills</b> account from your trainee <b>" + getUser.usrName + "-" + getUser.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        }
+                                                        else
+                                                        {
+                                                            emailBody = "<b>Congratulations" + getMentor.usrName + " </b><br/><b>" + trn.TuitionAmount + "/- USD</b> has been tranferred in your <b>Universal Skills</b> account from your trainee <b>" + getUser.usrName + "-" + getUser.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        }
                                                         Mailer email = new Mailer("Care@Universalskills.co", getMentor.usrEmail, "Amount Transferred", emailBody);
                                                         email.Send();
                                                         InfoSend info = new InfoSend();
@@ -1216,7 +1292,15 @@ namespace EasySystemAPI.Controllers
                                                         con.infoSends.Add(info);
 
                                                         //Mail to User
-                                                        string emailBody1 = "<b>" + getUser.usrName + " </b><br/><b>" + trn.TuitionAmount + "/- pkr</b> has been paid to your mentor <b>" + getMentor.usrName + "-" + getMentor.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        string emailBody1 = "";
+                                                        if (getUser.CountryId == 6)
+                                                        {
+                                                            emailBody1 = "<b>" + getUser.usrName + " </b><br/><b>" + trn.TuitionAmount + "/- pkr</b> has been paid to your mentor <b>" + getMentor.usrName + "-" + getMentor.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        }
+                                                        else
+                                                        {
+                                                            emailBody1 = "<b>" + getUser.usrName + " </b><br/><b>" + trn.TuitionAmount + "/- USD</b> has been paid to your mentor <b>" + getMentor.usrName + "-" + getMentor.usrCode + "</b> on Dated <b>" + DateTime.Now + "</b>.";
+                                                        }
                                                         Mailer email1 = new Mailer("Care@Universalskills.co", getUser.usrEmail, "Fee Paid", emailBody1);
                                                         email1.Send();
                                                         InfoSend info1 = new InfoSend();
@@ -1536,6 +1620,28 @@ namespace EasySystemAPI.Controllers
             }
         }
 
+        [HttpGet("GetFeeBreakup")]
+        public async Task<ActionResult<FeeBreakup>> GetFeeBreakup()
+        {
+            try
+            {
+                var data = await con.feeBreakups.Where(f => f.fbStatus == true).FirstOrDefaultAsync();
+                if (data != null)
+                {
+                    return Ok(data);
+                }
+                else
+                {
+                    return BadRequest(new { message = "no record found" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "error" });
+            }
+
+
+        }
 
         [HttpGet("GetSerialNo")]
         public string GetSerialNo()
@@ -1586,6 +1692,14 @@ namespace EasySystemAPI.Controllers
             fee.MailMessage = GetAmount.Value.MailMessage;
             fee.DrawAmount = GetAmount.Value.DrawAmount;
             fee.SignUpAmount = GetAmount.Value.SignUpAmount;
+
+            //for International
+            fee.IntTotal = GetAmount.Value.IntTotal;
+            fee.IntTuitionFee = GetAmount.Value.IntTuitionFee;
+            fee.IntSoftwdareFee = GetAmount.Value.IntSoftwdareFee;
+            fee.IntThirdPartyFee = GetAmount.Value.IntThirdPartyFee;
+            fee.IntDrawAmount = GetAmount.Value.IntDrawAmount;
+
             return fee;
         }
 

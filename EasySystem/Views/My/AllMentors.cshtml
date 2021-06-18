@@ -1,0 +1,531 @@
+﻿
+@{
+    ViewData["Title"] = "All Mentors";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>
+                            My All Mentors
+
+                            <a data-toggle="modal" href="#myModal" class="btn btn-info" style="float: right; background-color:#1b3767">Add Mentor</a>
+                        </h2>
+                        <div id="Notifocation">
+
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+
+                <div class="col-md-12">
+                    @if (TempData["MentorName"] != null)
+                    {
+                        <div role="alert" class="alert white">
+                            <span><i class="ti-info-alt blue-bg"></i></span>
+                            Your core mentor is @TempData["MentorName"]
+                            @*<a data-toggle="modal" href="#CoreModal" style="float: right;">Change Core Mentor</a>*@
+                            <a id="btnCore" style="float: right;">Change Core Mentor</a>
+
+                        </div>
+                        <input type="hidden" id="mCode" value="@TempData["MentorCode"]" />
+                        <input type="hidden" id="myCode" value="@TempData["Code"]" />
+                        <input type="hidden" id="mName" value="@TempData["MentorName"]" />
+
+                        <input type="hidden" id="Status" value="@TempData["Status"]" />
+                        <input type="hidden" id="cId" value="@TempData["CId"]" />
+                    }
+                </div>
+
+
+
+                <br />
+
+
+                @if (TempData["UserMentor"] != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="widget white">
+                                <div class="form-group" hidden>
+                                    &nbsp;
+                                    <div class="col-md-3">
+                                        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+
+                                    </div>
+                                </div>
+                                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+                                            <th>Mentor Name</th>
+                                            <th>Joining Date</th>
+                                            <th>Left Date</th>
+                                            <th>Whiteboard</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var i in (List<EasySystem.Models.UserMentorVM>)TempData["UserMentor"])
+                                        {
+
+                                            <tr>
+
+                                                <td><a asp-controller="Users" asp-action="Profile" asp-route-id="@i.MentorId" style="color:black;">@i.MentorName</a></td>
+                                                <td>@i.JoiningDate.ToString("dd-MMM-yyyy")</td>
+                                                <td>
+                                                    @if (i.LeftDate.Year > 2000)
+                                                    {
+                                                        @i.LeftDate.ToString("dd-MMM-yyyy")
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>---</p>
+                                                    }
+
+                                                </td>
+                                                <td>
+                                                    @if (i.LeftDate.Year < 2000)
+                                                    {
+                                                        <a asp-controller="My" asp-action="MentorWhiteBoard" asp-route-id="@i.MentorId" title="Record Detail">View</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>---</p>
+                                                    }
+
+                                                </td>
+                                                <td>
+                                                    @if (i.LeftDate.Year < 2000)
+                                                    {
+                                                        <a asp-controller="My" asp-action="LeaveMentor" asp-route-id="@i.MentorId">Leave</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a asp-controller="My" asp-action="MakeMentor" asp-route-id="@i.MentorId">Join Again</a>
+                                                    }
+
+                                                </td>
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="9">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    <!-- Panel Content -->
+</div>
+
+
+<div class="modal fade" id="myModal">
+    <div class="modal-lg modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Add Mentor
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modelContent">
+                <form id="FormData">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Enter Mentor Code</label>
+                                <input type="number" id="code" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Mentor Name</label>
+                                <input type="text" id="MentorName" class="form-control" readonly />
+                                <input type="hidden" id="MentorId" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button type="button" id="btnFind" class="btn btn-info" style="background-color:#1b3767; width: 100px;">Submit</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button type="button" id="btnConfirm" class="btn btn-info" style="background-color:#1b3767; display:none;">Make Mentor</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CoreModal">
+    <div class="modal-lg modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Change Core Mentor
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modelContent">
+                <form id="FormData">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Enter New Mentor Code</label>
+                                <input type="number" id="corecode" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Mentor Name</label>
+                                <input type="text" id="CoreMentorName" class="form-control" readonly />
+                                <input type="hidden" id="CoreMentorId" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button type="button" id="btnFindCore" class="btn btn-info" style="background-color:#1b3767; width: 100px;">Submit</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button type="button" id="btnConfirmCore" class="btn btn-info" style="background-color:#1b3767; display:none;">Make Core Mentor</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" hidden data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="~/css/sweetalert.css">
+<script src="~/js/sweetalert.js"></script>
+
+<script>
+    $(function () {
+        $("#btnFind").click(function () {
+            var code = $("#code").val();
+            var mycode = $("#myCode").val();
+            var mcode = $("#mCode").val();
+            var mName = $("#mName").val();
+
+
+            if (code !== "" && mycode != "") {
+                if (mycode != code) {
+                    if (mcode != code) {
+                        $("#btnFind").html('<i class="fa fa-spinner fa-spin"></i>');
+                        $('#btnFind').attr('disabled', true);
+                        $.ajax({
+                            type: 'GET',
+                            url: 'http://fabricaerp-001-site3.gtempurl.com/api/Users/GetCode?Code=' + code,
+                            //url: 'http://sajawal-001-site3.ctempurl.com/api/Users/GetCode?Code=' + code,
+                            //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
+
+                            dataType: 'json',
+                            success: function (data) {
+                                console.log(data);
+                                if (data !== "") {
+                                    $("#MentorName").val(data.usrName);
+                                    $("#MentorId").val(data.usrId);
+                                    $("#btnFind").html('Submit');
+                                    $('#btnFind').attr('disabled', false);
+                                    $('#btnConfirm').show();
+
+                                } else {
+                                    Command: toastr["info"]("Invalid mentor Code")
+                                    $("#btnFind").html('Submit');
+                                    $('#btnFind').attr('disabled', false);
+                                    $('#btnConfirm').hide();
+                                    $("#MentorName").val('');
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                Command: toastr["error"]("Invalid mentor Code")
+                                $("#btnFind").html('Submit');
+                                $('#btnFind').attr('disabled', false);
+                                $('#btnConfirm').hide();
+                                $("#MentorName").val('');
+                            }
+
+                        });
+                    } else {
+                        Command: toastr["error"]("" + mName + " is your core Mentor. You cannot add here.")
+                        $('#btnConfirm').hide();
+                        $("#MentorName").val('');
+                        $("#code").val('');
+                    }
+                } else {
+                    Command: toastr["error"]("This is your code. You cannot be your own Mentor.")
+                    $('#btnConfirm').hide();
+                    $("#MentorName").val('');
+                    $("#code").val('');
+                }
+
+
+            } else {
+                Command: toastr["warning"]("Please Enter mentor code")
+                $('#btnConfirm').hide();
+                $("#MentorName").val('');
+                $("#code").val('');
+            }
+        });
+    });
+</script>
+
+<script>
+    $("#btnConfirm").click(function (e) {
+
+        var name = $("#MentorName").val();
+        var id = $("#MentorId").val();
+        if (id != "" && name != "") {
+            swal({
+                title: "Confimation",
+                text: "Are you sure you want make " + name + " as your mentor?",
+                type: "info",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        window.location = '/My/MakeMentor/' + id + '';
+                        $('#btnConfirm').hide();
+                        $("#MentorName").val('');
+                    }
+                });
+        } else {
+            Command: toastr["warning"]("No record found")
+        }
+
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $("#btnFindCore").click(function () {
+            var code = $("#corecode").val();
+            var mycode = $("#myCode").val();
+            var mcode = $("#mCode").val();
+            var mName = $("#mName").val();
+            if (code !== "" && mycode != "") {
+                if (mycode != code) {
+                    if (mcode != code) {
+                        $("#btnFindCore").html('<i class="fa fa-spinner fa-spin"></i>');
+                        $('#btnFindCore').attr('disabled', true);
+                        $.ajax({
+                            type: 'GET',
+                            url: 'http://fabricaerp-001-site3.gtempurl.com/api/Users/GetCode?Code=' + code,
+                            //url: 'http://sajawal-001-site3.ctempurl.com/api/Users/GetCode?Code=' + code,
+                            //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
+
+                            dataType: 'json',
+                            success: function (data) {
+                                console.log(data);
+                                if (data !== "") {
+
+                                    var cId = $("#cId").val();
+                                    if (cId != null) {
+                                        if (cId == 6) {
+                                            if (data.CountryId == 6 || data.CountryId == 1) {
+                                                $("#CoreMentorName").val(data.usrName);
+                                                $("#CoreMentorId").val(data.usrId);
+                                                $("#btnFindCore").html('Submit');
+                                                $('#btnFindCore').attr('disabled', false);
+                                                $('#btnConfirmCore').show();
+                                            } else {
+                                                Command: toastr["error"]("You can only make mentor from Pakistan.")
+                                                $("#btnFindCore").html('Submit');
+                                                $('#btnFindCore').attr('disabled', false);
+                                                $('#btnConfirmCore').hide();
+                                                $("#CoreMentorName").val('');
+                                            }
+                                        } else {
+                                            if (data.CountryId == 6) {
+                                                Command: toastr["error"]("You can not make mentor from Pakistan.")
+                                                $("#btnFindCore").html('Submit');
+                                                $('#btnFindCore').attr('disabled', false);
+                                                $('#btnConfirmCore').hide();
+                                                $("#CoreMentorName").val('');
+
+                                            } else {
+
+                                                $("#CoreMentorName").val(data.usrName);
+                                                $("#CoreMentorId").val(data.usrId);
+                                                $("#btnFindCore").html('Submit');
+                                                $('#btnFindCore').attr('disabled', false);
+                                                $('#btnConfirmCore').show();
+                                            }
+                                        }
+                                    }
+                                    //$("#CoreMentorName").val(data.usrName);
+                                    //$("#CoreMentorId").val(data.usrId);
+                                    //$("#btnFindCore").html('Submit');
+                                    //$('#btnFindCore').attr('disabled', false);
+                                    //$('#btnConfirmCore').show();
+
+                                } else {
+                                    Command: toastr["info"]("Invalid mentor Code")
+                                    $("#btnFindCore").html('Submit');
+                                    $('#btnFindCore').attr('disabled', false);
+                                    $('#btnConfirmCore').hide();
+                                    $("#CoreMentorName").val('');
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                Command: toastr["error"]("Invalid mentor Code")
+                                $("#btnFindCore").html('Submit');
+                                $('#btnFindCore').attr('disabled', false);
+                                $('#btnConfirmCore').hide();
+                                $("#CoreMentorName").val('');
+                            }
+
+                        });
+                    } else {
+                        Command: toastr["error"]("" + mName + " is already your core Mentor.")
+                        $('#btnConfirmCore').hide();
+                        $("#CoreMentorName").val('');
+                        $("#corecode").val('');
+                    }
+                } else {
+                    Command: toastr["error"]("This is your code. You cannot be your own Mentor.")
+                    $('#btnConfirmCore').hide();
+                    $("#CoreMentorName").val('');
+                    $("#corecode").val('');
+                }
+
+
+            } else {
+                Command: toastr["warning"]("Please Enter mentor code")
+                $('#btnConfirmCore').hide();
+                $("#CoreMentorName").val('');
+                $("#corecode").val('');
+            }
+
+
+        });
+    });
+</script>
+
+<script>
+    $("#btnConfirmCore").click(function (e) {
+
+        var name = $("#CoreMentorName").val();
+        var id = $("#CoreMentorId").val();
+        if (id != "" && name != "") {
+            swal({
+                title: "Confimation",
+                text: "Are you sure you want to make " + name + " as your core mentor?",
+                type: "info",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        window.location = '/My/ChangeCoreMentor/' + id + '';
+                        $('#btnConfirmCore').hide();
+                        $("#CoreMentorName").val('');
+                    }
+                });
+        } else {
+            Command: toastr["warning"]("No record found")
+        }
+
+    });
+</script>
+
+<script>
+    $(function () {
+        $("#btnCore").click(function () {
+            var Status = $("#Status").val();
+
+            if (Status != "Learning") {
+                $("#CoreModal").modal('toggle');
+                $("#CoreModal").modal('show');
+            } else {
+                swal({
+                    title: "Failed!",
+                    text: "You can not change your core mentor because you have paid fee to your core mentor.",
+                    type: "error",
+                });
+            }
+        });
+    });
+</script>

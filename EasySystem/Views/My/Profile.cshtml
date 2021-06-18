@@ -39,7 +39,14 @@
 {
     <div class="main-content">
         <div class="panel-content">
-            <div class="main-title-sec">
+            @*<div class="search-dashboard">
+                    <div class="responsive-search"> <i class="fa fa-search"></i> </div>
+                    <form>
+                        <input type="text" id="ProfileSearch" placeholder="enter code or trainee name here">
+                        <button type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </div>*@
+            <div class="main-title-sec" hidden>
                 <div class="row">
                     <div class="col-md-12 column">
                         <div class="heading-profile">
@@ -52,12 +59,68 @@
                 <div class="mail-area">
                     <div class="row">
 
+                        <div class="col-md-4">
+                            <div class="inbox-nav">
+                                <div class="user-mail">
+                                    @if (usr.usrImage != null)
+                                    {
+                                        <span><img src="~/images/ProfilePictures/@usr.usrImage" alt="" /></span>
+                                    }
+                                    else
+                                    {
+                                        <span><img src="~/images/Logo-01.png" alt="" /></span>
+                                    }
+                                    <h5>@usr.usrName</h5>
+                                    <h6>Code:<b> @usr.usrCode</b></h6>
+                                    <div class="mailer-name">
+
+                                        @if (mentor != null)
+                                        {
+                                            <h3>Mentor</h3>
+                                            <a asp-controller="My" asp-action="Profile" asp-route-id="@mentor.usrId" style="color:darkslategray"><i>@mentor.usrName-@mentor.usrCode</i></a>
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                                <div class="mail-labels">
+                                    <h3 hidden>@usr.usrName's Info</h3>
+                                    <ul>
+                                        @if (ID != null)
+                                        {
+                                            <li><i class="fa fa-envelope-open"></i>  @usr.usrEmail</li>
+                                            <li><i class="fa fa-phone-square"></i>  @usr.usrPhone</li>
+                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
+                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
+                                            @if (usr.ExpiryDate.Year > 2000)
+                                            {
+                                                <li><i class="fa fa-calendar-check-o"></i> Fee Valid till: <b>@usr.ExpiryDate.ToString("dd-MMM-yyyy")</b></li>
+
+                                            }
+
+                                            <li><button id="btnProfileLink" class="btn btn-primary mini" type="button" style="background-color:#1b3767"> <i class="fa fa-copy"></i>   Click here to copy profile link</button> <span></span></li>
+                                        }
+                                        else
+                                        {
+                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
+                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
+                                        }
+
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-8">
                             <div class="widget white no-padding">
                                 <div class="widget-tabs">
                                     <ul class="nav nav-tabs">
                                         <li class="nav-item"><a class="active" data-toggle="tab" data-target="#tab1">Skills</a></li>
                                         <li class="nav-item"><a data-toggle="tab" data-target="#tab2">Whiteboard</a></li>
+                                        <li class="nav-item"><a data-toggle="tab" data-target="#tab3">Certified in</a></li>
                                     </ul>
                                     <div class="tab-content">
                                         <div id="tab1" class="tab-pane active fade show">
@@ -70,7 +133,7 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Skill Name</th>
-                                                                        <th>Level</th>
+                                                                        <th>Type</th>
 
                                                                     </tr>
                                                                 </thead>
@@ -80,7 +143,15 @@
 
                                                                         <tr>
                                                                             <td>@i.StName</td>
-                                                                            <td>@i.usLevel</td>
+                                                                            @if (i.usLevel == 0)
+                                                                            {
+                                                                                <td>Free</td>
+                                                                            }
+                                                                            else if (i.usLevel == 1)
+                                                                            {
+                                                                                <td>Paid</td>
+                                                                            }
+
                                                                         </tr>
                                                                     }
                                                                 </tbody>
@@ -138,64 +209,44 @@
                                                 </div>
                                             }
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="inbox-nav">
-                                <div class="user-mail">
-                                    @if (usr.usrImage != null)
-                                    {
-                                        <span><img src="~/images/@usr.usrImage" alt="" /></span>
-                                    }
-                                    else
-                                    {
-                                        <span><img src="~/images/Logo-01.png" alt="" /></span>
-                                    }
-                                    <h5>@usr.usrName</h5>
-                                    <h6>Code:<b> @usr.usrCode</b></h6>
-                                    <div class="mailer-name">
-
-                                        @if (mentor != null)
-                                        {
-                                            <h3>Mentor</h3>
-                                            <a asp-controller="My" asp-action="Profile" asp-route-id="@mentor.usrId" style="color:darkslategray"><i>@mentor.usrName-@mentor.usrCode</i></a>
-                                        }
-
-                                    </div>
-
-                                </div>
-
-                                <div class="mail-labels">
-                                    <h3>@usr.usrName's Info</h3>
-                                    <ul>
-                                        @if (ID != null)
-                                        {
-                                            <li><i class="fa fa-envelope-open"></i>  @usr.usrEmail</li>
-                                            <li><i class="fa fa-phone-square"></i>  @usr.usrPhone</li>
-                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
-                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
-                                            @if (usr.ExpiryDate.Year > 2000)
+                                        <div id="tab3" class="tab-pane fade">
+                                            @if (TempData["Passed"] != null)
                                             {
-                                                <li><i class="fa fa-calendar-check-o"></i> Fee Valid till: <b>@usr.ExpiryDate.ToString("dd-MMM-yyyy")</b></li>
+                                                <div class="col-md-7">
+                                                    <div class="widget white">
+                                                        <div class="panel panel-default work-progress-table">
+                                                            <table id="List3" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                                                <theader>
+                                                                    @foreach (var i in (List<EasySystem.Models.CertificateVM>)TempData["Passed"])
+                                                                    {
 
+                                                                        <tr>
+                                                                            <td>@i.StName</td>
+                                                                            <td>
+                                                                                <a asp-controller="My" asp-action="GetCertificate" asp-route-Num="@i.ucNumber" class="btn btn-primary mini" style="background-color:#1b3767">
+                                                                                    <i class="fa fa-eye"></i> View
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </theader>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <td colspan="9">
+                                                                            <ul class="pagination pull-right"></ul>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             }
-                                        }
-                                        else
-                                        {
-                                            <li><i class="fa fa-user-circle"></i>  @usr.usrGender</li>
-                                            <li><i class="fa fa-star"></i>  @usr.usrStatus</li>
-                                        }
-
-
-
-                                    </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <!-- Modal -->
                 </div>
@@ -212,11 +263,10 @@
             </div>
             <input type="hidden" id="Val" value="0" />
             <input type="hidden" id="UsrId" value="@usr.usrId" />
+            <input type="hidden" id="ProfileLink" value=" https://universalskills.co/Users/Profile/@usr.usrId" />
             <div id="BlogData">
 
             </div>
-
-           
 
             <div id="load" class="col-md-12 col-sm-6 col-lg-12">
                 <div class="cell">
@@ -293,4 +343,177 @@
                     }
                 });
         }
+</script>
+
+
+<script>
+    $('#btnProfileLink').click(function () {
+        var clipboardText = "";
+
+        clipboardText = $('#ProfileLink').val();
+
+        copyTextToClipboard(clipboardText);
+        Command: toastr["success"]("Profile link copied to clipboard successfully. You can share it.")
+    });
+    function copyTextToClipboard(text) {
+
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+</script>
+
+
+<script>
+
+    function MentorName() {
+
+        if ($("#ProfileSearch").val().length >= 6) {
+            var code = $("#ProfileSearch").val();
+            if (code !== null && code !== "") {
+                
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://fabricaerp-001-site3.gtempurl.com/api/Users/GetCode?Code=' + code,
+                    //url: 'http://sajawal-001-site3.ctempurl.com/api/Users/GetCode?Code=' + code,
+                    //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
+
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                        if (data !== "") {
+                            window.location = '/Users/Profile/?id=' + data.usrId;
+                            //Command: toastr["success"]("" + data.usrName + "")
+                        } else {
+                            Command: toastr["error"]("No record found against this Mentor Code")
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        Command: toastr["error"]("No record found")
+                    }
+
+                });
+            }
+
+        } else {
+            Command: toastr["warning"]("Please enter 6 digit Mentor Code")
+        }
+    }
+
+</script>
+
+<script>
+    $("#btnSearch").click(function () {
+        MentorName();
+    });
+</script>
+
+
+<script>
+
+    //$("#ProfileSearch").autocomplete({
+    //    source: function (request, response) {
+    //        $.ajax({
+    //            url: "/My/AutocompleteProfile",
+    //            type: "POST",
+    //            dataType: "json",
+    //            data: { term: request.term },
+    //            success: function (data) {
+    //                response($.map(data, function (item) {
+    //                    return { label: item.usrName, value: item.usrName, id: item.usrId }
+    //                    }));
+    //            }
+
+    //        });
+    //    }
+    //});
+
+
+    @*$("#ProfileSearch").autocomplete({
+            source: function(request, response) {
+            $.ajax({
+              url: '@Url.Action("AutocompleteProfile", "My")',
+              data: request,
+              dataType: "json",
+              type: "get",
+              success: function(data){
+                  response($.map(data,function(item){
+                      return { label: item.usrName, value: item.usrId, id: item.usrId }
+                  }));
+              }
+            });
+           },
+        });*@
+
+
+
+
+
+    @*$("#ProfileSearch").autocomplete({
+    source: function( request, response ) {
+        $.getJSON( '@Url.Action("AutocompleteProfile", "My")', { term: request.term }, function( data, status, xhr ) {
+            var titles = $.map( data, function (title) {
+                return {
+                    label: title.usrName,
+                    value: title.usrId
+                };
+            });
+            response( titles );
+        });
+    },
+    // ...
+});*@
+
+    @*$("#ProfileSearch").autocomplete({
+        source: '@Url.Action("AutocompleteProfile", "My")'
+         });*@
+
+    //$("#ProfileSearch").on('focusout', function () {
+    //    $.ajax({
+    //        url: "/My/AutocompleteProfile",
+    //        type: "GET",
+    //        dataType: "json",
+    //        data: { term: $("#ProfileSearch").val() },
+    //        success: function (query) {
+    //            $("#ProfileSearch").val(query[0]);
+    //        },
+    //    });
+
+    //$(function () {
+    //    $("#ProfileSearch").autocomplete({
+    //        source: function (request, response) {
+    //            $.ajax({
+    //                url: "/My/AutocompleteProfile",
+    //                type: "POST",
+    //                dataType: "json",
+    //                data: { term: request.term },
+    //                success: function (data) {
+    //                    response($.map(data, function (item) {
+    //                        return { label: item.term, value: item.value }
+    //                    }));
+    //                },
+    //            });
+    //        },
+    //        delay: 0,
+    //        messages: {
+    //            noResults: "",
+    //            results: function (resultsCount) { }
+    //            //results: ""
+    //        },
+    //    });
+    //});
 </script>

@@ -1,0 +1,56 @@
+﻿
+
+@if (TempData["mList"] != null)
+{
+
+    <div class="top-content">
+        <div class="result-output"><h3 style="margin-left: 10px;"> Mentor(s) having this course knowledge</h3></div>
+    </div>
+    <br />
+
+    foreach (var i in (List<EasySystemAPI.Models.Users>)TempData["mList"])
+    {
+        <div class="col-md-3 col-sm-6">
+            <div class="edugate-layout-3">
+                <div class="edugate-layout-3-wrapper">
+                    @if (i.usrImage != null)
+                    {
+                        <img src="~/images/ProfilePictures/@i.usrImage" alt="@i.usrName" style="width: 300px !important; height: 200px !important;" class="img-responsive" />
+                    }
+                    else
+                    {
+                        <img src="~/images/Universal-Skills- training-thumbnail-01.jpg" height="300" width="300" alt="@i.usrName" class="img-responsive" />
+                    }
+
+
+                    <div class="edugate-content" id="Mentor">
+                        @if (i.usrName.Length >= 30)
+                        {
+                            <a asp-controller="Users" asp-action="Profile" asp-route-id="@i.usrId" class="title">@i.usrName.ToString().Substring(0, 30)</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Users" asp-action="Profile" asp-route-id="@i.usrId"  class="title">@i.usrName</a>
+                        }
+
+
+                        <div class="total-courses" style="margin-bottom: 5px;"><i class="icon-user"></i><a asp-controller="Users" asp-action="Profile" asp-route-id="@i.usrId" >Mentor Code: <b>@i.usrCode</b></a></div>
+
+                        <div class="total-courses" style="margin-bottom: 5px; text-align:center !important;"><i class="icon-profile"></i><a asp-controller="Users" asp-action="Profile" asp-route-id="@i.usrId">Visit Profile</a></div>
+
+
+                        <input type="hidden" value="@i.usrId" id="uId" />
+                        <a class="btn btn-green" onclick="MakeMentor(@i.usrId)"><span>Make My Mentor</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+
+
+
+
+

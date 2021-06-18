@@ -27,6 +27,7 @@
     </script>
 
     <!-- Meta-Information -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>@ViewData["Title"] | Learn Expert Skills</title>
     <meta charset="utf-8">
     <meta charset="utf-8">
@@ -42,16 +43,14 @@
     <meta name="keywords" content="Learn Education Skills">
     <meta name="author" content="Universal Solz">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link rel="shortcut icon" href="~/images/logo.png" type="image/x-icon">
-
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
-
     <!-- Our Website CSS Styles -->
     <link rel="stylesheet" href="~/css/icons.css">
     <link rel="stylesheet" href="~/css/main.css">
     <link rel="stylesheet" href="~/css/responsive.css">
     <link href="~/css/datepicker3.css" rel="stylesheet" />
+    <link href="~/css/toastr.min.css" rel="stylesheet" />
 </head>
 <body>
     <div class="se-pre-con"></div>
@@ -64,7 +63,18 @@
                 <div class="logo"> <a asp-controller="My" asp-action="Dashboard" title="">L.E Skills</a> </div>
                 <div class="menu-options"><span class="menu-action"><i></i></span></div>
 
-                <!-- Search Dashboard -->
+                @if (TempData["SearchProfile"] != null)
+                {
+                    <!-- Search Dashboard -->
+                    <div class="search-dashboard">
+                        <div class="responsive-search"> <i class="fa fa-search"></i> </div>
+                        <form onSubmit="MentorName();return false;">
+                            <input type="search" id="ProfileSearch" name="id"  placeholder="enter trainee code here">
+                            <button type="button" id="btnSearch"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                }
+
                 <div class="top-bar-quick-sec">
                     <div class="name-area">
                         <a href="#" title=""><strong>@TempData["Name"]</strong></a>
@@ -90,6 +100,8 @@
                                         <li> <a asp-controller="Admin" asp-action="Users" title=""><i class="fa fa-user-o"></i><span> Registered Users</span></a></li>
                                         <li> <a asp-controller="Admin" asp-action="SignUpUsers" title=""><i class="fa fa-user-circle"></i><span> SignUp's Users</span></a></li>
                                         <li> <a asp-controller="Admin" asp-action="SkillType" title=""><i class="fa fa-skype"></i><span> Skill Type</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="SkillName" title=""><i class="fa fa-skype"></i><span> Skill Name</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="SkillMaterial" title=""><i class="fa fa-skyatlas"></i><span> Skill Material</span></a></li>
                                         <li> <a asp-controller="Admin" asp-action="Bank" title=""><i class="fa fa-bank"></i><span> Add Banks</span></a></li>
                                         <li> <a asp-controller="Admin" asp-action="UserBankInfo" title=""><i class="fa fa-edit"></i><span> Update User Bank Info</span></a></li>
                                         <li> <a asp-controller="Admin" asp-action="ApproveTransaction" title=""><i class="fa fa-check"></i><span> Approve Transaction</span></a></li>
@@ -101,9 +113,11 @@
                                         <li> <a asp-controller="Admin" asp-action="UserVerificationRequests" title=""><i class="fa fa-check-circle"></i><span> Verification Requests</span></a></li>
                                         <li> <a asp-controller="Admin" asp-action="InfoSentData" title=""><i class="fa fa-info"></i><span> Info Sent Data</span></a></li>
                                         <li> <a asp-controller="Admin" asp-action="InfoSentDataForCompany" title=""><i class="fa fa-info"></i><span> Info Sent Data Company</span></a></li>
-                                        <li> <a asp-controller="Questions" asp-action="Create" title=""><i class="fa fa-question-circle-o"></i><span> Questions</span></a></li>
+                                        <li> <a asp-controller="Questionnaire" asp-action="Create" title=""><i class="fa fa-question-circle-o"></i><span> Questionnaire</span></a></li>
+                                        <li> <a asp-controller="Admin" asp-action="LoginLogs" title=""><i class="fa fa-sign-in"></i><span> Login Logs</span></a></li>
                                     </ul>
                                 </li>
+                                <li> <a asp-controller="Home" asp-action="Index" title=""><i class="fa fa-globe"></i> Universal Skills Web</a></li>
                                 <li> <a asp-controller="My" asp-action="Dashboard" title=""><i class="fa fa-dashboard"></i> Dashboard</a></li>
                                 <li> <a asp-controller="My" asp-action="Skills" title=""><i class="fa fa-cogs"></i><span>My Skills</span></a></li>
                                 <li> <a asp-controller="My" asp-action="WhiteBoard" title=""><i class="fa fa-mortar-board"></i><span>My Whiteboard</span></a></li>
@@ -111,6 +125,7 @@
                                 <li> <a asp-controller="My" asp-action="MentorWhiteBoard" title=""><i class="fa fa-user-secret"></i><span>My Mentor Whiteboard</span></a></li>
                                 <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
                                 <li> <a asp-controller="Users" asp-action="Profile" asp-route-id="@MentoreId" title=""><i class="fa fa-user"></i><span>My Mentor Profile</span></a></li>
+                                <li> <a asp-controller="My" asp-action="AllMentors" title=""><i class="fa fa-user"></i><span>My All Mentors</span></a></li>
                                 <li> <a asp-controller="My" asp-action="Team" title=""><i class="fa fa-telegram"></i><span>My Team</span></a></li>
                                 <li> <a asp-controller="My" asp-action="MyLostTrainee" title=""><i class="fa fa-user-times"></i><span>My Lost Trainee</span></a></li>
                                 <li> <a asp-controller="My" asp-action="Coupans" title=""><i class="fa fa-credit-card-alt"></i><span>My Coupons</span></a></li>
@@ -122,8 +137,10 @@
                                 <li> <a asp-controller="MyTransaction" asp-action="MyMoneyDrawRequest" title=""><i class="fa fa-send-o"></i><span>Draw Amount Request</span></a></li>
                                 <li> <a asp-controller="MyTransaction" asp-action="GetMoneyDrawRequest" title=""><i class="fa fa-bandcamp"></i><span>Draw Amount Request Status</span></a></li>
                                 <li> <a asp-controller="My" asp-action="AccountVerification" title=""><i class="fa fa-check-square"></i><span>Account Verification</span></a></li>
-                                <li> <a asp-controller="My" asp-action="Certification" title="" style="background-color: #edf0fc !important"><i class="fa fa-certificate"></i><span>My Certification</span></a></li>
-                                <li> <a asp-controller="My" asp-action="GetCertificate" title=""><i class="fa fa-certificate"></i><span>Get Certificate</span></a></li>
+                                <li> <a asp-controller="Courses" asp-action="Index" title=""><i class="fa fa-certificate"></i><span>Uni Skills Courses</span></a></li>
+                                <li> <a asp-controller="My" asp-action="Certification" title=""><i class="fa fa-certificate"></i><span>My Certificates</span></a></li>
+                                <li> <a asp-controller="My" asp-action="SetTrainingFee" title=""><i class="fa fa-money"></i><span>Set Training Fee</span></a></li>
+                                @*<li> <a asp-controller="My" asp-action="GetCertificate" title=""><i class="fa fa-certificate"></i><span>Get Certificate</span></a></li>*@
                                 <li> <a asp-controller="Blogs" asp-action="Index" title=""><i class="fa fa-address-book-o"></i><span>My Blogs</span></a></li>
                                 <li class="menu-item-has-children">
                                     <a title=""><i class="ti-settings"></i><span>Setting</span></a>
@@ -142,6 +159,7 @@
                             {
                                 if (UsrStatus == "Learning")
                                 {
+                                    <li> <a asp-controller="Home" asp-action="Index" title=""><i class="fa fa-globe"></i> Universal Skills Web</a></li>
                                     <li> <a asp-controller="My" asp-action="Dashboard" title=""><i class="fa fa-dashboard"></i> Dashboard</a></li>
                                     <li> <a asp-controller="My" asp-action="Skills" title=""><i class="fa fa-cogs"></i><span>My Skills</span></a></li>
                                     <li> <a asp-controller="My" asp-action="WhiteBoard" title=""><i class="fa fa-mortar-board"></i><span>My Whiteboard</span></a></li>
@@ -149,10 +167,13 @@
                                     <li> <a asp-controller="My" asp-action="MentorWhiteBoard" title=""><i class="fa fa-user-secret"></i><span>My Mentor Whiteboard</span></a></li>
                                     <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
                                     <li> <a asp-controller="Users" asp-action="Profile" asp-route-id="@MentoreId" title=""><i class="fa fa-user"></i><span>My Mentor Profile</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="AllMentors" title=""><i class="fa fa-user"></i><span>My All Mentors</span></a></li>
                                     <li> <a asp-controller="My" asp-action="Team" title=""><i class="fa fa-telegram"></i><span>My Team</span></a></li>
                                     <li> <a asp-controller="My" asp-action="URL" title=""><i class="fa fa-link"></i><span>My URL</span></a></li>
                                     <li> <a asp-controller="MyHelpingMaterial" asp-action="Index" title=""><i class="fa fa-credit-card-alt"></i><span>My Helping Material</span></a></li>
                                     <li> <a asp-controller="MyTransaction" asp-action="PayMyFee" title=""><i class="fa fa-dollar"></i><span>Pay My Fee</span></a></li>
+                                    <li> <a asp-controller="Courses" asp-action="Index" title=""><i class="fa fa-certificate"></i><span>Uni Skills Courses</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="Certification" title=""><i class="fa fa-certificate"></i><span>My Certification</span></a></li>
                                     <li> <a asp-controller="Blogs" asp-action="Index" title=""><i class="fa fa-address-book-o"></i><span>My Blogs</span></a></li>
 
                                     <li class="menu-item-has-children">
@@ -171,6 +192,7 @@
                                 }
                                 else
                                 {
+                                    <li> <a asp-controller="Home" asp-action="Index" title=""><i class="fa fa-globe"></i> Universal Skills Web</a></li>
                                     <li> <a asp-controller="My" asp-action="Dashboard" title=""><i class="fa fa-dashboard"></i> Dashboard</a></li>
                                     <li> <a asp-controller="My" asp-action="Skills" title=""><i class="fa fa-cogs"></i><span>My Skills</span></a></li>
                                     <li> <a asp-controller="My" asp-action="WhiteBoard" title=""><i class="fa fa-mortar-board"></i><span>My Whiteboard</span></a></li>
@@ -178,10 +200,13 @@
                                     <li> <a asp-controller="My" asp-action="MentorWhiteBoard" title=""><i class="fa fa-user-secret"></i><span>My Mentor Whiteboard</span></a></li>
                                     <li><a asp-controller="My" asp-action="Profile" asp-route-id="" title=""><i class="fa fa-user-circle-o"></i> My Profile</a></li>
                                     <li> <a asp-controller="Users" asp-action="Profile" asp-route-id="@MentoreId" title=""><i class="fa fa-user"></i><span>My Mentor Profile</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="AllMentors" title=""><i class="fa fa-user"></i><span>My All Mentors</span></a></li>
                                     <li> <a asp-controller="My" asp-action="Team" title=""><i class="fa fa-telegram"></i><span>My Team</span></a></li>
                                     <li> <a asp-controller="My" asp-action="URL" title=""><i class="fa fa-link"></i><span>My URL</span></a></li>
                                     <li> <a asp-controller="MyHelpingMaterial" asp-action="Index" title=""><i class="fa fa-credit-card-alt"></i><span>My Helping Material</span></a></li>
                                     <li> <a asp-controller="MyTransaction" asp-action="PayMyFee" title=""><i class="fa fa-dollar"></i><span>Pay My Fee</span></a></li>
+                                    <li> <a asp-controller="Courses" asp-action="Index" title=""><i class="fa fa-certificate"></i><span>Uni Skills Courses</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="Certification" title=""><i class="fa fa-certificate"></i><span>My Certificates</span></a></li>
                                     <li> <a asp-controller="Blogs" asp-action="Index" title=""><i class="fa fa-address-book-o"></i><span>My Blogs</span></a></li>
                                     <li class="menu-item-has-children">
                                         <a title=""><i class="ti-settings"></i><span>Setting</span></a>
@@ -192,6 +217,8 @@
 
                                         </ul>
                                     </li>
+                                    <li> <a asp-controller="My" asp-action="SetTrainingFee" title="" style="background-color: #edf0fc !important"><i class="fa fa-money"></i><span>Set Training Fee</span></a></li>
+                                    <li> <a asp-controller="My" asp-action="CatchTheTrainee" style="background-color: #edf0fc !important" title=""><i class="fa fa-users"></i><span>Catch The Trainees</span></a></li>
                                     <li> <a asp-controller="My" asp-action="MyLostTrainee" style="background-color: #edf0fc !important" title=""><i class="fa fa-user-times"></i><span>My Lost Trainee</span></a></li>
                                     <li> <a asp-controller="My" asp-action="Coupans" style="background-color: #edf0fc !important" title=""><i class="fa fa-credit-card-alt"></i><span>My Coupons</span></a></li>
                                     <li> <a asp-controller="MyTransaction" style="background-color: #edf0fc !important" asp-action="MyWallet" title=""><i class="fa fa-google-wallet"></i><span>My Wallet</span></a></li>
@@ -199,8 +226,6 @@
                                     <li> <a asp-controller="MyTransaction" asp-action="MyMoneyDrawRequest" style="background-color: #edf0fc !important" title=""><i class="fa fa-send-o"></i><span>Draw Amount Request</span></a></li>
                                     <li> <a asp-controller="MyTransaction" asp-action="GetMoneyDrawRequest" style="background-color: #edf0fc !important" title=""><i class="fa fa-bandcamp"></i><span>Draw Amount Request Status</span></a></li>
                                     <li> <a asp-controller="My" asp-action="AccountVerification" title="" style="background-color: #edf0fc !important"><i class="fa fa-check-square"></i><span>Account Verification</span></a></li>
-                                    <li> <a asp-controller="My" asp-action="Certification" title="" style="background-color: #edf0fc !important"><i class="fa fa-certificate"></i><span>My Certification</span></a></li>
-                                    <li> <a asp-controller="My" asp-action="GetCertificate" title=""><i class="fa fa-certificate"></i><span>Get Certificate</span></a></li>
                                     <li><a asp-controller="Users" asp-action="Logout" title=""><i class="ti-power-off"></i> Logout</a></li>
                                 }
                             }
@@ -264,12 +289,12 @@
 
 
                                     @foreach (var i in (List<EasySystem.Models.Blog>
-                                     )TempData["OtherBlogs"])
+                                )TempData["OtherBlogs"])
                                     {
                                         <div class="blog-post">
                                             @if (i.blogTitleImage != null)
                                             {
-                                                <div class="blog-post-thumb"> <img src="~/images/@i.blogTitleImage" width="150" height="150" alt="" /> </div>
+                                                <div class="blog-post-thumb"> <img src="~/images/Blogs/Thumbnail/@i.blogTitleImage" width="150" height="150" alt="" /> </div>
                                             }
                                             else
                                             {
@@ -357,6 +382,8 @@
     <script src="~/js/site.js"></script>
     <script src="~/js/bootstrap-datepicker.js"></script>
     <script src="~/js/inbox.js"></script>
-
+    <script src="~/js/toastr.min.js"></script>
+    <script src="~/js/Toaster.js"></script>
+  
 </body>
 </html>

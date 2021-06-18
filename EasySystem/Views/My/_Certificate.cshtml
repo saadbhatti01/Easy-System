@@ -1,0 +1,219 @@
+﻿@{
+    var user = TempData["Certificate"] as EasySystem.Models.CertificateVM;
+}
+<style>
+    .signature, .title {
+        float: left;
+        border-top: 1px solid #000;
+        width: 200px;
+        text-align: center;
+    }
+</style>
+@if (user != null)
+{
+   
+    <center>
+        <div>
+            @*<form action="~/My/DownloadPdf" method="post">
+                <input type="hidden" name="GridHtml" />
+                <button type="submit" title="" class="btn btn-info btn-sm" id="btnPrint"><i class="fa fa-download"></i> Download Certificate</button>
+            </form>*@
+            <button type="button" title="" id="btnPrint" class="btn btn-info btn-sm" onclick="CreatePDFfromHTML()"><i class="fa fa-download"></i> Download Certificate</button>
+
+        </div>
+        <br />
+        <br />
+        <div class="Print">
+            <center>
+
+                <div style="width: auto; height: auto;padding: 15px; text-align: center;border: 1px solid #d1c3b0;
+                background-image: url(../../images/Universal-Skills-cetificate-background.jpg)">
+
+                    <br><br>
+                    <span style="text-align:center; font-size:30px;"><img src="~/images/Universal-Skills-Logo.png" alt="Universal Skills" /></span>
+                    <br><br>
+                    <span style="font-size:50px; text-transform:uppercase; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">@user.usrName</span>
+                    <input type="hidden" value="@user.usrName" id="uName" />
+                    <br><br>
+
+                    <span style="font-size:20px">
+                        is hereby awarded this certificate of achivement <br /> for the successfull completion of <br>
+                        <b>@user.StName</b> <br>
+                        certification exam on <b>@user.ucDate.ToString("dd/MM/yyyy")</b>
+                    </span>
+
+
+                    <div class="row">
+                        <table style="margin-left: 5px;  float :left">
+                            <tbody>
+                                <tr>
+                                    <td><img src="~/images/General/stamp.png" width="150" height="150" alt="@user.StName" style="float:left; margin-left: 40px; margin-bottom: 25px;" /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span style="font-size: 11px; float: left; margin-left: 50px">Certificate ID: &nbsp;&nbsp;&nbsp; <b>@user.ucNumber</b> </span> <span style="margin-left: 250px; font-size: 11px;"> Verify the authenticity of this certificate at: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>https://universalskills.co/Verify</b> </span></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    @*<table style="margin-top:0px; float: left;">
+                            <tbody>
+                                <tr>
+                                    <td><span style="font-size: 11px; float: left;">Certificate ID: &nbsp;&nbsp;&nbsp; <b>@user.ucNumber</b> </span> <span style="margin-left: 120px; font-size: 11px;"> Verify the authenticity of this certificate at: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>https://universalskills.co/Verify</b> </span></td>
+                                </tr>
+
+                            </tbody>
+                        </table>*@
+                </div>
+
+            </center>
+            <br />
+            <br />
+        </div>
+    </center>
+
+
+    <br />
+    <br />
+
+    @*<div class="Print" style="display:none;">
+            <center>
+
+                <div style="width:auto; height:auto; padding:15px; text-align:center; border: 1px solid #d1c3b0;
+                background-image: url(../../images/Universal-Skills-cetificate-background.jpg)">
+                    <br><br>
+                    <span style="text-align:center; font-size:30px;"><img src="~/images/Universal-Skills-Logo.png" alt="Universal Skills" /></span>
+                    <br><br>
+                    <span style="font-size:50px; text-transform:uppercase; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">@user.usrName</span>
+                    <br><br>
+
+                    <span style="font-size:20px">
+                        is hereby awarded this certificate of achivement <br /> for the successfull completion of <br>
+                        <b>@user.StName</b> <br>
+                        certification exam on <b>@user.ucDate.ToString("dd/MM/yyyy")</b>
+                    </span>
+
+                    <div class="row">
+                        <table style="margin-left: 5px;  float :left">
+                            <tbody>
+                                <tr>
+                                    <td><img src="~/images/General/stamp.png" width="150" height="150" alt="@user.StName" style="float:left; margin-left: 40px; margin-bottom: 25px;" /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span style="font-size: 11px; float: left; margin-left: 50px">Certificate ID: &nbsp;&nbsp;&nbsp; <b>@user.ucNumber</b> </span> <span style="margin-left: 250px; font-size: 11px;"> Verify the authenticity of this certificate at: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>https://universalskills.co/Verify</b> </span></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+
+
+                    <table style="margin-top:0px; float: left;">
+                            <tbody>
+                                <tr>
+                                    <td><span style="font-size: 11px; float: left;">Certificate ID: &nbsp;&nbsp;&nbsp; <b>@user.ucNumber</b> </span> <span style="margin-left: 270px; font-size: 11px;"> Verify the authenticity of this certificate at: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>https://universalskills.co/Verify</b> </span></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                </div>
+
+            </center>
+
+
+        </div>*@
+
+}
+
+
+<script src="~/js/jspdf.min.js"></script>
+<script src="~/js/html2canvas.js"></script>
+
+<script type="text/javascript">
+    //$(function () {
+    //    $("#btnPrint").click(function () {
+    //        $("input[name='GridHtml']").val($(".Print").html());
+    //        alert("Yes");
+    //    });
+    //});
+</script>
+
+
+<script type="text/javascript">
+    function print1() {
+        var prtContent = document.getElementById('Print');
+        var mywindow = window.open('', '', 'height=1000,width=1400');
+        mywindow.document.write('<html><head>');
+        mywindow.document.write('<link href = "/css/bootstrap.min.css" rel = "stylesheet" />')
+        //mywindow.document.write('<link href = "/Content/Print.css" rel = "stylesheet" />')
+        mywindow.document.write('</head><body>');
+        mywindow.document.write(prtContent.innerHTML);
+        mywindow.document.write('</body></html>');
+        mywindow.document.close();
+        setTimeout(function () {
+            mywindow.print();
+            mywindow.close();
+        }, 500)
+
+    }
+</script>
+
+
+<script>
+    function CreatePDFfromHTML() {
+        //$("#Print").show();
+        $("#btnPrint").html('<i class="fa fa-spinner fa-spin"></i>  Wait...');
+        $('#btnPrint').attr('disabled', true);
+        var Name = $("#uName").val();
+        var HTML_Width = $(".Print").width();
+        var HTML_Height = $(".Print").height();
+        var top_left_margin = 15;
+        var PDF_Width = HTML_Width + (top_left_margin * 2);
+        var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+        var canvas_image_width = HTML_Width;
+        var canvas_image_height = HTML_Height;
+        var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+        html2canvas($(".Print")[0]).then(function (canvas) {
+            var imgData = canvas.toDataURL("image/jpeg", 1.0);
+            var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+            pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+            for (var i = 1; i <= totalPDFPages; i++) {
+                pdf.addPage(PDF_Width, PDF_Height);
+                pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+            }
+            pdf.save("" + Name + ".pdf");
+            $("#Print").hide();
+            $("#btnPrint").html('Download Certificate');
+            $('#btnPrint').attr('disabled', false);
+            location.reload();
+        });
+    }
+</script>
+
+
+
+

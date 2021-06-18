@@ -21,5 +21,6 @@ namespace EasySystemAPI.Models
         public int StId { get; set; }
         public int qCategory { get; set; }
         public bool qStatus { get; set; }
+        public int qCreatedBy { get; set; }
     }
 }

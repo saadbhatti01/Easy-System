@@ -6,107 +6,142 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int SrNo = 1;
 }
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var Expiry = @HttpContextAccessor.HttpContext.Session.GetString("Expiry");
+    var eDate = Convert.ToDateTime(Expiry);
+}
 
 
-    <div class="main-content">
-        <div class="panel-content">
-            <div class="main-title-sec">
-                <div class="row">
-                    <div class="col-md-3 column">
-                        <div class="heading-profile">
-                            <h2>My Mentor Whiteboard</h2>
-                            <div id="Notifocation">
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>My Mentor Whiteboard</h2>
+                        <div id="Notifocation">
 
-                                @if (TempData["Info"] != null)
-                                {
-                                    <div role="alert" class="alert alert-info">
-                                        <strong><i class="fa fa-info-circle"></i></strong>
-                                        @TempData["Info"].
-                                    </div>
-                                }
-                                @if (TempData["Success"] != null)
-                                {
-                                    <div role="alert" class="alert alert-success">
-                                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
-                                        @TempData["Success"].
-                                    </div>
-                                }
-                                @if (TempData["Error"] != null)
-                                {
-                                    <div role="alert" class="alert alert-danger">
-                                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
-                                        @TempData["Error"].
-                                    </div>
-                                }
+                            @if (TempData["Info"] != null)
+                            {
+                                <div role="alert" class="alert alert-info">
+                                    <strong><i class="fa fa-info-circle"></i></strong>
+                                    @TempData["Info"].
+                                </div>
+                            }
+                            @if (TempData["Success"] != null)
+                            {
+                                <div role="alert" class="alert alert-success">
+                                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                    @TempData["Success"].
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div role="alert" class="alert alert-danger">
+                                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                    @TempData["Error"].
+                                </div>
+                            }
 
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="main-content-area">
-                <div class="row">
-                    @if (TempData["UserWhiteBoard"] != null)
-                    {
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="widget white">
-                                    <div class="form-group" hidden>
-                                        &nbsp;
-                                        <div class="col-md-3">
-                                            <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                @if (TempData["UserWhiteBoard"] != null)
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="widget white">
+                                <div class="form-group" hidden>
+                                    &nbsp;
+                                    <div class="col-md-3">
+                                        <input type="text" id="Input" onkeyup="myFunction()" placeholder="Search for.... " class="form-control" title="Type in a name">
 
-                                        </div>
                                     </div>
-                                    <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
-                                        <thead>
+                                </div>
+                                <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+                                            <th>SrNo</th>
+                                            <th>Skill Name</th>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var i in (List<EasySystem.Models.UserWhiteBoardVM>)TempData["UserWhiteBoard"])
+                                        {
+
                                             <tr>
-                                                <th>SrNo</th>
-                                                <th>Skill Name</th>
-                                                <th>Title</th>
-                                               
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                                @if (i.uwbType == 0)
+                                                {
+                                                    <td>@SrNo</td>
+                                                    <td>@i.usName</td>
+                                                    <td>
+                                                        <a asp-controller="My" asp-action="WhiteBoardDetail" asp-route-id="@i.uwbId" asp-route-Page="MentorWhiteBoard" title="Record Detail" style="color:black"> @i.uwbName</a>
+                                                    </td>
+                                                    <td>Free</td>
+                                                    <td>
+                                                        <a asp-controller="My" asp-action="WhiteBoardDetail" asp-route-id="@i.uwbId" asp-route-Page="MentorWhiteBoard" title="Record Detail"><i class="fa fa-info-circle"></i></a>
+                                                    </td>
+                                                }
+                                                else if (i.uwbType == 1)
+                                                {
+                                                    @if (eDate >= DateTime.Now)
+                                                    {
+                                                        <td>@SrNo</td>
+                                                        <td>@i.usName</td>
 
-                                            @foreach (var i in (List<EasySystem.Models.UserWhiteBoardVM>)TempData["UserWhiteBoard"])
-                                            {
+                                                        <td>
+                                                            <a asp-controller="My" asp-action="WhiteBoardDetail" asp-route-id="@i.uwbId" asp-route-Page="MentorWhiteBoard" title="Record Detail" style="color:black"> @i.uwbName</a>
+                                                        </td>
+                                                        <td>Paid</td>
+                                                        <td>
+                                                            <a asp-controller="My" asp-action="WhiteBoardDetail" asp-route-id="@i.uwbId" asp-route-Page="MentorWhiteBoard" title="Record Detail"><i class="fa fa-info-circle"></i></a>
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@SrNo</td>
+                                                        <td>@i.usName</td>
 
-                                            <tr>
+                                                        <td>@i.uwbName</td>
+                                                        <td>Paid</td>
+                                                        <td>
+                                                            <a style="pointer-events: none; cursor: default;" title="This record is locked"><i class="fa fa-lock"></i></a>
+                                                        </td>
+                                                    }
+                                                }
 
-                                                <td>@SrNo</td>
-                                                <td>
-                                                    @i.usName
-                                                </td>
-                                                <td>
-                                                    <a asp-controller="My" asp-action="WhiteBoardDetail" asp-route-id="@i.uwbId" asp-route-Page="MentorWhiteBoard" title="Record Detail" style="color:black"> @i.uwbName</a>
-                                                </td>
-                                                 <td>
-                                                    <a asp-controller="My" asp-action="WhiteBoardDetail" asp-route-id="@i.uwbId" asp-route-Page="MentorWhiteBoard" title="Record Detail"><i class="fa fa-info-circle"></i></a>
-                                                </td>
 
                                             </tr>
                                             SrNo = SrNo + 1;
-                                            }
+                                        }
 
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td colspan="9">
-                                                    <ul class="pagination pull-right"></ul>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="9">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
-
                         </div>
-                    }
 
-                </div>
+                    </div>
+                }
+
             </div>
         </div>
-        <!-- Panel Content -->
     </div>
+    <!-- Panel Content -->
+</div>

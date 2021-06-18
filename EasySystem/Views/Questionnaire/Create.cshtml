@@ -1,0 +1,350 @@
+﻿@model EasySystemAPI.Models.Question_Story
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+    <style>
+        .chosen-single {
+            height: 35px !important;
+        }
+    </style>
+<link href="~/css/modal.css" rel="stylesheet" />
+<div class="main-content">
+    <div class="panel-content">
+        <div class="main-title-sec">
+            <div class="row">
+                <div class="col-md-12 column">
+                    <div class="heading-profile">
+                        <h2>Create Question</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content-area">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="Notifocation">
+                        @if (TempData["Info"] != null)
+                        {
+                            <div role="alert" class="alert alert-info">
+                                <strong><i class="fa fa-info-circle"></i></strong>
+                                @TempData["Info"].
+                            </div>
+                        }
+                        @if (TempData["Success"] != null)
+                        {
+                            <div role="alert" class="alert alert-success">
+                                <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                                @TempData["Success"].
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div role="alert" class="alert alert-danger">
+                                <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                                @TempData["Error"].
+                            </div>
+                        }
+                    </div>
+
+                    <div class="row">
+                        <div class="progress" style="height:6px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="widget white with-padding">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6 form-group">
+                                            @Html.DropDownList("StId", (SelectList)ViewData["Skills"], "...Select Skill...",
+                                           new { @id = "stId", required = "required", @class = "form-control chosen-select", style = "width: 100% !important;" })
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <button type="button" class="btn btn-info" id="btnSubmit" style="background-color:#1b3767">Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="Data">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Panel Content -->
+
+
+
+<div class="modal fade" id="TestModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add Question Story</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modelContent">
+
+                <form id="FormData">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Select Skill Type</label>
+                                @Html.DropDownList("StId", (SelectList)ViewData["Skills"], "...Select Skill...",new { @id = "fId", required = "required", @class = "form-control", style = "width: 100% !important;" })
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Question</label>
+                                <input type="text" id="q" class="form-control" asp-for="qQuestion" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Option 1</label>
+                                <input type="text" id="a" class="form-control" asp-for="qOpt1" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Option 2</label>
+                                <input type="text" id="b" class="form-control" asp-for="qOpt2" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Option 3</label>
+                                <input type="text" id="c" class="form-control" asp-for="qOpt3" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Option 4</label>
+                                <input type="text" id="d" class="form-control" asp-for="qOpt4" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Answer</label>
+                                @{
+                                    var Ans = new List<SelectListItem>();
+                                    Ans.Add(new SelectListItem { Text = "qOpt1", Value = "qOpt1" });
+                                    Ans.Add(new SelectListItem { Text = "qOpt2", Value = "qOpt2" });
+                                    Ans.Add(new SelectListItem { Text = "qOpt3", Value = "qOpt3" });
+                                    Ans.Add(new SelectListItem { Text = "qOpt4", Value = "qOpt4" });
+                                }
+                                <select asp-for="qAnswer" class="form-control" asp-items="@Ans" required></select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Category</label>
+                                @{
+                                    var list = new List<SelectListItem>();
+                                    list.Add(new SelectListItem { Text = "1", Value = "1" });
+                                    list.Add(new SelectListItem { Text = "2", Value = "2" });
+                                    list.Add(new SelectListItem { Text = "3", Value = "3" });
+                                    list.Add(new SelectListItem { Text = "4", Value = "4" });
+                                    list.Add(new SelectListItem { Text = "5", Value = "5" });
+                                }
+                                <select asp-for="qCategory" class="form-control" asp-items="@list" required></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Status</label>
+                                @{
+                                    var list1 = new List<SelectListItem>();
+                                    list1.Add(new SelectListItem { Text = "Approved", Value = "true" });
+                                    list1.Add(new SelectListItem { Text = "Disapproved", Value = "false" });
+                                }
+                                <select asp-for="qStatus" class="form-control" asp-items="@list1" required></select>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-info" id="btnAdd" style="background-color:#1b3767">Submit</button>
+                </form>
+                <br />
+                <div class="row">
+                    <div id="qData">
+
+                    </div>
+                </div>
+               
+
+                <br />
+            </div>
+
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="updateModal">
+    <div class="modal-lg modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Update Questionair
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="updateContent">
+
+            </div>
+
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link href="~/css/chosen.css" rel="stylesheet" />
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/chosen.jquery.js"></script>
+
+
+
+<script>
+    $('.chosen-select').chosen();
+</script>
+
+
+<script>
+    function GetMainData()
+    {
+        $('.progress-bar').show();
+        $("#btnSubmit").html('<i class="fa fa-spinner fa-spin"></i>  Searching...');
+        var StId = $("#stId").val();
+        if (StId != "") {
+             $.ajax({
+                 url: "@Url.Action("_QuestionStory", "Questionnaire")",
+                 type: "Get",
+                 data: { id: StId },
+                 dataType: "html",
+                 async: "true",
+                 cache: "false",
+                 beforeSend: function () {
+                     //$('.my-box').html('<div class="progress"><div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>');
+                     $('.progress-bar').animate({ width: "30%" }, 100);
+                 },
+                 success: function (data) {
+                     $('.progress-bar').animate({ width: "100%" }, 100);
+                     setTimeout(function () {
+                         $('.progress-bar').css({ width: "100%" });
+                         setTimeout(function () {
+                             $("#Data").html(data);
+                             var procemessage = "Search";
+                             $("#btnSubmit").html(procemessage);
+                             $('.progress-bar').hide();
+                             $('.progress-bar').css({ width: "0%" });
+                         }, 100);
+                     }, 500);
+                    }
+                });
+        } else {
+            alert("Please Select Skill Type");
+        }
+
+    }
+</script>
+
+<script>
+    $(function () {
+        $("#btnSubmit").click(function () {
+
+            var sId = $("#stId").val(); 
+            $("#fId").val(sId);
+            var fId = $("#fId").val();
+            GetMainData();
+        });
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $("#btnAdd").click(function (event) {
+            $("#btnAdd").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+            var myData = $("#FormData").serialize();
+            var q = $("#q").val();
+            var a = $("#a").val();
+            var b = $("#b").val();
+            var c = $("#c").val();
+            var d = $("#d").val();
+            if (q != "" && a != "" && b != "" && c != "" && d != "") {
+                $.ajax({
+                    url: "@Url.Action("Create", "Questionnaire")",
+                    data: myData,
+                    type: "post",
+                    dataType: "text",
+                    success: function (data) {
+                        var procemessage = "Submit";
+                        $("#btnAdd").html(procemessage);
+                        GetMainData();
+                        $("#q").val("");
+                        $("#a").val("");
+                        $("#b").val("");
+                        $("#c").val("");
+                        $("#d").val("");
+                        Command: toastr["success"]("Question created successfully")
+                    }
+
+                });
+                    } else {
+
+                Command: toastr["error"]("Please fill up the fields")
+                var procemessage = "Submit";
+                $("#btnAdd").html(procemessage);
+                    }
+
+
+        });
+    });
+</script>
+
+
+<script>
+    function createModal(url) {
+        $('#updateContent').load(url);
+        var sId = $("#stId").val();
+        $("#eId").val(sId);
+        $('#updateModal').modal('show');
+    }
+</script>

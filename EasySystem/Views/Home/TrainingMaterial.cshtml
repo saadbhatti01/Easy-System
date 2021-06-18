@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewData["Title"] = "TrainingMaterial";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+<script src="~/Public/js/jquery.min.js"></script>
+<link type="text/css" rel="stylesheet" href="#" id="color-skins">
+<script src="~/Public/js/js.cookie.js"></script>
+<script>
+    if ((Cookies.get('color-skin') != undefined) && (Cookies.get('color-skin') != 'color-1')) {
+        $('#color-skins').attr('href', 'assets/css/' + Cookies.get('color-skin') + '.css');
+    } else if ((Cookies.get('color-skin') == undefined) || (Cookies.get('color-skin') == 'color-1')) {
+        $('#color-skins').attr('href', '/Public/css/color-1.css');
+    }
+</script>
+
+@if (TempData["Material"] != null)
+{
+    <div class="container" style="margin-top: 10px !important;">
+        <div class="row">
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible" role="alert" style="margin-bottom:0;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    Oh snap! @TempData["Error"].
+                </div>
+            }
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible" role="alert" style="margin-bottom:0;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    Success! @TempData["Success"].
+                </div>
+            }
+            <br />
+            @foreach (var m in (List<EasySystemAPI.Models.SkillMaterial>)TempData["Material"])
+            {
+                <div class="col-md-12">
+                    <div class="section section-padding list-categories">
+                        <div class="container">
+                            <div class="list-categories-wrapper">
+                                <div class="top-content">
+                                    <div class="result-output">
+                                        <h3>
+                                            @m.SmTitle
+
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="edugate-content">
+
+                                    <div class="description" style="max-height:100% !important; margin-bottom: 15px;">
+                                        @Html.Raw(m.SmContent)
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <div class="list-categories-content row">
+                                    <div class="customs-row">
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="edugate-layout-3">
+                                                <div class="edugate-layout-3-wrapper">
+                                                    @if (TempData["MaterialDetail"] != null)
+                                                    {
+                                                        <div class="row">
+                                                            @foreach (var i in (List<EasySystemAPI.Models.SkillMaterialDetail>)TempData["MaterialDetail"])
+                                                            {
+                                                                if (m.SmId == i.SmId && m.StId == i.StId)
+                                                                {
+                                                                    <div class="col-md-6">
+                                                                        <a class="edugate-image">
+                                                                            <iframe src="@i.SmdURL" frameborder="0" height="315" width="450" allow="accelerometer; autoplay;  encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                                                        </a>
+                                                                    </div>
+                                                                }
+
+
+                                                            }
+                                                        </div>
+
+
+
+                                                    }
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-success alert-dismissible" role="alert" style="margin-bottom:0;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        Success! No Record found.
+    </div>
+}
+

@@ -1,0 +1,379 @@
+﻿@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+    ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
+    ViewBag.Image = "~/images/logo.png";
+    var d = TempData["Detail"] as EasySystemAPI.Models.SkillType;
+}
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var mId = @HttpContextAccessor.HttpContext.Session.GetInt32("RefId");
+    var ID = @HttpContextAccessor.HttpContext.Session.GetInt32("ID");
+}
+<script src="~/Public/js/jquery.min.js"></script>
+<link type="text/css" rel="stylesheet" href="#" id="color-skins">
+
+<script src="~/Public/js/js.cookie.js"></script>
+<script>
+    if ((Cookies.get('color-skin') != undefined) && (Cookies.get('color-skin') != 'color-1')) {
+        $('#color-skins').attr('href', 'assets/css/' + Cookies.get('color-skin') + '.css');
+    } else if ((Cookies.get('color-skin') == undefined) || (Cookies.get('color-skin') == 'color-1')) {
+        $('#color-skins').attr('href', '/Public/css/color-1.css');
+    }
+</script>
+
+<div class="container" style="margin-top: 10px !important;">
+    <div class="row">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Oh snap! @TempData["Error"].
+            </div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert" style="margin-bottom:0;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Success! @TempData["Success"].
+            </div>
+        }
+        <input type="hidden" id="Val" value="0" />
+        <input type="hidden" id="mVal" value="0" />
+        <input type="hidden" id="Id" value="@TempData["SkillId"]" />
+        <input type="hidden" id="mId" value="@mId" />
+        <input type="hidden" id="ID" value="@ID" />
+
+        <div class="section section-padding list-categories">
+            <div class="container">
+                <div class="list-categories-wrapper">
+                    <div class="top-content">
+                        <div class="result-output">
+                            <h3>
+                                @d.StName
+                                <input type="hidden" id="StId" value="@d.StId" />
+                                @if (TempData["Questionnaire"] != null)
+                                {
+                                    @*<a asp-action="CertificationTest" asp-controller="My" asp-route-id="@d.StId" asp-route-topic="@EasySystem.EasyAPI.EasySysAPI.URLFriendly(d.StName)" class="btn btn-info" style="float: right; background-color:#1b3767">Get Certificate</a>*@
+                                    <button type="button" id="GetQuestion" class="btn btn-info" style="float: right; background-color:#1b3767">Get Certificate</button>
+                                }
+
+                                @if (TempData["isAvailable"] != null)
+                                {
+                                    <button type="button" id="CourseMaterial" class="btn btn-info" style="float: right; background-color:#1b3767">Course Material</button>
+                                    @*<a asp-action="Material" asp-controller="Courses" asp-route-id="@d.StId" asp-route-topic="@EasySystem.EasyAPI.EasySysAPI.URLFriendly(d.StName)" class="btn btn-info" style="float: right; background-color:#1b3767">Course Material</a>*@
+                                }
+
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="list-categories-content row">
+                        <div class="customs-row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="edugate-layout-3">
+                                    <div class="edugate-layout-3-wrapper">
+                                        @if (d.StCoverImage != null)
+                                        {
+                                            <img src="~/images/SkillType/Cover/@d.StCoverImage" alt="" class="img-responsive" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/Universal-Skills-Training-cover-page-01.jpg" alt="" class="img-responsive" />
+                                        }
+
+                                        <div class="edugate-content">
+                                            @*<a class="title">@d.StName</a>*@
+
+                                            <div class="description" style="max-height:100% !important;">
+                                                @Html.Raw(d.StDetail)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="section section-padding list-categories">
+            <div class="container">
+                <div class="list-categories-wrapper">
+
+                    <div class="list-categories-content row">
+                        <div class="customs-row">
+                            <div id="Data">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center">
+                        <img id="loading" src="~/Public/images/loader.gif" alt="Updating ..." style="display: none;" />
+                    </div>
+                    <div class="center" id="btnMore">
+                        <button type="button" id="more" class="btn btn-info" style="background-color:#1b3767">Load More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+
+        <div class="section section-padding list-categories">
+            <div class="container">
+                <div class="list-categories-wrapper">
+
+                    <div class="list-categories-content row">
+                        <div class="customs-row">
+                            <div id="mData">
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center">
+                        <img id="mloading" src="~/Public/images/loader.gif" alt="Updating ..." style="display: none;" />
+                    </div>
+                    <div class="center" id="btnmMore">
+                        <button type="button" id="mmore" class="btn btn-info" style="background-color:#1b3767">Load More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+    </div>
+</div>
+
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="~/css/sweetalert.css">
+<script src="~/js/sweetalert.js"></script>
+
+<script>
+    $(document).ready(function () {
+        GetData();
+        GetMentorData();
+    });
+</script>
+
+<script>
+    $("#more").click(function () {
+        GetData();
+    });
+</script>
+
+<script>
+    $("#mmore").click(function () {
+        GetMentorData();
+    });
+</script>
+
+<script>
+ function GetData() {
+     var count = $("#Val").val();
+     var sId = $("#Id").val();
+     //$("#more").html('<i class="fa fa-spinner fa-spin"></i>Loading...');
+     //$('#more').attr('disabled', true);
+     $('#loading').show();
+     $('#btnMore').hide();
+            $.ajax({
+                    url: "@Url.Action("_SkillsList", "Courses")",
+                    data: { Value: count, Id: sId },
+                    type: "Get",
+                    dataType: "html",
+                    async: "true",
+                    cache: "false",
+                    success: function (data) {
+                        //Whatever result you have got from your controller with html partial view replace with a specific html.
+                        // HTML DOM replace
+                        if (data !== "") {
+                            var newC = 12;
+                            var newCount = parseInt(newC) + parseInt(count);
+                            $("#Val").val(newCount);
+                            $("#Data").append(data);
+                            $('#loading').hide();
+                            $('#btnMore').show();
+                            $("#more").html('Load More');
+                            $('#more').attr('disabled', false);
+                        } else {
+                            if (count == 0) {
+                                $('#loading').hide();
+                                $('#btnMore').hide();
+                                $("#more").html('No record found');
+                                $('#more').attr('disabled', true);
+                            } else {
+                                $('#loading').hide();
+                                $('#btnMore').show();
+                                $("#more").html('No more record found');
+                                $('#more').attr('disabled', true);
+                            }
+
+                        }
+                    },
+
+                    Error: function () {
+                        alert("Some error");
+                    }
+                });
+        }
+</script>
+
+<script>
+ function GetMentorData() {
+     var count = $("#mVal").val();
+     var sId = $("#Id").val();
+     $('#mloading').show();
+     $('#btnmMore').hide();
+            $.ajax({
+                    url: "@Url.Action("_MentorData", "Courses")",
+                    data: { Value: count, Id: sId },
+                    type: "Get",
+                    dataType: "html",
+                    async: "true",
+                    cache: "false",
+                    success: function (data) {
+                        //Whatever result you have got from your controller with html partial view replace with a specific html.
+                        // HTML DOM replace
+                        if (data !== "") {
+                            var newC = 12;
+                            var newCount = parseInt(newC) + parseInt(count);
+                            $("#mVal").val(newCount);
+                            $("#mData").append(data);
+                            $('#mloading').hide();
+                            $('#btnmMore').show();
+                            $("#mmore").html('Load More');
+                            $('#mmore').attr('disabled', false);
+                        } else {
+                            if (count == 0) {
+                                $('#mloading').hide();
+                                $('#btnmMore').hide();
+                                $("#mmore").html('No record found');
+                                $('#mmore').attr('disabled', true);
+                            } else {
+                                $('#mloading').hide();
+                                $('#btnmMore').show();
+                                $("#mmore").html('No more record found');
+                                $('#mmore').attr('disabled', true);
+                            }
+                        }
+                    },
+
+                    Error: function () {
+                        //alert("Some error");
+                    }
+                });
+        }
+</script>
+
+
+<script>
+    $(function () {
+        $("#GetQuestion").click(function () {
+            $.ajax({
+                    url: "@Url.Action("CheckSession", "Courses")",
+                    type: "json",
+                    async: "true",
+                    cache: "false",
+                    success: function (res) {
+                        if (res.Success === "true") {
+                            var id = $("#StId").val();
+                            if (id != "") {
+                                window.location = '/My/CertificationTest/' + id + '';
+                            }
+
+                        } else {
+                            swal({
+                                title: "Failed!",
+                                text: "Please login to continue",
+                                type: "error",
+                            });
+                        }
+
+                    },
+                });
+        });
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $("#CourseMaterial").click(function () {
+            $.ajax({
+                    url: "@Url.Action("CheckSession", "Courses")",
+                    type: "json",
+                    async: "true",
+                    cache: "false",
+                    success: function (res) {
+                        if (res.Success === "true") {
+                            var id = $("#StId").val();
+                            if (id != "") {
+                                window.location = '/Courses/Material/' + id + '';
+                            }
+
+                        } else {
+                            swal({
+                                title: "Failed!",
+                                text: "Please login to continue",
+                                type: "error",
+                            });
+                        }
+
+                    },
+                });
+        });
+    });
+</script>
+
+
+<script>
+    function MakeMentor(id)
+    {
+        $.ajax({
+                url: "@Url.Action("CheckSession", "Courses")",
+                type: "json",
+                async: "true",
+                cache: "false",
+                success: function (res) {
+
+                    if (res.Success === "true") {
+                        var mId = $("#mId").val();
+                        var ID = $("#ID").val();
+                        
+                        if (mId != id) {
+                            if (ID != id) {
+                                window.location = '/My/MakeMentor/' + id + '';
+                               
+                            } else {
+                                swal({
+                                    title: "Failed!",
+                                    text: "This is you. You cannot be your own mentor.",
+                                    type: "error",
+                                });
+                            }
+                        } else {
+                            swal({
+                                title: "Failed!",
+                                text: "This is your core mentor. You cannot add here.",
+                                type: "error",
+                            });
+                        }
+
+                    } else {
+                        swal({
+                            title: "Failed!",
+                            text: "Please login to continue",
+                            type: "error",
+                        });
+                    }
+
+                },
+            });
+    }
+</script>
+

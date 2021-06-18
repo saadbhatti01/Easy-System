@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EasySystem.Models
 {
@@ -19,9 +15,9 @@ namespace EasySystem.Models
         public string umsFontName { get; set; }
         public string umsFontColour { get; set; }
         public int umsFontSize { get; set; }
-        public string umsFontAlignment { get; set; } 
-        public string  umsFor { get; set; }
-        public bool umsStatus { get; set; } 
+        public string umsFontAlignment { get; set; }
+        public string umsFor { get; set; }
+        public bool umsStatus { get; set; }
         public DateTime umsCreatedDate { get; set; }
         public int umsCreatedBy { get; set; }
     }

@@ -19,5 +19,6 @@ namespace EasySystemAPI.Models
         public string StCoverImage { get; set; }
         public string StCategory { get; set; }
         public int SubType { get; set; }
+        public int CreatedBy { get; set; }
     }
 }

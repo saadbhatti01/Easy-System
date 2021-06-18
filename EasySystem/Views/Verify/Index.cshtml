@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewData["Title"] = "Verify Certificate";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+<div class="container" margin-bottom:20px">
+    <div class="row">
+        <div id="Notifocation">
+
+            @if (TempData["Info"] != null)
+            {
+                <div role="alert" class="alert alert-info">
+                    <strong><i class="fa fa-info-circle"></i></strong>
+                    @TempData["Info"].
+                </div>
+            }
+            @if (TempData["Success"] != null)
+            {
+                <div role="alert" class="alert alert-success">
+                    <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                    @TempData["Success"].
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div role="alert" class="alert alert-danger">
+                    <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                    @TempData["Error"].
+                </div>
+            }
+
+        </div>
+        <div class="col-md-12">
+            <h2>Verify Certificate</h2>
+            <br />
+            <div class="col-md-12">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <input type="text" class="form-control" name="Number" placeholder="Enter Ceriticate ID" id="Number" required />
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <button type="button" id="btnSubmit" class="btn btn-info" style="background-color:#1b3767">Verify Certificate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div id="Certificate">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function (event) {
+            var No = $("#Number").val();
+            $("#btnSubmit").html('<i class="icon-spinner spinner"></i>  Working...');
+            $('#btnSubmit').attr('disabled', true);
+            if (No != "" && No != null){
+                $.ajax({
+                url: "@Url.Action("_Certificate", "My")",
+                data: { Num: No },
+                type: "Get",
+                dataType: "html",
+                success: function (data) {
+                    //Whatever result you have got from your controller with html partial view replace with a specific html.
+                    // HTML DOM replace
+                    if (data == "No record found") {
+                        alert("Invalid Certificate ID");
+                        $("#btnSubmit").html('Verify Certificate');
+                        $('#btnSubmit').attr('disabled', false);
+                    } else {
+                        $("#Certificate").html(data);
+                        $("#btnSubmit").html('Verify Certificate');
+                        $('#btnSubmit').attr('disabled', false);
+                    }
+
+                }
+                });
+                } else {
+                alert("Please Enter Number");
+                $("#btnSubmit").html('Get Certificate');
+                $('#btnSubmit').attr('disabled', false);
+                }
+
+        });
+    });
+</script>

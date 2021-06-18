@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EasySystem.EasyAPI;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Net.Http;
-using Newtonsoft.Json;
+﻿using EasySystem.EasyAPI;
 using EasySystem.Models;
-using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 
 namespace EasySystem.Controllers
@@ -23,53 +23,45 @@ namespace EasySystem.Controllers
             this.HostingEnvironment = hostingEnvironment;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string Public)
         {
-            //            try
-            //            {
-            //                var Id = HttpContext.Session.GetInt32("ID");
-            //                HttpClient client = _api.Initial();
-            //                Task<HttpResponseMessage> Data;
-            //                if (Id != null)
-            //                {
-            //                    Data = client.GetAsync("My/GetBlogData?Id=" + Id.ToString());
-            //                }
-            //                else
-            //                {
-            //                    Data = client.GetAsync("My/GetBlogs");
-            //                    TempData["BlogWithOutLogin"] = "BlogWithOutLogin";
-            //                }
-
-            //                Data.Wait();
-            //                var result = Data.Result;
-            //                if (result.IsSuccessStatusCode)
-            //                {
-            //                    var res = result.Content.ReadAsStringAsync().Result;
-            //                    var List = JsonConvert.DeserializeObject<List<Blog>>(res);
-            //                    TempData["List"] = List;
-            //                }
-
-            //                else
-            //                {
-            //                    var res = result.Content.ReadAsStringAsync().Result;
-            //                    var errorMsg = JsonConvert.DeserializeObject<ErrorMessage>(res);
-            //                    TempData["Error"] = "" + errorMsg.message + "";
-            //                }
-            //            }
-            //#pragma warning disable CS0168 // The variable 'ex' is declared but never used
-            //            catch (Exception ex)
-            //#pragma warning restore CS0168 // The variable 'ex' is declared but never used
-            //            {
-            //                TempData["Error"] = "An error occured during getting the request. Please try again later";
-            //                //return View();
-            //            }
+            if (Public != null)
+            {
+                TempData["Public"] = "true";
+            }
+            else
+            {
+                HttpContext.Session.Remove("Public");
+            }
             return View();
         }
 
-        public IActionResult _BlogData(int Value)
+        public IActionResult _BlogData(int Value, string Public)
         {
             try
             {
+                if (Public != null)
+                {
+                    HttpContext.Session.SetString("Public", "Public");
+                    HttpClient clientt = _api.Initial();
+                    Task<HttpResponseMessage> Dataa;
+                    Dataa = clientt.GetAsync("My/GetMoreBlogs?Value=" + Value.ToString());
+                    TempData["BlogWithOutLogin"] = "BlogWithOutLogin";
+                    Dataa.Wait();
+                    var resultt = Dataa.Result;
+                    if (resultt.IsSuccessStatusCode)
+                    {
+                        var res = resultt.Content.ReadAsStringAsync().Result;
+                        var List = JsonConvert.DeserializeObject<List<Blog>>(res);
+                        if (List.Count == 0)
+                        {
+                            return PartialView("_BlogData", "");
+                        }
+                        TempData["List"] = List;
+                    }
+
+                    return PartialView("_BlogData");
+                }
                 var Id = HttpContext.Session.GetInt32("ID");
                 HttpClient client = _api.Initial();
                 Task<HttpResponseMessage> Data;
@@ -115,17 +107,56 @@ namespace EasySystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddBlog(Blog data, IFormFile file)
+        public IActionResult AddBlog(Blog data, IFormFile Image, IFormFile cImage)
         {
             try
             {
-                if (file != null)
+                var allowedExtensions = new[] { ".Jpg", ".JPG", ".jpg", ".jpeg", ".JPEG", ".png", ".PNG" };
+
+                if (Image != null)
                 {
-                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images");
-                    string fileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                    string filePath = Path.Combine(uploadFolder, fileName);
-                    file.CopyTo(new FileStream(filePath, FileMode.Create));
-                    data.blogTitleImage = fileName;
+                    var ext = Path.GetExtension(Image.FileName);
+                    if (allowedExtensions.Contains(ext)) //check what type of extension  
+                    {
+                        string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/Blogs/Thumbnail");
+                        string fileName = Image.FileName;
+                        string filePath = Path.Combine(uploadFolder, fileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            Image.CopyTo(fileStream);
+                        }
+                        //Image.CopyTo(new FileStream(filePath, FileMode.Create));
+                        data.blogTitleImage = fileName;
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Please Upload a valid image file. Valid formates are ('.Jpg','.JPG', '.jpg', .'jpeg', '.JPEG', '.png', '.PNG')";
+                        return RedirectToAction("Index");
+                    }
+
+                }
+                if (cImage != null)
+                {
+                    var ext = Path.GetExtension(cImage.FileName);
+                    if (allowedExtensions.Contains(ext)) //check what type of extension  
+                    {
+                        string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/Blogs/CoverPage");
+                        string fileName = cImage.FileName;
+                        string filePath = Path.Combine(uploadFolder, fileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            cImage.CopyTo(fileStream);
+                        }
+                        //cImage.CopyTo(new FileStream(filePath, FileMode.Create));
+                        data.blogCoverPageImage = fileName;
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Please Upload a valid image file. Valid formates are ('.Jpg','.JPG', '.jpg', .'jpeg', '.JPEG', '.png', '.PNG')";
+                        return RedirectToAction("Index");
+                    }
+
                 }
                 HttpClient client = _api.Initial();
                 var postVerify = client.PostAsJsonAsync("My/AddBlog", data);
@@ -276,18 +307,59 @@ namespace EasySystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditBlog(int id, Blog data, IFormFile file)
+        public IActionResult EditBlog(int id, Blog data, IFormFile Image, IFormFile cImage)
         {
             try
             {
-                if (file != null)
+                var allowedExtensions = new[] { ".Jpg", ".JPG", ".jpg", ".jpeg", ".JPEG", ".png", ".PNG" };
+
+                if (Image != null)
                 {
-                    string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images");
-                    string fileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                    string filePath = Path.Combine(uploadFolder, fileName);
-                    file.CopyTo(new FileStream(filePath, FileMode.Create));
-                    data.blogTitleImage = fileName;
+                    var ext = Path.GetExtension(Image.FileName);
+                    if (allowedExtensions.Contains(ext)) //check what type of extension  
+                    {
+                        string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/Blogs/Thumbnail");
+                        string fileName = Image.FileName;
+                        string filePath = Path.Combine(uploadFolder, fileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            Image.CopyTo(fileStream);
+                        }
+                        //Image.CopyTo(new FileStream(filePath, FileMode.Create));
+                        data.blogTitleImage = fileName;
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Please Upload a valid image file. Valid formates are ('.Jpg','.JPG', '.jpg', .'jpeg', '.JPEG', '.png', '.PNG')";
+                        return RedirectToAction("EditBlog");
+                    }
+
                 }
+                if (cImage != null)
+                {
+                    var ext = Path.GetExtension(cImage.FileName);
+                    if (allowedExtensions.Contains(ext)) //check what type of extension  
+                    {
+                        string uploadFolder = Path.Combine(HostingEnvironment.WebRootPath, "images/Blogs/CoverPage");
+                        string fileName = cImage.FileName;
+                        string filePath = Path.Combine(uploadFolder, fileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            cImage.CopyTo(fileStream);
+                        }
+                        //cImage.CopyTo(new FileStream(filePath, FileMode.Create));
+                        data.blogCoverPageImage = fileName;
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Please Upload a valid image file. Valid formates are ('.Jpg','.JPG', '.jpg', .'jpeg', '.JPEG', '.png', '.PNG')";
+                        return RedirectToAction("EditBlog");
+                    }
+
+                }
+
+
                 HttpClient client = _api.Initial();
                 var UpdateData = client.PutAsJsonAsync("My/UpdateBlog?id=" + id.ToString(), data);
                 UpdateData.Wait();

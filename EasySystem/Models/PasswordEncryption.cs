@@ -10,7 +10,7 @@ namespace EasySystem.Models
         // Encryption Code // 
         public static string Encrypts(string clearText)
         {
-            string EncryptionKey = "MAKV2SPBNI99212";
+            string EncryptionKey = "MAKVSPBNI11227223007";
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using (Aes encryptor = Aes.Create())
             {
@@ -33,7 +33,7 @@ namespace EasySystem.Models
         // Decryption Code// 
         public static string Decrypt(string cipherText)
         {
-            string EncryptionKey = "MAKV2SPBNI99212";
+            string EncryptionKey = "MAKVSPBNI11227223007";
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())
             {

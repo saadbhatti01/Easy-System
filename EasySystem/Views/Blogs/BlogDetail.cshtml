@@ -4,13 +4,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var detail = TempData["BlogDetail"] as EasySystem.Models.Blog;
     ViewData["Title"] = Html.Raw(@detail.blogTitle);
-    ViewBag.Title2 = @detail.blogDescription;
+    //ViewBag.Title2 = Html.Raw(@detail.blogDescription); 
     ViewBag.Image = "~/images/"+@detail.blogTitleImage+"";
 }
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     var ID = @HttpContextAccessor.HttpContext.Session.GetInt32("ID");
+    var Public = @HttpContextAccessor.HttpContext.Session.GetString("Public");
 }
 
 <div class="main-content">
@@ -20,7 +21,7 @@
                 <div class="col-md-12 column">
                     <div class="heading-profile">
                         <h2>
-                            @if (ID != null)
+                            @if (ID != null && Public == null)
                             {
                                 <a asp-controller="Blogs" asp-action="DeleteBlog" asp-route-id="@detail.blogId" class="btn btn-primary" style="float: right; background-color:#1b3767; " title="Delete Blog"><i class="fa fa-trash-o"></i></a>
 
@@ -30,6 +31,7 @@
                             }
                             else
                             {
+                                <a asp-controller="Blogs" asp-action="Index" asp-route-Public="Active" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a>
                                 @*<a asp-controller="Blogs" asp-action="Index" class="btn btn-primary" style="float: right; background-color:#1b3767; margin-right:10px;" title="Go back"><i class="fa fa-backward"></i></a>*@
                             }
 
@@ -50,13 +52,13 @@
 
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="blog-post">
-                                    @if (detail.blogTitleImage != null)
+                                    @if (detail.blogCoverPageImage != null)
                                     {
-                                        <div class="blog-post-thumb"> <img src="~/images/@detail.blogTitleImage" alt="" style="height: 300px !important" /> </div>
+                                        <div class="blog-post-thumb"> <img src="~/images/Blogs/CoverPage/@detail.blogCoverPageImage" alt="@detail.blogTitle" style="height: 300px !important" /> </div>
                                     }
                                     else
                                     {
-                                        <div class="blog-post-thumb"> <img src="~/images/admin.jpg" alt=""  style="height: 300px !important"/> </div>
+                                        <div class="blog-post-thumb"> <img src="~/images/admin.jpg" alt="@detail.blogTitle" style="height: 300px !important"/> </div>
                                     }
                                     <div class="blog-post-info">
                                         <h3>@detail.blogTitle</h3>

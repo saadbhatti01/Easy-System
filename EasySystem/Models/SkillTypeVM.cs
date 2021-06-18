@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EasySystem.Models
+﻿namespace EasySystem.Models
 {
     public class SkillTypeVM
     {
@@ -16,5 +11,6 @@ namespace EasySystem.Models
         public string StCategory { get; set; }
         public int SubType { get; set; }
         public string SubTypeName { get; set; }
+        public string CreatedBy { get; set; }
     }
 }

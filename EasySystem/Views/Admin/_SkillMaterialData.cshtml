@@ -1,0 +1,85 @@
+﻿@if (TempData["List"] != null)
+{
+    int SrNo = 1;
+    <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+        <thead>
+            <tr>
+                <th>Sr#</th>
+                <th>Skill Type</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in (List<EasySystem.Models.SkillDetailVM>)TempData["List"])
+            {
+                <tr>
+                    <td>@SrNo</td>
+                    <td>@i.SkillName</td>
+                    <td>@i.SmTitle</td>
+                    <td>@i.SmStatus</td>
+                    <td>@i.CreatedBy</td>
+                    <td>
+                        <a title="Detail Record" asp-action="SkillMaterialDetail" asp-controller="Admin" asp-route-id="@i.SmId" ><i class="fa fa-info-circle"></i></a>
+                         &nbsp;
+                        <a title="Update Record"><i class="fa fa-edit" onclick="createModal('@Url.Action("_UpdateSkillMaterial", "Admin", new { id = i.SmId })')"></i></a>
+                        &nbsp;
+                        <a onclick="DelData(@i.SmId)" title="Delete Record" style="color:red"><i class="fa fa-trash-o"></i></a>
+
+                    </td>
+
+                </tr>
+                SrNo = SrNo + 1;
+
+            }
+
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="9">
+                    <ul class="pagination pull-right"></ul>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+}
+else
+{
+    <div role="alert" class="alert alert-info">
+        <strong><i class="fa fa-info-circle"></i></strong>
+        No record found.
+    </div>
+}
+
+
+<script>
+    function DelData(id) {
+
+             var MSG = confirm("Are you sure you want to delete this Record?");
+
+                if (MSG) {
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteSkillMaterialData", "Admin")',
+                    data: { id: id },
+                    dataType: "text",
+                    success: function (data) {
+                        if (data !== "") {
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            Command: toastr["success"]("Data deleted successfully")
+                            GetData();
+                        }
+                    },
+                    error: function () {
+                        alert("Error while deleting data");
+                    }
+                });
+            }
+        }
+
+</script>

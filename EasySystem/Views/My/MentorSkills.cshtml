@@ -5,7 +5,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int SrNo = 1;
 }
-
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var Expiry = @HttpContextAccessor.HttpContext.Session.GetString("Expiry");
+    var eDate = Convert.ToDateTime(Expiry);
+}
 <div class="main-content">
     <div class="panel-content">
         <div class="main-title-sec">
@@ -13,7 +18,7 @@
                 <div class="col-md-3 column">
                     <div class="heading-profile">
                         <h2>My Mentor Skills</h2>
-                        
+
                     </div>
                 </div>
             </div>
@@ -62,24 +67,53 @@
                                         <tr>
                                             <th>SrNo</th>
                                             <th>Skill Name</th>
-                                            <th>Level</th>
+                                            <th>Type</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach (var i in (List<EasySystem.Models.UserSkillVM>)TempData["UserSkills"])
                                         {
-                                        <tr>
-                                            <td>@SrNo</td>
-                                            <td>
-                                                <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="MentorSkills" title="Record Detail" style="color:black"> @i.StName</a>
-                                            </td>
-                                            <td>@i.usLevel</td>
-                                            <td>
-                                                <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="MentorSkills" title="Record Detail"><i class="fa fa-info-circle"></i></a>
-                                            </td>
-                                        </tr>
-                                        SrNo = SrNo + 1;
+                                            <tr>
+                                                @if (i.usLevel == 0)
+                                                {
+                                                    <td>@SrNo</td>
+                                                    <td>
+                                                        <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="MentorSkills" title="Record Detail" style="color:black"> @i.StName</a>
+                                                    </td>
+
+                                                    <td>Free</td>
+                                                    <td>
+                                                        <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="MentorSkills" title="Record Detail"><i class="fa fa-info-circle"></i></a>
+                                                    </td>
+                                                }
+                                                else if (i.usLevel == 1)
+                                                {
+                                                    @if (eDate >= DateTime.Now)
+                                                    {
+                                                        <td>@SrNo</td>
+                                                        <td>
+                                                            <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="MentorSkills" title="Record Detail" style="color:black"> @i.StName</a>
+                                                        </td>
+
+                                                        <td>Paid</td>
+                                                        <td>
+                                                            <a asp-controller="My" asp-action="SkillDetail" asp-route-id="@i.usId" asp-route-Page="MentorSkills" title="Record Detail"><i class="fa fa-info-circle"></i></a>
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@SrNo</td>
+                                                        <td>@i.StName</td>
+                                                        <td>Paid</td>
+                                                        <td>
+                                                            <a style="pointer-events: none; cursor: default;" title="This record is locked"><i class="fa fa-lock"></i></a>
+                                                        </td>
+                                                    }
+
+                                                }
+                                            </tr>
+                                            SrNo = SrNo + 1;
                                         }
                                     </tbody>
                                     <tfoot>

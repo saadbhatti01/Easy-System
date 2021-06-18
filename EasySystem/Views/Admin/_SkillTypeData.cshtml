@@ -1,0 +1,70 @@
+﻿@if (TempData["List"] != null)
+{
+     int SrNo = 1;
+    <table id="List" class="table-striped table-responsive-md footable table" data-page-size="5" data-filter=#filter>
+        <thead>
+            <tr>
+                <th>Sr#</th>
+                <th>Sub Type</th>
+                <th>Type Name</th>
+
+                <th>Cateory</th>
+                <th>Status</th>
+                <th>Image</th>
+                <th>Cover Image</th>
+                <th>Created By</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in (List<EasySystem.Models.SkillTypeVM>)TempData["List"])
+            {
+                <tr>
+                    <td>@SrNo</td>
+                    <td>@i.SubTypeName</td>
+                    <td>@i.StName</td>
+                    <td>@i.StCategory</td>
+                    <td>@i.StStatus</td>
+                    <td>
+                        @if (i.StImage != null)
+                        {
+                            <img src="~/images/SkillTypeImages/@i.StImage" width="30" height="30" />
+                        }
+                        else
+                        {
+                            <img src="~/images/admin.jpg" width="30" height="30" />
+                        }
+
+                    </td>
+                    <td>
+                        @if (i.StCoverImage != null)
+                        {
+                            <img src="~/images/SkillTypeImages/@i.StCoverImage" width="30" height="30" />
+                        }
+                        else
+                        {
+                            <img src="~/images/admin.jpg" width="30" height="30" />
+                        }
+
+                    </td>
+                    <td>@i.CreatedBy</td>
+                    <td>
+                        <a asp-controller="Admin" asp-action="DeleteSkillType" asp-route-id="@i.StId" title="Delete Record" style="color:red"><i class="fa fa-trash-o"></i></a>
+                        &nbsp;
+                        <a asp-controller="Admin" asp-action="EditSkillType" asp-route-id="@i.StId" title="Update Record"><i class="fa fa-edit"></i></a>
+                    </td>
+                </tr>
+                SrNo = SrNo + 1;
+            }
+
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="9">
+                    <ul class="pagination pull-right"></ul>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+}

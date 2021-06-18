@@ -1,15 +1,29 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
     ViewData["Title"] = "TrainingDetail";
     ViewBag.Title2 = "Enhance skills in you and make your life better. Join for Free.";
     ViewBag.Image = "~/images/logo.png";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
+    var UsrId = @HttpContextAccessor.HttpContext.Session.GetInt32("ID");
 }
 @{
-    var d = TempData["Detail"] as EasySystemAPI.Models.TrainingInfo;
+    var d = TempData["Detail"] as EasySystemAPI.Models.SkillType;
 }
 
+<script src="~/Public/js/jquery.min.js"></script>
+<link type="text/css" rel="stylesheet" href="#" id="color-skins">
+<script src="~/Public/js/js.cookie.js"></script>
+<script>
+    if ((Cookies.get('color-skin') != undefined) && (Cookies.get('color-skin') != 'color-1')) {
+        $('#color-skins').attr('href', 'assets/css/' + Cookies.get('color-skin') + '.css');
+    } else if ((Cookies.get('color-skin') == undefined) || (Cookies.get('color-skin') == 'color-1')) {
+        $('#color-skins').attr('href', '/Public/css/color-1.css');
+    }
+</script>
 
-<div class="container" margin-bottom:20px">
+
+<div class="container" style="margin-top: 10px !important;">
     <div class="row">
         @if (TempData["Error"] != null)
         {
@@ -26,29 +40,59 @@
             </div>
         }
         <br />
-        <div class="col-md-12">
-            <h2>TRAINING Detail</h2>
+        @if (d != null)
+        {
             <div class="col-md-12">
-                <div class="row">
-                    @if (TempData["Detail"] != null)
-                    {
+                <div class="section section-padding list-categories">
+                    <div class="container">
+                        <div class="list-categories-wrapper">
+                            <div class="top-content">
+                                <div class="result-output">
+                                    <h3>
+                                        @d.StName
+                                        @if (TempData["isAvailable"] != null && UsrId != null)
+                                        {
+                                            <a asp-action="TrainingMaterial" asp-controller="Home" asp-route-id="@d.StId" class="btn btn-info" style="float: right; background-color:#1b3767">Skills Material</a>
+                                        }
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="list-categories-content row">
+                                <div class="customs-row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="edugate-layout-3">
+                                            <div class="edugate-layout-3-wrapper">
+                                                @if (d.StCoverImage != null)
+                                                {
+                                                    <a class="edugate-image"><img src="~/images/SkillTypeImages/@d.StCoverImage" alt="" class="img-responsive" /></a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="edugate-image"><img src="~/images/Universal-Skills-Training-cover-page-01.jpg" alt="" class="img-responsive" /></a>
+                                                }
 
-                        <div class="col-md-12 animate-box">
-                            <h3> @d.tiName @d.tiPrice /@d.tiPriceDuration</h3>
-                            <p>
-                                @Html.Raw(d.tiDetail)
-                            </p>
+                                                <div class="edugate-content">
+                                                    <a href="#" class="title">@d.StName</a>
+
+                                                    <div class="description" style="max-height:100% !important;">
+                                                        @Html.Raw(d.StDetail)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
 
                         </div>
-                        <a asp-action="Trainings" asp-controller="Home"> Go back</a>
-
-                    }
-
+                    </div>
                 </div>
 
-            </div>
 
-        </div>
+            </div>
+        }
+
 
     </div>
 </div>

@@ -1,0 +1,37 @@
+﻿@if (TempData["List"] != null)
+{
+    <h3 style="margin-left: 10px;"> Detailed Courses</h3>
+    <br />
+    foreach (var i in (List<EasySystemAPI.Models.SkillType>)TempData["List"])
+    {
+        <div class="col-md-3 col-sm-6">
+            <div class="edugate-layout-3">
+                <div class="edugate-layout-3-wrapper">
+                    @if (i.StImage != null)
+                    {
+                        <img src="~/images/SkillType/Thumbnail/@i.StImage" alt="@i.StName" height="300" width="300" class="img-responsive" />
+                    }
+                    else
+                    {
+                        <img src="~/images/Universal-Skills- training-thumbnail-01.jpg" alt="@i.StName" height="300" width="300" class="img-responsive" />
+                    }
+
+
+                    <div class="edugate-content">
+                        @if (i.StName.Length >= 30)
+                        {
+                            <a asp-controller="Courses" asp-action="List" asp-route-id="@i.StId" class="title">@i.StName.ToString().Substring(0, 30)</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Courses" asp-action="List" asp-route-id="@i.StId" asp-route-Category="@EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.StName)" class="title">@i.StName</a>
+                        }
+
+
+                        <a asp-controller="Courses" asp-action="List" asp-route-id="@i.StId" asp-route-Category="@EasySystem.EasyAPI.EasySysAPI.URLFriendly(i.StName)" class="btn btn-green"><span>Learn more</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

@@ -18,7 +18,7 @@
         TempData.Keep("cCode");
     }
 }
-
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
 <div class="acount-sec">
     <div class="container">
@@ -28,24 +28,24 @@
                 <div id="Notifocation">
                     @if (TempData["Info"] != null)
                     {
-                    <div role="alert" class="alert alert-info">
-                        <strong><i class="fa fa-info-circle"></i></strong>
-                        @TempData["Info"]
-                    </div>
+                        <div role="alert" class="alert alert-info">
+                            <strong><i class="fa fa-info-circle"></i></strong>
+                            @TempData["Info"]
+                        </div>
                     }
                     @if (TempData["Success"] != null)
                     {
-                    <div role="alert" class="alert alert-success">
-                        <strong><i class="fa fa-thumbs-o-up"></i></strong>
-                        @TempData["Success"]
-                    </div>
+                        <div role="alert" class="alert alert-success">
+                            <strong><i class="fa fa-thumbs-o-up"></i></strong>
+                            @TempData["Success"]
+                        </div>
                     }
                     @if (TempData["Error"] != null)
                     {
-                    <div role="alert" class="alert alert-danger">
-                        <strong><i class="fa fa-thumbs-o-down"></i></strong>
-                        @TempData["Error"]
-                    </div>
+                        <div role="alert" class="alert alert-danger">
+                            <strong><i class="fa fa-thumbs-o-down"></i></strong>
+                            @TempData["Error"]
+                        </div>
                     }
                 </div>
 
@@ -74,7 +74,7 @@
                                         <div class="feild col-md-4 form-group">
                                             <select asp-for="usrGender" class="form-control">
                                                 <option value="Male">Male</option>
-                                                <option value="female">Female</option>
+                                                <option value="Female">Female</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4 form-group">
@@ -89,13 +89,14 @@
                                             <label>Mentor Code</label>
                                             @if (TempData["MentorCode"] != null)
                                             {
-                                            <input type="number" asp-for="usrCode" placeholder="Mentor Code" value="@TempData["MentorCode"]" id="ref" class="form-control">
+                                                <input type="number" asp-for="usrCode" placeholder="Mentor Code" value="@TempData["MentorCode"]" id="ref" class="form-control">
                                             }
                                             else
                                             {
-                                            <input type="text" asp-for="usrCode" placeholder="Mentor Code" id="ref" class="form-control" onkeyup="javascript: MentorName(this.value);">
+                                                <input type="text" asp-for="usrCode" placeholder="Mentor Code" id="ref" class="form-control" onkeyup="javascript: MentorName(this.value);">
                                             }
                                             <input type="hidden" name="cCode" value="@TempData["cCode"]" class="form-control">
+                                            <input type="hidden" id="cId" value="@TempData["CountryId"]" class="form-control">
 
 
                                         </div>
@@ -105,9 +106,9 @@
                                             <input type="text" placeholder="Mentor Name" id="RefName" class="form-control" readonly>
                                         </div>
                                         @*<div class="col-md-4">
-                                            <label>Choose Profile Image (If available)</label>
-                                            <input type="file" asp-for="usrImage" name="perImage" class="form-control">
-                                        </div>*@
+                                                <label>Choose Profile Image (If available)</label>
+                                                <input type="file" asp-for="usrImage" name="perImage" class="form-control">
+                                            </div>*@
                                         <div class="feild col-md-12">
                                             <button type="submit" value="Register Now" id="btnSubmit">Register Now</button>
                                         </div>
@@ -124,7 +125,10 @@
         </div>
     </div>
 </div>
-<script src="~/js/jquery-2.1.3.js"></script>
+
+
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
 
 <script>
     $(function () {
@@ -172,14 +176,16 @@
     $(document).ready(function () {
         $("#ref").attr('maxlength', '6');
         var code = $("#ref").val();
-        if (code !== null && code !== "") {
+        if (code !== "") {
             var procemessage = "Please wait...";
             $("#RefName").val(procemessage);
             //$("#RefName").hide();
             //$("#loader").show();
             $.ajax({
                 type: 'GET',
-                url: 'https://api.leskills.com/api/Users/GetCode?Code=' + code,
+                url: 'http://fabricaerp-001-site3.gtempurl.com/api/Users/GetCode?Code=' + code,
+                //url: 'http://sajawal-001-site3.ctempurl.com/api/Users/GetCode?Code=' + code,
+                //url: 'https://api.leskills.com/api/Users/GetCode?Code=' + code,
                 //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
                 dataType: 'json',
                 success: function (data) {
@@ -194,7 +200,6 @@
                     console.log(error);
                     $("#RefName").val('');
                     alert('No record found.');
-
                 }
 
             });
@@ -207,7 +212,7 @@
     $("#ref").attr('maxlength', '6');
 
     function MentorName() {
-       
+
         if ($("#ref").val().length >= 6) {
             var code = $("#ref").val();
             if (code !== null && code !== "") {
@@ -217,26 +222,47 @@
                 //$("#loader").show();
                 $.ajax({
                     type: 'GET',
-                    url: 'https://api.leskills.com/api/Users/GetCode?Code=' + code,
+                    url: 'http://fabricaerp-001-site3.gtempurl.com/api/Users/GetCode?Code=' + code,
+                    //url: 'http://sajawal-001-site3.ctempurl.com/api/Users/GetCode?Code=' + code,
+                    //url: 'https://api.leskills.com/api/Users/GetCode?Code=' + code,
                     //url: 'http://localhost:54383/api/Users/GetCode?Code=' + code,
 
                     dataType: 'json',
                     success: function (data) {
                         console.log(data);
                         if (data !== "") {
-                            //$("#RefName").show();
-                            //$("#loader").hide();
-                            $("#RefName").val(data.usrName);
+
+                            var cId = $("#cId").val();
+                            if (cId != null) {
+                                if (cId == 6) {
+                                    if (data.CountryId == 6 || data.CountryId == 1) {
+                                        $("#RefName").val(data.usrName);
+                                    } else {
+                                        alert('You can only make mentor from Pakistan.');
+                                        $("#ref").val('');
+                                        $("#RefName").val('');
+                                    }
+                                } else {
+                                    if (data.CountryId == 6) {
+                                        alert('You can not make mentor from Pakistan.');
+                                        $("#ref").val('');
+                                        $("#RefName").val('');
+
+                                    } else {
+                                        
+                                        $("#RefName").val(data.usrName);
+                                    }
+                                }
+                            }
                         } else {
-                            alert('No record found against this Mentor Code');
+                            alert('No record found against this Mentor Code.');
+                            $("#RefName").val('');
                         }
                     },
                     error: function (error) {
                         console.log(error);
-                        $("#RefName").show();
-                        $("#loader").hide();
-                        $("#RefName").val('');
                         alert('No record found.');
+                        $("#RefName").val('');
                     }
 
                 });

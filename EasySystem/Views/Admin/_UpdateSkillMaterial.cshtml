@@ -1,0 +1,160 @@
+﻿@model EasySystemAPI.Models.SkillMaterial
+
+<form id="UpdateFormData">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <input type="hidden" asp-for="SmId" />
+                <label for="exampleInputEmail2">Main Type</label>
+                @Html.DropDownList("StId", (SelectList)ViewData["Skills"], "Main Type", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="exampleInputEmail2">Title</label>
+                <input type="text" class="form-control" id="SmTitle" asp-for="SmTitle" required />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="exampleInputEmail2">Select Status</label>
+                @{
+                    var list = new List<SelectListItem>();
+                    list.Add(new SelectListItem { Text = "Approved", Value = "true" });
+                    list.Add(new SelectListItem { Text = "DisApproved", Value = "false" });
+
+                }
+                <select asp-for="SmStatus" class="form-control" asp-items="@list" required></select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>Skill Type Detail</label>
+                <textarea id="SmContent" name="SmContent" asp-for="SmContent" rows="9" placeholder="Enter SKill Detail" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="col-md-8">
+            <div class="form-group">
+                <input type="text" class="form-control" id="vUrl" name="vUrl" placeholder="Enter New Video URL" required />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <button type="button" id="btnVideoLink" class="btn btn-info" title="Click to add video Link" style="background-color:#1b3767">+</button>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    <button type="button" id="btnUpdate" class="btn btn-info" style="background-color:#1b3767">Update</button>
+
+</form>
+
+
+
+
+
+<script>
+    $(function () {
+        $("#btnUpdate").click(function (event) {
+            $("#btnUpdate").html('<i class="fa fa-spinner fa-spin"></i>  Working...');
+            $('#btnUpdate').attr('disabled', true);
+            var myData = $("#UpdateFormData").serialize();
+            //var body = tinymce.get("SmContent").getBody();
+            //var SmContent = body.textContent;
+            //alert(Content);
+            if (myData != "") {
+                $.ajax({
+                    url: "@Url.Action("UpdateSkillMaterial", "Admin")",
+                    //data: { SmContent: SmContent },
+                    data: myData,
+                    type: "post",
+                    dataType: "text",
+                    success: function (data) {
+                        if (data !== "") {
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            Command: toastr["error"]("" + data + "")
+                            $('#btnUpdate').attr('disabled', false);
+                        } else {
+                            GetData();
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            $("#updateModal").modal("hide");
+                            Command: toastr["success"]("Data Updated successfully")
+                            $('#btnUpdate').attr('disabled', false);
+                        }
+                    }
+
+                });
+                    } else {
+                        alert("Please fill up the fields");
+                    }
+
+
+        });
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $("#btnVideoLink").click(function (event) {
+            $("#btnVideoLink").html('<i class="fa fa-spinner fa-spin"></i>');
+            $('#btnVideoLink').attr('disabled', true);
+            var link = $("#vUrl").val();
+            if (link != "") {
+                $.ajax({
+                    url: "/Admin/VideoLink",
+                    data: { Link: link },
+                    type: "Get",
+                    dataType: "text",
+                    success: function (data) {
+                        if (data !== "") {
+                            var procemessage = "+";
+                            $("#btnVideoLink").html(procemessage);
+                            $('#btnVideoLink').attr('disabled', false);
+                            Command: toastr["error"]("" + data + "")
+
+                        } else {
+                            var procemessage = "+";
+                            $("#btnVideoLink").html(procemessage);
+                            $('#btnVideoLink').attr('disabled', false);
+                            $('#vUrl').val('');
+                            Command: toastr["success"]("Video Link Add to cart successfully")
+                        }
+                        //var procemessage = "+";
+                        //$("#btnVideoLink").html(procemessage);
+                        //$('#btnVideoLink').attr('disabled', false);
+                        //$('#vUrl').val('');
+                        //Command: toastr["success"]("Video Link Add to cart successfully")
+                    },
+                    error: function () {
+                        var procemessage = "+";
+                        $("#btnVideoLink").html(procemessage);
+                        $('#btnVideoLink').attr('disabled', false);
+                        $('#vUrl').val('');
+                        Command: toastr["success"]("Video Link Add to cart successfully")
+                    }
+
+
+                });
+            } else {
+
+                var procemessage = "+";
+                $("#btnVideoLink").html(procemessage);
+                $('#btnVideoLink').attr('disabled', false);
+                Command: toastr["error"]("Please add link before proceed")
+            }
+
+
+        });
+    });
+</script>
